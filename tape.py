@@ -17,10 +17,14 @@ class tape():
 
         self.figDir = ''
         self.drawToFile = False
+
+        self.lumDataFile = 'TAPEDATA/IntLum.csv'
+        self.tapeDataFile= 'TAPEDATA/TapeUsage.csv'
         return
     def main(self):
         Ldate,Llum = [],[]
-        with open('/Users/djaffe/Desktop/IntLum.csv','rb') as lumfile:
+        with open(self.lumDataFile,'rb') as lumfile:
+            print 'tape.main Opened',self.lumDataFile
             lumreader = csv.reader(lumfile)
             for row in lumreader:
                 #print ', '.join(row)    
@@ -30,7 +34,8 @@ class tape():
                     Ldate.append(datetime.datetime.strptime(a,'%m/%d/%Y'))
                     Llum.append(float(b))
         Tdate,TB = [],[]
-        with open('/Users/djaffe/Desktop/TapeUsage.csv','rb') as tapefile:
+        with open(self.tapeDataFile,'rb') as tapefile:
+            print 'tape.main Opened',self.tapeDataFile
             tapereader = csv.reader(tapefile)
             for row in tapereader:
                 #print ', '.join(row)
