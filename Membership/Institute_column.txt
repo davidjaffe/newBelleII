@@ -1,0 +1,119 @@
+University of Adelaide 
+Budker Institute of Nuclear Physics(BINP) 
+Brookhaven National Laboratory 
+Beihang University(BUAA) 
+University of Bonn 
+Carnegie Mellon University(CMU) 
+Centre de Physique des Particules de Marseille 
+Institute of Mathematical and Sciences 
+Chiang Mai University 
+Chiba University 
+Chonnam National University(CNU) 
+Chulalongkorn University 
+University of Cincinnati 
+Centro de Investigacion y de Estudios avanzados del Instituto Politecnico Nacional 
+Deutsches Elektronen-Synchrotron(DESY) 
+Duke University 
+University of Florida 
+INFN Laboratori Nazionali di Frascati 
+Fu Jen Catholic University(FJU) 
+Fudan University 
+University of Giessen 
+University of Goettingen 
+Gyeongsang National University 
+Institute of High Energy Physics, Austrian Academy of Sciences 
+Higher School of Economics 
+Hanyang University 
+University of Hawaii 
+Heidelberg University 
+Instituto de Fisica Corpuscular (IFIC), University of Valencia - CSIC 
+Institute of High Energy Physics(IHEP) 
+Institute for High Energy Physics Protvino 
+Indian Institute of Science Education and Research(IISER)Mohali 
+Indian Institute of Technology Bhubaneswar 
+Indian Institute of Technology Guwahati 
+Indian Institute of Technology Hyderabad 
+Indian Institute of Technology Madras 
+Institute of physics Vietnam Academy of Science and Technology 
+Institut Pluridisciplinaire Hubert Curien (IPHC) Strasbourg 
+Kavli IPMU (WPI), the University of Tokyo 
+Iowa State University 
+Indiana University 
+Forschungszentrum Juelich 
+High Energy Accelerator Research Organization (KEK) 
+Korea Institute of Science and Technology Information(KISTI) 
+Karlsruhe Institute of Technology(KIT) 
+Kennesaw State Univ 
+Kitasato University 
+Korea University(KU) 
+Institute of Nuclear Physics PAN 
+Taras Shevchenko National University of Kyiv 
+Kyungpook National University(KNU) 
+Laboratoire de L'accelerateur Lineaire (LAL) Orsay 
+Ludwig Maximilians University  Muenchen(LMU) 
+ LiaoNing Normal University(LNNU) 
+P.N. Lebedev Physics Institute(LPI) 
+University of Ljubljana 
+University of Louisville 
+Luther College 
+National Research Nuclear University(MEPhI) 
+Middle East Technical University(METU) 
+Moscow Institute of Physics and Technology 
+Malaviya National Institute of Technology Jaipur 
+Semiconductor Laboratory of the Max Planck Society 
+Max Planck Institut fur Physik Muenchen 
+Johannes Gutenberg University  of Mainz 
+University of Malaya 
+McGill University 
+University of Melbourne 
+University of Mississippi(UM) 
+University of Montreal 
+Nanjing Normal University 
+Nuclear Physics Consortium (NPC) 
+National Taiwan University(NTU) 
+National United University(NUU) 
+Graduate School of Science, Nagoya Univeristy 
+INFN and Federico II University Napoli 
+Nara Women's University 
+Niigata University 
+University of Nova Gorica 
+Okinawa Institute of Science and Technology Graduate University 
+Osaka City Univ 
+Pacific Northwest National Laboratory 
+INFN and University Padova 
+Panjab University 
+Peking University(PKU) 
+INFN and University Perugia 
+INFN and University Pisa 
+University of Pittsburgh 
+Charles University Prague 
+ INFN Sezione di Roma Tre and University Roma Tre 
+INFN Roma1 and Enea Casaccia 
+University of South Alabama 
+University of South Carolina 
+Seoul National University(SNU) 
+Shandong University 
+Soochow University 
+Soongsil Univ 
+University of Sydney 
+Technical University of Munich(Technische Universitaet Muenchen) 
+University of Tabuk 
+Tata Institute of Fundamental Research 
+Tel Aviv University 
+Toho University 
+Tohoku University 
+Tokyo Metropolitan University 
+INFN and University Torino 
+INFN and University Trieste 
+U-Tokyo 
+Universidad Autonoma de Sinaloa(UAS) 
+University of British Columbia(UBC) 
+National Autonomous University of Mexico(UNAM) 
+University of Science and Technology of China(USTC) 
+Virginia Polytechnic Institute and State University(Virginia Tech) 
+University of Victoria 
+Wayne State University 
+St. Francis Xavier University 
+Yamagata University 
+Alikhanyan National Science Laboratory 
+Yonsei University 
