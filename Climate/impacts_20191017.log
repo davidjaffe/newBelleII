@@ -1,0 +1,201 @@
+b2parser.__init__ will process the following shift files 
+CDATA/Shiftmanagement_2019b_CR_captain.htm
+CDATA/Shiftmanagement_2019b_CR_navigator.htm
+CDATA/Shiftmanagement_2020a_CR_captain.htm
+CDATA/Shiftmanagement_2020a_CR_navigator.htm
+
+
+climate.__init__ will process the following B2GM attendance files 
+CDATA/16th B2GM (13-November 16, 2013) · KEK Document Server (Indico).htm
+CDATA/17th B2GM (4-February 8, 2014) · KEK Document Server (Indico).htm
+CDATA/18th B2GM (18-June 21, 2014) · KEK Document Server (Indico).htm
+CDATA/19th B2GM (3-November 6, 2014) · KEK Document Server (Indico).htm
+CDATA/20th B2GM (2-February 7, 2015) · KEK Document Server (Indico).htm
+CDATA/21st B2GM (22-June 26, 2015) · KEK Document Server (Indico).htm
+CDATA/22nd B2GM (19-October 23, 2015) · KEK Document Server (Indico).htm
+CDATA/23rd B2GM (1-February 5, 2016) · KEK Document Server (Indico).htm
+CDATA/24th B2GM (20-June 24, 2016) · KEK Document Server (Indico).htm
+CDATA/25th B2GM (17-October 21, 2016) · KEK Document Server (Indico).htm
+CDATA/26th B2GM (6-February 11, 2017) · KEK Document Server (Indico).htm
+CDATA/27th_B2GM_June2017_KEK_DocumentServer_Indico.htm
+CDATA/28th_B2GM _Oct2017_KEK_Document_Server_Indico.htm
+CDATA/29th_B2GM_Feb2018_KEK_Document_Server_Indico.htm
+CDATA/30th_B2GM_June2018_KEK_Document_Server_Indico.htm
+CDATA/31st_B2GM_Oct2018_KEK_Document_Server_Indico.htm
+CDATA/32nd_B2GM_Feb2019_KEK_Document_Server_Indico.htm
+CDATA/33rd_B2GM_June2019_indico.belle2.org.htm
+CDATA/34th_B2GM_Oct2019_indico.belle2.org.html
+
+
+climate.getGAD Processed CDATA/GlobalAirportDatabase/GlobalAirportDatabase.txt
+climate.readAirFares 62 airfares processed from CDATA/Airfares_CityPairs_20190929.csv
+climate.mainAirFares # 62 fares with average 0.143(0.051) minimum 0.061 maximum 0.300 in USD/km
+climate.readB2I Processed 116 institutions in CDATA/BelleII_institutions_20190929.csv
+climate.ReadB2M Processed 1212 members in CDATA/BelleII_members_20190929.csv
+climate.readCO2 Read 43 lines from CDATA/CO2_between_airports_20191013.csv
+climate.drawIt wrote FIGURES/FIG_1_legs.pdf
+climate.drawIt wrote FIGURES/FIG_2_legs.pdf
+climate.drawIt wrote FIGURES/FIG_All_legs.pdf
+
+ -------------------------
+climate.readB2GM Processed 205 participants in CDATA/16th B2GM (13-November 16, 2013) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 205 participants, 175 single matches, 0 multi-matches, 30 No matches
+
+
+climate.costB2GM 205 participants, cost of 132 participants is 162150.0 USD 111720.417981 kg CO2 for 2257185.08017 km flown. Japanese/no city/inst for 43 / 0 / 30 participants
+climate.costB2GM Estimated total cost of 199002.27 USD and 137111.42 kg CO2 for 2770181.7 km flown (69.2 trips around earth or 3.6 r/t to moon)
+climate.readB2GM Processed 181 participants in CDATA/17th B2GM (4-February 8, 2014) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 181 participants, 153 single matches, 0 multi-matches, 28 No matches
+
+
+climate.costB2GM 181 participants, cost of 111 participants is 134718.0 USD 92439.9587329 kg CO2 for 1846923.97491 km flown. Japanese/no city/inst for 42 / 0 / 28 participants
+climate.costB2GM Estimated total cost of 168700.92 USD and 115758.15 kg CO2 for 2312814.7 km flown (57.8 trips around earth or 3.0 r/t to moon)
+climate.readB2GM Processed 179 participants in CDATA/18th B2GM (18-June 21, 2014) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 179 participants, 153 single matches, 0 multi-matches, 26 No matches
+
+
+climate.costB2GM 179 participants, cost of 112 participants is 137520.0 USD 94065.6520045 kg CO2 for 1899580.15403 km flown. Japanese/no city/inst for 41 / 0 / 26 participants
+climate.costB2GM Estimated total cost of 169444.29 USD and 115902.32 kg CO2 for 2340554.1 km flown (58.5 trips around earth or 3.0 r/t to moon)
+climate.readB2GM Processed 228 participants in CDATA/19th B2GM (3-November 6, 2014) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 228 participants, 201 single matches, 0 multi-matches, 27 No matches
+
+
+climate.costB2GM 228 participants, cost of 152 participants is 183131.0 USD 126698.083131 kg CO2 for 2549838.1669 km flown. Japanese/no city/inst for 49 / 0 / 27 participants
+climate.costB2GM Estimated total cost of 215660.85 USD and 149203.66 kg CO2 for 3002769.9 km flown (75.0 trips around earth or 3.9 r/t to moon)
+climate.readB2GM Processed 181 participants in CDATA/20th B2GM (2-February 7, 2015) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI KaiYu / Chen / Fu Jen Catholic Univ. 2 matches ['5303', '7843'] 
+ match# 0 5303 Hucheng /  / Chen /  / BNL
+ match# 1 7843 Kai /  / Chen /  / BNL
+climate.matchMtoI 181 participants, 161 single matches, 1 multi-matches, 19 No matches
+
+
+climate.costB2GM 181 participants, cost of 121 participants is 150709.0 USD 102374.471552 kg CO2 for 2058765.00416 km flown. Japanese/no city/inst for 40 / 0 / 20 participants
+climate.costB2GM Estimated total cost of 175619.58 USD and 119295.87 kg CO2 for 2399056.7 km flown (59.9 trips around earth or 3.1 r/t to moon)
+climate.readB2GM Processed 202 participants in CDATA/21st B2GM (22-June 26, 2015) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 202 participants, 181 single matches, 0 multi-matches, 21 No matches
+
+
+climate.costB2GM 202 participants, cost of 132 participants is 166226.0 USD 110912.522797 kg CO2 for 2247209.08974 km flown. Japanese/no city/inst for 49 / 0 / 21 participants
+climate.costB2GM Estimated total cost of 192671.05 USD and 128557.70 kg CO2 for 2604719.6 km flown (65.1 trips around earth or 3.4 r/t to moon)
+climate.readB2GM Processed 203 participants in CDATA/22nd B2GM (19-October 23, 2015) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 203 participants, 186 single matches, 0 multi-matches, 17 No matches
+
+
+climate.costB2GM 203 participants, cost of 140 participants is 182674.0 USD 120641.793407 kg CO2 for 2450996.65937 km flown. Japanese/no city/inst for 46 / 0 / 17 participants
+climate.costB2GM Estimated total cost of 204855.84 USD and 135291.15 kg CO2 for 2748617.7 km flown (68.7 trips around earth or 3.6 r/t to moon)
+climate.readB2GM Processed 202 participants in CDATA/23rd B2GM (1-February 5, 2016) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 202 participants, 189 single matches, 0 multi-matches, 13 No matches
+
+
+climate.costB2GM 202 participants, cost of 140 participants is 170872.0 USD 115962.992252 kg CO2 for 2328104.4316 km flown. Japanese/no city/inst for 49 / 0 / 13 participants
+climate.costB2GM Estimated total cost of 186738.69 USD and 126730.98 kg CO2 for 2544285.6 km flown (63.6 trips around earth or 3.3 r/t to moon)
+climate.readB2GM Processed 213 participants in CDATA/24th B2GM (20-June 24, 2016) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 213 participants, 201 single matches, 0 multi-matches, 12 No matches
+
+
+climate.costB2GM 213 participants, cost of 150 participants is 182325.0 USD 128295.796268 kg CO2 for 2597533.36125 km flown. Japanese/no city/inst for 51 / 0 / 12 participants
+climate.costB2GM Estimated total cost of 196911.00 USD and 138559.46 kg CO2 for 2805336.0 km flown (70.1 trips around earth or 3.6 r/t to moon)
+climate.readB2GM Processed 219 participants in CDATA/25th B2GM (17-October 21, 2016) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 219 participants, 207 single matches, 0 multi-matches, 12 No matches
+
+
+climate.costB2GM 219 participants, cost of 156 participants is 187571.0 USD 129252.237345 kg CO2 for 2607366.33561 km flown. Japanese/no city/inst for 51 / 0 / 12 participants
+climate.costB2GM Estimated total cost of 201999.54 USD and 139194.72 kg CO2 for 2807933.0 km flown (70.1 trips around earth or 3.6 r/t to moon)
+climate.readB2GM Processed 232 participants in CDATA/26th B2GM (6-February 11, 2017) · KEK Document Server (Indico).htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI Doris Y / Kim / Soongsil University 4 matches ['2315', '11083', '6746', '2201'] 
+ match# 0 2315 Doris / Yangsoo / Kim /  / Soongsil
+ match# 1 11083 Donghee /  / Kim /  / Soongsil
+ match# 2 6746 Jaeyeon /  / Kim /  / Soongsil
+ match# 3 2201 Kooktae /  / Kim /  / Soongsil
+climate.matchMtoI 232 participants, 221 single matches, 1 multi-matches, 10 No matches
+
+
+climate.costB2GM 232 participants, cost of 163 participants is 202898.0 USD 137347.636173 kg CO2 for 2761137.55809 km flown. Japanese/no city/inst for 58 / 0 / 11 participants
+climate.costB2GM Estimated total cost of 216590.50 USD and 146616.50 kg CO2 for 2947472.0 km flown (73.6 trips around earth or 3.8 r/t to moon)
+climate.readB2GM Processed 239 participants in CDATA/27th_B2GM_June2017_KEK_DocumentServer_Indico.htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 239 participants, 235 single matches, 0 multi-matches, 4 No matches
+
+
+climate.costB2GM 239 participants, cost of 174 participants is 203568.0 USD 141677.907673 kg CO2 for 2824049.58564 km flown. Japanese/no city/inst for 61 / 0 / 4 participants
+climate.costB2GM Estimated total cost of 208247.72 USD and 144934.87 kg CO2 for 2888970.3 km flown (72.2 trips around earth or 3.8 r/t to moon)
+climate.readB2GM Processed 243 participants in CDATA/28th_B2GM _Oct2017_KEK_Document_Server_Indico.htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 243 participants, 238 single matches, 0 multi-matches, 5 No matches
+
+
+climate.costB2GM 243 participants, cost of 182 participants is 211614.0 USD 146139.174467 kg CO2 for 2908245.65803 km flown. Japanese/no city/inst for 56 / 0 / 5 participants
+climate.costB2GM Estimated total cost of 217427.57 USD and 150153.99 kg CO2 for 2988142.5 km flown (74.6 trips around earth or 3.9 r/t to moon)
+climate.readB2GM Processed 254 participants in CDATA/29th_B2GM_Feb2018_KEK_Document_Server_Indico.htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 254 participants, 251 single matches, 0 multi-matches, 3 No matches
+
+
+climate.costB2GM 254 participants, cost of 208 participants is 245234.0 USD 166057.975444 kg CO2 for 3326359.7271 km flown. Japanese/no city/inst for 43 / 0 / 3 participants
+climate.costB2GM Estimated total cost of 248771.03 USD and 168453.04 kg CO2 for 3374336.1 km flown (84.3 trips around earth or 4.4 r/t to moon)
+climate.readB2GM Processed 273 participants in CDATA/30th_B2GM_June2018_KEK_Document_Server_Indico.htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 273 participants, 269 single matches, 0 multi-matches, 4 No matches
+
+
+climate.costB2GM 273 participants, cost of 210 participants is 255073.0 USD 176005.086853 kg CO2 for 3537583.34977 km flown. Japanese/no city/inst for 59 / 0 / 4 participants
+climate.costB2GM Estimated total cost of 259931.53 USD and 179357.56 kg CO2 for 3604965.9 km flown (90.1 trips around earth or 4.7 r/t to moon)
+climate.readB2GM Processed 247 participants in CDATA/31st_B2GM_Oct2018_KEK_Document_Server_Indico.htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 247 participants, 246 single matches, 0 multi-matches, 1 No matches
+
+
+climate.costB2GM 247 participants, cost of 182 participants is 215954.0 USD 150621.378606 kg CO2 for 3028790.97214 km flown. Japanese/no city/inst for 64 / 0 / 1 participants
+climate.costB2GM Estimated total cost of 217140.56 USD and 151448.97 kg CO2 for 3045432.7 km flown (76.1 trips around earth or 4.0 r/t to moon)
+climate.readB2GM Processed 247 participants in CDATA/32nd_B2GM_Feb2019_KEK_Document_Server_Indico.htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 247 participants, 246 single matches, 0 multi-matches, 1 No matches
+
+
+climate.costB2GM 247 participants, cost of 188 participants is 226681.0 USD 154714.439638 kg CO2 for 3115514.58224 km flown. Japanese/no city/inst for 58 / 0 / 1 participants
+climate.costB2GM Estimated total cost of 227886.75 USD and 155537.39 kg CO2 for 3132086.5 km flown (78.2 trips around earth or 4.1 r/t to moon)
+climate.readB2GM Processed 300 participants in CDATA/33rd_B2GM_June2019_indico.belle2.org.htm with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 300 participants, 297 single matches, 0 multi-matches, 3 No matches
+
+
+climate.costB2GM 300 participants, cost of 226 participants is 277100.0 USD 190813.460383 kg CO2 for 3861304.25215 km flown. Japanese/no city/inst for 71 / 0 / 3 participants
+climate.costB2GM Estimated total cost of 280778.32 USD and 193346.38 kg CO2 for 3912560.5 km flown (97.7 trips around earth or 5.1 r/t to moon)
+climate.readB2GM Processed 282 participants in CDATA/34th_B2GM_Oct2019_indico.belle2.org.html with 2 types of characters [<type 'str'>, <type 'unicode'>]
+climate.matchMtoI 282 participants, 280 single matches, 0 multi-matches, 2 No matches
+
+
+climate.costB2GM 282 participants, cost of 211 participants is 245596.0 USD 173816.533057 kg CO2 for 3455689.79021 km flown. Japanese/no city/inst for 69 / 0 / 2 participants
+climate.costB2GM Estimated total cost of 247923.92 USD and 175464.08 kg CO2 for 3488445.1 km flown (87.1 trips around earth or 4.5 r/t to moon)
+
+   Participants              Actual totals                 Estimated totals        
+#att japn  unk  bad fares(USD)    CO2(kg)   r/t (km)  Fare(USD)    CO2(kg)   r/t (km) Event
+ 205   43    0   30     162150     111720    2257185     199002     137111    2770182 16th B2GM (13-November 16, 2013) · KEK Document Server (Indico)
+ 181   42    0   28     134718      92440    1846924     168701     115758    2312815 17th B2GM (4-February 8, 2014) · KEK Document Server (Indico)
+ 179   41    0   26     137520      94066    1899580     169444     115902    2340554 18th B2GM (18-June 21, 2014) · KEK Document Server (Indico)
+ 228   49    0   27     183131     126698    2549838     215661     149204    3002770 19th B2GM (3-November 6, 2014) · KEK Document Server (Indico)
+ 181   40    0   20     150709     102374    2058765     175620     119296    2399057 20th B2GM (2-February 7, 2015) · KEK Document Server (Indico)
+ 202   49    0   21     166226     110913    2247209     192671     128558    2604720 21st B2GM (22-June 26, 2015) · KEK Document Server (Indico)
+ 203   46    0   17     182674     120642    2450997     204856     135291    2748618 22nd B2GM (19-October 23, 2015) · KEK Document Server (Indico)
+ 202   49    0   13     170872     115963    2328104     186739     126731    2544286 23rd B2GM (1-February 5, 2016) · KEK Document Server (Indico)
+ 213   51    0   12     182325     128296    2597533     196911     138559    2805336 24th B2GM (20-June 24, 2016) · KEK Document Server (Indico)
+ 219   51    0   12     187571     129252    2607366     202000     139195    2807933 25th B2GM (17-October 21, 2016) · KEK Document Server (Indico)
+ 232   58    0   11     202898     137348    2761138     216591     146616    2947472 26th B2GM (6-February 11, 2017) · KEK Document Server (Indico)
+ 239   61    0    4     203568     141678    2824050     208248     144935    2888970 27th_B2GM_June2017_KEK_DocumentServer_Indico
+ 243   56    0    5     211614     146139    2908246     217428     150154    2988143 28th_B2GM _Oct2017_KEK_Document_Server_Indico
+ 254   43    0    3     245234     166058    3326360     248771     168453    3374336 29th_B2GM_Feb2018_KEK_Document_Server_Indico
+ 273   59    0    4     255073     176005    3537583     259932     179358    3604966 30th_B2GM_June2018_KEK_Document_Server_Indico
+ 247   64    0    1     215954     150621    3028791     217141     151449    3045433 31st_B2GM_Oct2018_KEK_Document_Server_Indico
+ 247   58    0    1     226681     154714    3115515     227887     155537    3132086 32nd_B2GM_Feb2019_KEK_Document_Server_Indico
+ 300   71    0    3     277100     190813    3861304     280778     193346    3912561 33rd_B2GM_June2019_indico
+ 282   69    0    2     245596     173817    3455690     247924     175464    3488445 34th_B2GM_Oct2019_indico
+4330 1000    0  240    3741614    2569558   51662178    4036302    2770918   55718681 SUMMED
+ 228   53    0   13     196927     135240    2719062     212437     145838    2932562 AVERAGE
+#att = Number of attendees, japn = Number of attendees from Japan, unk = could not associate institution with attendee, bad = attendee not in B2MMS
+b2parser.readShift Processed ================> Data on 240  shifts from CDATA/Shiftmanagement_2019b_CR_captain.temporary made from CDATA/Shiftmanagement_2019b_CR_captain.htm
+b2parser.readShift Processed ================> Data on 246  shifts from CDATA/Shiftmanagement_2019b_CR_navigator.temporary made from CDATA/Shiftmanagement_2019b_CR_navigator.htm
+b2parser.readShift Processed ================> Data on 117  shifts from CDATA/Shiftmanagement_2020a_CR_captain.temporary made from CDATA/Shiftmanagement_2020a_CR_captain.htm
+b2parser.readShift Processed ================> Data on 109  shifts from CDATA/Shiftmanagement_2020a_CR_navigator.temporary made from CDATA/Shiftmanagement_2020a_CR_navigator.htm
+
+   Participants           Est. minimum totals             Est. maximum totals      
+#att japn  unk  bad fares(USD)    CO2(kg)   r/t (km)  Fare(USD)    CO2(kg)   r/t (km) Event
+  53    7    0    0      52522      36154     703807     114553      77676    1514251 CDATA/Shiftmanagement_2019b_CR_captain.htm
+  56    9    0    0      47142      37105     685966     104912      80926    1507033 CDATA/Shiftmanagement_2019b_CR_navigator.htm
+  19    0    0    0      25968      17752     366310      62853      41827     867943 CDATA/Shiftmanagement_2020a_CR_captain.htm
+  19    1    0    0      24389      16216     341444      61461      39152     830944 CDATA/Shiftmanagement_2020a_CR_navigator.htm
+ 147   17    0    0     150021     107227    2097526     343779     239582    4720171 SUMMED
+  37    4    0    0      37505      26807     524382      85945      59895    1180043 AVERAGE
+#att = Number of shifters, japn = Number of shifters from Japan, unk = could not associate institution with shifter, bad = shifter with unknown institution

@@ -1,0 +1,271 @@
+b2parser.__init__ will process the following shift files 
+CDATA/Shiftmanagement_2019c_BCG.htm
+CDATA/Shiftmanagement_2019c_CR_captain.htm
+CDATA/Shiftmanagement_2019c_navigator.htm
+CDATA/Shiftmanagement_2020a_CR_captain.htm
+CDATA/Shiftmanagement_2020a_CR_navigator.htm
+
+
+climate.__init__ will process the following B2GM attendance files 
+CDATA/16th B2GM (13-November 16, 2013) · KEK Document Server (Indico).htm
+CDATA/17th B2GM (4-February 8, 2014) · KEK Document Server (Indico).htm
+CDATA/18th B2GM (18-June 21, 2014) · KEK Document Server (Indico).htm
+CDATA/19th B2GM (3-November 6, 2014) · KEK Document Server (Indico).htm
+CDATA/20th B2GM (2-February 7, 2015) · KEK Document Server (Indico).htm
+CDATA/21st B2GM (22-June 26, 2015) · KEK Document Server (Indico).htm
+CDATA/22nd B2GM (19-October 23, 2015) · KEK Document Server (Indico).htm
+CDATA/23rd B2GM (1-February 5, 2016) · KEK Document Server (Indico).htm
+CDATA/24th B2GM (20-June 24, 2016) · KEK Document Server (Indico).htm
+CDATA/25th B2GM (17-October 21, 2016) · KEK Document Server (Indico).htm
+CDATA/26th B2GM (6-February 11, 2017) · KEK Document Server (Indico).htm
+CDATA/27th_B2GM_June2017_KEK_DocumentServer_Indico.htm
+CDATA/28th_B2GM _Oct2017_KEK_Document_Server_Indico.htm
+CDATA/29th_B2GM_Feb2018_KEK_Document_Server_Indico.htm
+CDATA/30th_B2GM_June2018_KEK_Document_Server_Indico.htm
+CDATA/31st_B2GM_Oct2018_KEK_Document_Server_Indico.htm
+CDATA/32nd_B2GM_Feb2019_KEK_Document_Server_Indico.htm
+CDATA/33rd_B2GM_June2019_indico.belle2.org.htm
+CDATA/34th_B2GM_Oct2019_indico.belle2.org.html
+
+
+climate.getGAD Processed CDATA/GlobalAirportDatabase/GlobalAirportDatabase.txt
+climate.readAirFares 62 airfares processed from CDATA/Airfares_CityPairs_20190929.csv
+climate.mainAirFares # 62 fares with average 0.143(0.051) minimum 0.061 maximum 0.300 in USD/km
+climate.readB2I Processed 116 institutions in CDATA/BelleII_institutions_20190929.csv
+climate.ReadB2M Processed 1212 members in CDATA/BelleII_members_20190929.csv
+climate.readCO2 Read 43 lines from CDATA/CO2_between_airports_20191013.csv
+climate.drawIt wrote FIGURES/FIG_1_legs.pdf
+climate.drawIt wrote FIGURES/FIG_2_legs.pdf
+climate.drawIt wrote FIGURES/FIG_All_legs.pdf
+climate.drawBoth Wrote FIGURES/all_legs.pdf
+
+ -------------------------
+b2parser.readShift Processed ================> Data on 169  shifts from CDATA/Shiftmanagement_2019c_BCG.temporary made from CDATA/Shiftmanagement_2019c_BCG.htm
+2016rpy9052@mnit.ac.in MNIT-Jaipur [['2019-12-03', '2019-12-04']]
+Yifan.Jin@ts.infn.it Trieste [['2019-11-01', '2019-11-02'], ['2019-11-08', '2019-11-10']]
+a.thampi@fz-juelich.de Juelich [['2019-10-21', '2019-10-21'], ['2019-10-24', '2019-10-24']]
+adeyta@fis.cinvestav.mx Cinvestav-IPN [['2019-10-18', '2019-10-18']]
+akimasa.ishikawa@kek.jp KEK [['2019-11-30', '2019-11-30'], ['2019-12-08', '2019-12-09']]
+and.lindner@physik.uni-muenchen.de LMU [['2019-11-22', '2019-11-22'], ['2019-11-24', '2019-11-24']]
+antonio.paladino@pi.infn.it Pisa [['2019-12-06', '2019-12-07'], ['2019-12-09', '2019-12-09'], ['2019-12-11', '2019-12-12']]
+antonio.passeri@roma3.infn.it Roma Tre [['2019-11-25', '2019-11-26']]
+awarburt@physics.mcgill.ca McGill [['2019-10-18', '2019-10-18'], ['2019-10-25', '2019-10-25']]
+bean@hep1.phys.ntu.edu.tw NTU-Taiwan [['2019-10-22', '2019-10-22'], ['2019-10-24', '2019-10-24'], ['2019-11-01', '2019-11-01'], ['2019-11-04', '2019-11-04'], ['2019-11-07', '2019-11-07']]
+christoph.schwanda@oeaw.ac.at HEPHY Vienna [['2019-10-29', '2019-10-30']]
+cmarinas@ific.uv.es IFIC [['2019-10-26', '2019-10-26']]
+debashis.sahoo@tifr.res.in Tata [['2019-10-26', '2019-10-27']]
+derh.ecfm@uas.edu.mx UAS [['2019-10-17', '2019-10-17'], ['2019-10-17', '2019-10-17'], ['2019-10-22', '2019-10-22']]
+ezio.torassa@pd.infn.it Padova [['2019-10-19', '2019-10-20']]
+fernando.abudinen@ts.infn.it Trieste [['2019-10-16', '2019-10-16'], ['2019-10-28', '2019-10-28']]
+francesco.forti@pi.infn.it Pisa [['2019-10-20', '2019-10-21']]
+galina.pakhlova@phystech.edu MIPT [['2019-11-04', '2019-11-04'], ['2019-11-06', '2019-11-06'], ['2019-11-12', '2019-11-13'], ['2019-11-15', '2019-11-15']]
+gevorg91@mail.yerphi.am Yerevan [['2019-10-23', '2019-10-24']]
+giacomo.depietro@roma3.infn.it Roma Tre [['2019-12-12', '2019-12-12']]
+glazov@mail.desy.de DESY [['2019-11-01', '2019-11-02'], ['2019-11-05', '2019-11-06']]
+hulya.atmacan@gmail.com Cincinnati [['2019-10-21', '2019-10-21'], ['2019-10-23', '2019-10-23']]
+ichiro.adachi@kek.jp KEK [['2019-10-16', '2019-10-16'], ['2019-10-25', '2019-10-25'], ['2019-11-05', '2019-11-05'], ['2019-11-07', '2019-11-07'], ['2019-11-15', '2019-11-15'], ['2019-11-17', '2019-11-17'], ['2019-12-07', '2019-12-07']]
+iwakuma21@gmail.com KEK [['2019-10-18', '2019-10-18'], ['2019-10-30', '2019-10-30'], ['2019-11-03', '2019-11-03'], ['2019-11-19', '2019-11-19'], ['2019-11-29', '2019-11-29']]
+jacobsw@indiana.edu Indiana [['2019-11-23', '2019-11-24']]
+janice.chen45@gmail.com NTU-Taiwan [['2019-11-08', '2019-11-08'], ['2019-11-13', '2019-11-13'], ['2019-11-17', '2019-11-17'], ['2019-11-23', '2019-11-24']]
+jkumar@andrew.cmu.edu CMU [['2019-11-03', '2019-11-03']]
+jschuel@hawaii.edu Hawaii [['2019-10-15', '2019-10-16']]
+katsuro@post.kek.jp KEK [['2019-10-19', '2019-10-19'], ['2019-12-10', '2019-12-11']]
+kenji@hepl.phys.nagoya-u.ac.jp Nagoya [['2019-12-09', '2019-12-09']]
+m.naruki@scphys.kyoto-u.ac.jp NPC [['2019-11-28', '2019-11-28'], ['2019-12-10', '2019-12-10']]
+mario.merola@na.infn.it Napoli [['2019-10-27', '2019-10-29']]
+martina.laurenza@roma3.infn.it Roma Tre [['2019-11-26', '2019-11-27']]
+matsuoka@hepl.phys.nagoya-u.ac.jp Nagoya [['2019-10-29', '2019-10-29']]
+michmx@phy.olemiss.edu Mississippi [['2019-10-28', '2019-10-28'], ['2019-10-31', '2019-10-31']]
+miyabaya@cc.nara-wu.ac.jp Nara-Wu [['2019-11-14', '2019-11-14'], ['2019-12-06', '2019-12-06']]
+muroyama@hepl.phys.nagoya-u.ac.jp Nagoya [['2019-10-20', '2019-10-20']]
+nkota@post.kek.jp KEK [['2019-11-12', '2019-11-13'], ['2019-12-06', '2019-12-07']]
+noritsugu@hepl.phys.nagoya-u.ac.jp Nagoya [['2019-10-17', '2019-10-17']]
+qidong.zhou@kek.jp KEK [['2019-11-30', '2019-11-30']]
+renu92garg@gmail.com Panjab [['2019-12-02', '2019-12-05']]
+riccardo.desangro@lnf.infn.it Frascati [['2019-10-25', '2019-10-25']]
+schwaraz@ucmail.uc.edu Cincinnati [['2019-11-02', '2019-11-03'], ['2019-11-05', '2019-11-05']]
+seungchul9111@knu.ac.kr Kyungpook [['2019-11-20', '2019-11-22'], ['2019-11-25', '2019-11-27'], ['2019-12-08', '2019-12-08']]
+shihc@mail.ustc.edu.cn USTC [['2019-10-22', '2019-10-22'], ['2019-11-09', '2019-11-10'], ['2019-11-17', '2019-11-17'], ['2019-11-23', '2019-11-23']]
+shohei.nishida@kek.jp KEK [['2019-10-19', '2019-10-19'], ['2019-11-16', '2019-11-16'], ['2019-12-01', '2019-12-01'], ['2019-12-04', '2019-12-04']]
+shuji.tanaka@kek.jp KEK [['2019-10-30', '2019-10-30'], ['2019-11-11', '2019-11-11'], ['2019-11-20', '2019-11-20'], ['2019-11-29', '2019-11-29'], ['2019-12-11', '2019-12-11']]
+shwartz@inp.nsk.su BINP [['2019-10-15', '2019-10-15'], ['2019-10-23', '2019-10-23']]
+takizawa@ac.shoyaku.ac.jp NPC [['2019-10-26', '2019-10-27'], ['2019-11-15', '2019-11-16']]
+tanida@post.j-parc.jp NPC [['2019-10-31', '2019-10-31']]
+tanigawa@hep.phys.s.u-tokyo.ac.jp U-Tokyo [['2019-10-15', '2019-10-15'], ['2019-11-25', '2019-11-25']]
+thomas@epx.phys.tohoku.ac.jp IPMU [['2019-12-02', '2019-12-03']]
+toru.tsuboyama@kek.jp KEK [['2019-11-08', '2019-11-09'], ['2019-11-11', '2019-11-12'], ['2019-12-02', '2019-12-02']]
+uehara@post.kek.jp KEK [['2019-11-18', '2019-11-18'], ['2019-11-28', '2019-11-28']]
+wang@mpp.mpg.de MPP [['2019-11-07', '2019-11-07'], ['2019-11-11', '2019-11-11'], ['2019-11-21', '2019-11-22'], ['2019-11-29', '2019-11-29'], ['2019-12-05', '2019-12-05']]
+ytlai@post.kek.jp KEK [['2019-10-31', '2019-10-31'], ['2019-11-06', '2019-11-06'], ['2019-11-14', '2019-11-14'], ['2019-11-27', '2019-11-27'], ['2019-12-05', '2019-12-05'], ['2019-12-10', '2019-12-10']]
+yutaka.ushiroda@kek.jp KEK [['2019-11-19', '2019-11-19']]
+zhukova@lebedev.ru LPI [['2019-11-18', '2019-11-21'], ['2019-11-30', '2019-12-01']]
+zjl@hawaii.edu Hawaii [['2019-11-18', '2019-11-18']]
+b2parser.readShift Processed ================> Data on 246  shifts from CDATA/Shiftmanagement_2019c_CR_captain.temporary made from CDATA/Shiftmanagement_2019c_CR_captain.htm
+Giulia.Casarosa@pi.infn.it Pisa [['2019-10-25', '2019-10-27']]
+Michel.Bertemes@oeaw.ac.at HEPHY Vienna [['2019-11-11', '2019-11-14']]
+adeyta@fis.cinvestav.mx Cinvestav-IPN [['2019-09-24', '2019-09-26']]
+and.lindner@physik.uni-muenchen.de LMU [['2019-11-15', '2019-11-17']]
+andychin@hep1.phys.ntu.edu.tw NTU-Taiwan [['2019-09-27', '2019-09-29']]
+antonio.passeri@roma3.infn.it Roma Tre [['2019-11-22', '2019-11-24']]
+awarburt@physics.mcgill.ca McGill [['2019-10-14', '2019-10-17']]
+benjamin.oberhof@lnf.infn.it Frascati [['2019-09-24', '2019-09-26']]
+d.v.matvienko@inp.nsk.su BINP [['2019-11-29', '2019-12-01'], ['2019-12-13', '2019-12-14']]
+daniel.greenwald@tum.de TUM [['2019-11-08', '2019-11-10']]
+debashis.sahoo@tifr.res.in Tata [['2019-10-07', '2019-10-10'], ['2019-10-28', '2019-10-31']]
+deven176121010@iitg.ac.in IIT-Guwahati [['2019-11-18', '2019-11-21']]
+dibyakalita@iitg.ernet.in IIT-Guwahati [['2019-11-18', '2019-11-21']]
+dmytro.levit@cern.ch TUM [['2019-10-14', '2019-10-14']]
+ehill@mail.ubc.ca UBC [['2019-10-15', '2019-10-20'], ['2019-10-28', '2019-10-31']]
+fx1627@wayne.edu Wayne-State [['2019-10-04', '2019-10-06'], ['2019-10-11', '2019-10-13'], ['2019-10-21', '2019-10-24'], ['2019-11-01', '2019-11-03']]
+giacomo.depietro@roma3.infn.it Roma Tre [['2019-12-13', '2019-12-14']]
+hayashii@cc.nara-wu.ac.jp Nara-Wu [['2019-11-29', '2019-12-01']]
+hirata@hepl.phys.nagoya-u.ac.jp Nagoya [['2019-11-15', '2019-11-17']]
+jan.strube@pnnl.gov PNNL [['2019-12-06', '2019-12-08']]
+kobayashi@hepmail.phys.se.tmu.ac.jp Tokyo-Metropolitan [['2019-10-11', '2019-10-13']]
+korobovfech@gmail.com BINP [['2019-10-21', '2019-10-24']]
+kuze@hepmail.phys.se.tmu.ac.jp Tokyo-Metropolitan [['2019-11-25', '2019-11-28']]
+lch@hep1.phys.ntu.edu.tw NTU-Taiwan [['2019-09-30', '2019-10-03'], ['2019-10-07', '2019-10-10']]
+leonardo.rizzuto@ijs.si Ljubljana(Uni-LJ) [['2019-11-04', '2019-11-07']]
+lsalinas@fis.cinvestav.mx Cinvestav-IPN [['2019-11-18', '2019-11-21']]
+macampajola@na.infn.it Napoli [['2019-10-25', '2019-10-27']]
+martina.laurenza@roma3.infn.it Roma Tre [['2019-11-22', '2019-11-24']]
+mikhail.a.remnev@gmail.com BINP [['2019-10-04', '2019-10-06']]
+minakshi@tauex.tau.ac.il TelAviv [['2019-10-04', '2019-10-10']]
+moser@mpp.mpg.de MPP [['2019-11-22', '2019-11-24']]
+nin26@pitt.edu Pittsburgh [['2019-11-04', '2019-11-10']]
+nmolina@fis.cinvestav.mx Cinvestav-IPN [['2019-10-11', '2019-10-13']]
+ohartbri@hawaii.edu Hawaii [['2019-09-30', '2019-10-03']]
+pahlovpn@lebedev.ru LPI [['2019-11-01', '2019-11-07']]
+pedlto01@luther.edu Luther [['2019-10-18', '2019-10-20']]
+piilonen@vt.edu VPI [['2019-09-24', '2019-09-29']]
+r01222034@ntu.edu.tw NTU-Taiwan [['2019-10-25', '2019-10-27']]
+raffaele.giordano@na.infn.it Napoli [['2019-10-18', '2019-10-20']]
+renu92garg@gmail.com Panjab [['2019-12-06', '2019-12-12']]
+riccardo.desangro@lnf.infn.it Frascati [['2019-10-28', '2019-10-31']]
+roberto.stroili@pd.infn.it Padova [['2019-10-14', '2019-10-17']]
+seokhee.park@yonsei.ac.kr Yonsei [['2019-11-25', '2019-11-28']]
+shebalin@hawaii.edu Hawaii [['2019-10-21', '2019-10-24']]
+simon.kurz@desy.de DESY [['2019-11-11', '2019-11-14']]
+simonetta.marcello@unito.it Torino [['2019-09-27', '2019-09-29']]
+sjcho93@yonsei.ac.kr Yonsei [['2019-12-09', '2019-12-12']]
+tadeas.bilka@gmail.com Prague [['2019-12-02', '2019-12-05']]
+tanida@post.j-parc.jp NPC [['2019-09-30', '2019-10-03']]
+wulj@ihep.ac.cn IHEP-China [['2019-12-02', '2019-12-05']]
+xuxp@ihep.ac.cn Soochow [['2019-12-02', '2019-12-14']]
+yamanouchi@hepl.phys.nagoya-u.ac.jp Nagoya [['2019-11-01', '2019-11-03'], ['2019-11-08', '2019-11-10']]
+ykjk1401@yonsei.ac.kr Yonsei [['2019-11-15', '2019-11-17'], ['2019-11-25', '2019-11-28']]
+yosato@epx.phys.tohoku.ac.jp Tohoku [['2019-11-11', '2019-11-14']]
+yunno@post.kek.jp Hanyang [['2019-11-29', '2019-12-01']]
+b2parser.readShift Processed ================> Data on 246  shifts from CDATA/Shiftmanagement_2019c_navigator.temporary made from CDATA/Shiftmanagement_2019c_navigator.htm
+17110200002@fudan.edu.cn Fudan [['2019-09-27', '2019-10-03']]
+2016rpy9052@mnit.ac.in MNIT-Jaipur [['2019-12-06', '2019-12-08']]
+6418004k@st.toho-u.ac.jp Toho [['2019-10-11', '2019-10-13']]
+adeyta@fis.cinvestav.mx Cinvestav-IPN [['2019-09-27', '2019-09-29']]
+anselm.vossen@duke.edu Duke [['2019-12-13', '2019-12-14']]
+chia-ling.hsu@sydney.edu.au Sydney [['2019-10-28', '2019-11-03']]
+christos.hadjivasiliou@pnnl.gov PNNL [['2019-10-25', '2019-10-27']]
+cketter@hawaii.edu Hawaii [['2019-10-14', '2019-10-17']]
+cyrille.praz@desy.de DESY [['2019-11-04', '2019-11-07']]
+d.a.shtol@inp.nsk.su BINP [['2019-10-21', '2019-10-24']]
+d.v.matvienko@inp.nsk.su BINP [['2019-11-22', '2019-11-24']]
+derh.ecfm@uas.edu.mx UAS [['2019-10-04', '2019-10-06']]
+deven176121010@iitg.ac.in IIT-Guwahati [['2019-11-08', '2019-11-14']]
+dibyakalita@iitg.ernet.in IIT-Guwahati [['2019-11-04', '2019-11-07'], ['2019-11-11', '2019-11-14']]
+djaffe@bnl.gov BNL [['2019-10-15', '2019-10-17']]
+elisa.manoni@pg.infn.it Perugia [['2019-10-21', '2019-10-24']]
+fabrizio.ameli@roma1.infn.it Roma1 [['2019-10-16', '2019-10-20']]
+fx1627@wayne.edu Wayne-State [['2019-09-24', '2019-09-29'], ['2019-11-18', '2019-11-21']]
+garmash.alexey@gmail.com BINP [['2019-09-30', '2019-10-03']]
+giulio.dujany@iphc.cnrs.fr IPHC [['2019-10-18', '2019-10-20'], ['2019-10-25', '2019-10-27'], ['2019-11-01', '2019-11-03']]
+guanyu@ucmail.uc.edu Cincinnati [['2019-11-29', '2019-12-01']]
+hirata@hepl.phys.nagoya-u.ac.jp Nagoya [['2019-10-11', '2019-10-13']]
+hkmoon@hep.korea.ac.kr Korea [['2019-10-07', '2019-10-10']]
+jacobsw@indiana.edu Indiana [['2019-11-18', '2019-11-21']]
+jiasen@buaa.edu.cn Beihang [['2019-10-04', '2019-10-06']]
+jkumar@andrew.cmu.edu CMU [['2019-10-25', '2019-10-31']]
+k.s.gudkova@inp.nsk.su BINP [['2019-10-21', '2019-10-24']]
+konstantin.belous@ihep.ru IHEP-Russia [['2019-12-02', '2019-12-05']]
+kyungho.kim85@yonsei.ac.kr Yonsei [['2019-12-09', '2019-12-12']]
+liyphy@buaa.edu.cn Beihang [['2019-09-30', '2019-10-06']]
+lsalinas@fis.cinvestav.mx Cinvestav-IPN [['2019-11-11', '2019-11-14']]
+marco.milesi@unimelb.edu.au Melbourne [['2019-10-28', '2019-10-31']]
+markus.prim@kit.edu Karlsruhe [['2019-10-07', '2019-10-13']]
+marxilsg89@gmail.com UNAM [['2019-10-18', '2019-10-20']]
+mateusz.kaleta@interia.com Krakow [['2019-12-02', '2019-12-05']]
+mikhail.a.remnev@gmail.com BINP [['2019-09-24', '2019-09-26'], ['2019-10-14', '2019-10-15']]
+mikhail.shapkin@ihep.ru IHEP-Russia [['2019-11-25', '2019-11-28'], ['2019-12-09', '2019-12-12']]
+minori@ngt.ndu.ac.jp Niigata [['2019-12-13', '2019-12-14']]
+nmolina@fis.cinvestav.mx Cinvestav-IPN [['2019-10-07', '2019-10-10']]
+ono@ngt.ndu.ac.jp Niigata [['2019-12-13', '2019-12-14']]
+p.schmolz@physik.uni-muenchen.de LMU [['2019-11-15', '2019-11-17'], ['2019-11-22', '2019-11-24'], ['2019-11-29', '2019-12-01']]
+popov.ve@phystech.edu MIPT [['2019-12-02', '2019-12-05']]
+r01222034@ntu.edu.tw NTU-Taiwan [['2019-11-08', '2019-11-10']]
+robert.karl@desy.de DESY [['2019-11-01', '2019-11-03']]
+senyo@kdw.kj.yamagata-u.ac.jp Yamagata [['2019-11-08', '2019-11-10'], ['2019-12-06', '2019-12-08']]
+shebalin@hawaii.edu Hawaii [['2019-12-09', '2019-12-12']]
+simon.kurz@desy.de DESY [['2019-11-15', '2019-11-17']]
+simonetta.marcello@unito.it Torino [['2019-09-24', '2019-09-26']]
+sjcho93@yonsei.ac.kr Yonsei [['2019-12-06', '2019-12-08']]
+taa_nishikawa@cc.nara-wu.ac.jp Nara-Wu [['2019-11-15', '2019-11-17']]
+takizawa@ac.shoyaku.ac.jp NPC [['2019-11-04', '2019-11-07']]
+tam_aoyama@cc.nara-wu.ac.jp Nara-Wu [['2019-11-29', '2019-12-01']]
+tkimmel@vt.edu VPI [['2019-10-14', '2019-10-14']]
+tsurufuji@hepmail.phys.se.tmu.ac.jp Tokyo-Metropolitan [['2019-11-25', '2019-11-28']]
+wulj@ihep.ac.cn IHEP-China [['2019-11-18', '2019-11-21'], ['2019-11-25', '2019-11-28']]
+ykjk1401@yonsei.ac.kr Yonsei [['2019-11-22', '2019-11-24']]
+b2parser.readShift Processed ================> Data on 117  shifts from CDATA/Shiftmanagement_2020a_CR_captain.temporary made from CDATA/Shiftmanagement_2020a_CR_captain.htm
+Michel.Bertemes@oeaw.ac.at HEPHY Vienna [['2020-01-27', '2020-01-30'], ['2020-02-10', '2020-02-13']]
+ami@mail.desy.de DESY [['2020-02-07', '2020-02-09']]
+asoffer@tau.ac.il TelAviv [['2020-03-27', '2020-03-31']]
+chilikin@lebedev.ru LPI [['2020-01-24', '2020-01-30']]
+dferlewicz@student.unimelb.edu.au Melbourne [['2020-01-27', '2020-01-30']]
+diptaparna@gmail.com Louisville [['2020-01-17', '2020-01-19']]
+ezio.torassa@pd.infn.it Padova [['2020-02-10', '2020-02-13']]
+fsimon@mpp.mpg.de MPP [['2020-01-17', '2020-01-19']]
+giacomo.depietro@roma3.infn.it Roma Tre [['2020-01-31', '2020-02-02']]
+giulio.dujany@iphc.cnrs.fr IPHC [['2020-01-31', '2020-02-02'], ['2020-02-07', '2020-02-09']]
+giuseppe.finocchiaro@lnf.infn.it Frascati [['2020-01-31', '2020-02-02']]
+hwindel@mpp.mpg.de MPP [['2020-02-07', '2020-02-09']]
+kilian.lieret@campus.lmu.de LMU [['2020-02-14', '2020-02-20'], ['2020-02-24', '2020-02-27']]
+markus.prim@kit.edu Karlsruhe [['2020-01-14', '2020-01-16'], ['2020-02-24', '2020-02-27'], ['2020-03-23', '2020-03-26']]
+mgarciah@fis.cinvestav.mx Cinvestav-IPN [['2020-01-20', '2020-01-23'], ['2020-03-02', '2020-03-05']]
+mwelsch@uni-bonn.de Bonn [['2020-01-20', '2020-01-23']]
+niharikarout@physics.iitm.ac.in IIT-Madras [['2020-01-24', '2020-01-26']]
+vladimirsavinov@gmail.com Pittsburgh [['2020-03-09', '2020-03-12']]
+wessel@physik.uni-bonn.de Bonn [['2020-02-14', '2020-02-23'], ['2020-03-02', '2020-03-15']]
+b2parser.readShift Processed ================> Data on 109  shifts from CDATA/Shiftmanagement_2020a_CR_navigator.temporary made from CDATA/Shiftmanagement_2020a_CR_navigator.htm
+Gianluca.Inguglia@oeaw.ac.at HEPHY Vienna [['2020-01-27', '2020-01-30']]
+Michel.Bertemes@oeaw.ac.at HEPHY Vienna [['2020-02-17', '2020-02-20'], ['2020-02-24', '2020-02-27']]
+basehw@hep.phys.s.u-tokyo.ac.jp U-Tokyo [['2020-01-24', '2020-01-26']]
+bryan.fulsom@pnnl.gov PNNL [['2020-02-07', '2020-02-09']]
+cyrille.praz@desy.de DESY [['2020-02-17', '2020-02-20']]
+denardo@na.infn.it Napoli [['2020-02-10', '2020-02-13']]
+dferlewicz@student.unimelb.edu.au Melbourne [['2020-01-20', '2020-01-23']]
+eoxford@andrew.cmu.edu CMU [['2020-02-28', '2020-03-05']]
+filippo.dattola@desy.de DESY [['2020-02-10', '2020-02-13']]
+galina.pakhlova@phystech.edu MIPT [['2020-03-20', '2020-03-22'], ['2020-03-27', '2020-03-29']]
+macampajola@na.infn.it Napoli [['2020-01-31', '2020-02-02'], ['2020-02-07', '2020-02-09']]
+mario.merola@na.infn.it Napoli [['2020-01-31', '2020-02-02']]
+mwelsch@uni-bonn.de Bonn [['2020-01-17', '2020-01-19']]
+pablo.goldenzweig@kit.edu Karlsruhe [['2020-01-20', '2020-01-23'], ['2020-01-27', '2020-01-30'], ['2020-02-24', '2020-02-27'], ['2020-03-02', '2020-03-05'], ['2020-03-23', '2020-03-26']]
+paolo.branchini@roma3.infn.it Roma Tre [['2020-01-31', '2020-02-02']]
+pedlto01@luther.edu Luther [['2020-01-27', '2020-01-30']]
+raffaele.giordano@na.infn.it Napoli [['2020-02-07', '2020-02-09']]
+renu92garg@gmail.com Panjab [['2020-01-24', '2020-01-26']]
+wessel@physik.uni-bonn.de Bonn [['2020-02-28', '2020-03-01'], ['2020-03-16', '2020-03-29']]
+
+   Participants           Est. minimum totals             Est. maximum totals      
+#att japn  unk  bad fares(USD)    CO2(kg)   r/t (km)  Fare(USD)    CO2(kg)   r/t (km) Event
+  59   22    0    0      46115      31862     629322     126772      88019    1719704 2019c BCG
+  55    7    0    0      54082      37137     721596     117673      79641    1549829 2019c CR captain
+  56    9    0    0      47142      37105     685966     104912      80926    1507033 2019c navigator
+  19    0    0    0      25968      17752     366310      62853      41827     867943 2020a CR captain
+  19    1    0    0      24389      16216     341444      61461      39152     830944 2020a CR navigator
+ 208   39    0    0     197696     140072    2744637     473671     329567    6475453 SUMMED
+  42    8    0    0      39539      28014     548927      94734      65913    1295091 AVERAGE
+#att = Number of shifters, japn = Number of shifters from Japan, unk = could not associate institution with shifter, bad = shifter with unknown institution
+climate.printResults Wrote FIGURES/Shifts_table.tex
+climate.drawResults wrote FIGURES/Shifts_Shifters.pdf
+climate.drawResults wrote FIGURES/Shifts_Fares.pdf
+climate.drawResults wrote FIGURES/Shifts_CO2.pdf
+climate.drawResults wrote FIGURES/Shifts_r-t.pdf

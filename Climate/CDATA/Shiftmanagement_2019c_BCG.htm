@@ -1,0 +1,1674 @@
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+    <html lang='en'>
+    <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+    <meta name='keywords' content=''> 
+    <meta name='author' content='A. De Santis'>
+    <meta name='copyright' content='A. De Santis'>
+    <meta name='contact' content='antonio.desantis@lnf.infn.it'>
+    <title>Shift management</title>
+    <link rel="stylesheet" type="text/css" href="styles/style.css" >
+    <link rel="stylesheet" type="text/css" href="styles/bookshift.css" >
+    <script language="JavaScript">    
+    function toggle_checkbox(source) {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source)
+                checkboxes[i].checked = source.checked;
+        }
+    }
+</script>
+<script type='text/javascript' src='javalib/overlib.js'></script>
+    
+    <script type='text/javascript' src="https://cdn.ckeditor.com/ckeditor5/11.1.0/classic/ckeditor.js"></script>
+    
+</head>
+    <body>
+        <div id="container"><!-- container - begin -->
+            <div id="header"><!-- Header - begin -->
+                <h1>
+                    <table width='100%'>
+                        <tr>
+    <td>ShifTool: BELLE&nbsp;II <small>(rel.1.3.1)</small><a class='hiddenlink' href=https://shift.belle2.org/./index.php?lv1=book&amp;lv2=app >.</a></td>
+                            <td align='right'><img src='images/belle2_logo.png' height='80px' alt=''></td>
+                        </tr>
+                    </table>
+                </h1>
+            </div> <!-- Header - end -->
+            <div id="location">
+                <ul>
+<li>You are in:</li>
+<li onClick="window.location='https://shift.belle2.org/./index.php'">&#187; Home</li>
+<li onClick="window.location='https://shift.belle2.org/./index.php?lv1=book'">&#187; book</li>
+<li onClick="window.location='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book'">&#187; book</li>
+<li onClick="window.location='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=sw_quality'">&#187; sw_quality</li>
+
+                </ul>
+            </div><!-- Header - end -->
+            <div id="navigation"><!-- Navigation bar - begin -->
+                  
+<table class='menu_1' >
+  <tr class='menu_1'>
+
+
+    <td><img width='20px' height='1px' src='./images/spacer.gif' alt='SPACER'>
+    <td class='menu_1'><a class='menu_1'  href='/index.php?lv1=home'  title=''>Home</a>
+
+
+    <td><img width='20px' height='1px' src='./images/spacer.gif' alt='SPACER'>
+    <td class='menu_1_active'><a class='menu_1_active'  href='/index.php?lv1=book'  title=''>Shifts</a>
+
+
+
+
+  </tr>
+</table>
+            </div><!-- Navigation bar - end -->
+<!-- Central slice - begin -->
+<div id="leftcolumn">
+    <div class='box1'>
+                                <h1 class='box1'>WELCOME</h1> 
+<p>David Jaffe<br>
+Tue, Oct 22, 2019<br>
+Your IP is: 130.87.88.153<br>
+</p>
+<form enctype='application/x-www-form-urlencoded' name='k2logout'action='/index.php' method='POST'>
+<input type='hidden' name='logout_submit' value='submitted'>
+<input tabindex=103 type='submit' value='Logout'><br>
+</form>
+<form enctype='application/x-www-form-urlencoded' name='k2bugreport'action='/index.php?lv1=home&amp;lv2=bugreport' method='POST'>
+<input name='bug_info' type='hidden' value='SESSION||K2ACCESS==1_-_SESSION||authorized==1_-_SESSION||application_version==1.3.1_-_SESSION||expname==belle2_-_SESSION||Overrule==50_-_SESSION||UserProfile==piuser_-_SESSION||pagename==shifts/shift_book.php_-_SESSION||authenticated==1_-_SESSION||registrant==_-_SESSION||WWWName==djaffe@bnl.gov_-_SESSION||UserName==David_-_SESSION||UserSurname==Jaffe_-_SESSION||UserFullname==David Jaffe_-_SESSION||UserMail==djaffe@bnl.gov_-_SESSION||UserInstitution==BNL_-_GET||lv1==book_-_GET||lv2==book_-_GET||lv3==sw_quality_-_GET||expname==belle2_-_POST||period_id==17_-_SERVER||AUTHENTICATE_UID==djaffe_-_SERVER||HTTPS==on_-_SERVER||SSL_TLS_SNI==shift.belle2.org_-_SERVER||SSL_SERVER_S_DN_C==DE_-_SERVER||SSL_SERVER_S_DN_ST==Hamburg_-_SERVER||SSL_SERVER_S_DN_L==Hamburg_-_SERVER||SSL_SERVER_S_DN_O==Deutsches Elektronen-Synchrotron DESY_-_SERVER||SSL_SERVER_S_DN_OU==IT_-_SERVER||SSL_SERVER_S_DN_CN==shift.belle2.org_-_SERVER||SSL_SERVER_I_DN_C==DE_-_SERVER||SSL_SERVER_I_DN_O==Verein zur Foerderung eines Deutschen Forschungsnetzes e. V._-_SERVER||SSL_SERVER_I_DN_OU==DFN-PKI_-_SERVER||SSL_SERVER_I_DN_CN==DFN-Verein Global Issuing CA_-_SERVER||SSL_SERVER_SAN_DNS_0==shift.belle2.org_-_SERVER||SSL_VERSION_INTERFACE==mod_ssl/2.4.18_-_SERVER||SSL_VERSION_LIBRARY==OpenSSL/1.0.2g_-_SERVER||SSL_PROTOCOL==TLSv1.2_-_SERVER||SSL_SECURE_RENEG==true_-_SERVER||SSL_COMPRESS_METHOD==NULL_-_SERVER||SSL_CIPHER==ECDHE-RSA-AES128-GCM-SHA256_-_SERVER||SSL_CIPHER_EXPORT==false_-_SERVER||SSL_CIPHER_USEKEYSIZE==128_-_SERVER||SSL_CIPHER_ALGKEYSIZE==128_-_SERVER||SSL_CLIENT_VERIFY==NONE_-_SERVER||SSL_SERVER_M_VERSION==3_-_SERVER||SSL_SERVER_M_SERIAL==1EED696B325F23CCB480AB55_-_SERVER||SSL_SERVER_V_START==Apr 11 11:05:04 2018 GMT_-_SERVER||SSL_SERVER_V_END==Jul 14 11:05:04 2020 GMT_-_SERVER||SSL_SERVER_S_DN==CN=shift.belle2.org,OU=IT,O=Deutsches Elektronen-Synchrotron DESY,L=Hamburg,ST=Hamburg,C=DE_-_SERVER||SSL_SERVER_I_DN==CN=DFN-Verein Global Issuing CA,OU=DFN-PKI,O=Verein zur Foerderung eines Deutschen Forschungsnetzes e. V.,C=DE_-_SERVER||SSL_SERVER_A_KEY==rsaEncryption_-_SERVER||SSL_SERVER_A_SIG==sha256WithRSAEncryption_-_SERVER||SSL_SESSION_ID==c80cec04e0b9774cc745c819f97f65e799639c83bc74657f92bc2993a9af282a_-_SERVER||SSL_SESSION_RESUMED==Resumed_-_SERVER||HTTP_HOST==shift.belle2.org_-_SERVER||HTTP_CONNECTION==keep-alive_-_SERVER||CONTENT_LENGTH==12_-_SERVER||HTTP_CACHE_CONTROL==max-age=0_-_SERVER||HTTP_DNT==1_-_SERVER||HTTP_UPGRADE_INSECURE_REQUESTS==1_-_SERVER||HTTP_USER_AGENT==Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36_-_SERVER||HTTP_SEC_FETCH_MODE==navigate_-_SERVER||HTTP_SEC_FETCH_USER==?1_-_SERVER||HTTP_ORIGIN==null_-_SERVER||CONTENT_TYPE==application/x-www-form-urlencoded_-_SERVER||HTTP_ACCEPT==text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3_-_SERVER||HTTP_SEC_FETCH_SITE==none_-_SERVER||HTTP_ACCEPT_ENCODING==gzip, deflate, br_-_SERVER||HTTP_ACCEPT_LANGUAGE==en-US,en;q=0.9_-_SERVER||HTTP_COOKIE==PHPSESSID=3mjfr1g4h65pvs94m6t4ush4f4_-_SERVER||PATH==/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin_-_SERVER||SERVER_SIGNATURE==&lt;address&gt;Apache/2.4.18 (Ubuntu) Server at shift.belle2.org Port 443&lt;/address&gt;
+_-_SERVER||SERVER_SOFTWARE==Apache/2.4.18 (Ubuntu)_-_SERVER||SERVER_NAME==shift.belle2.org_-_SERVER||SERVER_ADDR==131.169.4.138_-_SERVER||SERVER_PORT==443_-_SERVER||REMOTE_ADDR==130.87.88.153_-_SERVER||DOCUMENT_ROOT==/var/www/html_-_SERVER||REQUEST_SCHEME==https_-_SERVER||CONTEXT_PREFIX==_-_SERVER||CONTEXT_DOCUMENT_ROOT==/var/www/html_-_SERVER||SERVER_ADMIN==webmaster@localhost_-_SERVER||SCRIPT_FILENAME==/var/www/html/index.php_-_SERVER||REMOTE_PORT==57296_-_SERVER||REMOTE_USER==djaffe_-_SERVER||AUTH_TYPE==Basic_-_SERVER||GATEWAY_INTERFACE==CGI/1.1_-_SERVER||SERVER_PROTOCOL==HTTP/1.1_-_SERVER||REQUEST_METHOD==POST_-_SERVER||QUERY_STRING==lv1=book&amp;lv2=book&amp;lv3=sw_quality_-_SERVER||REQUEST_URI==/index.php?lv1=book&amp;lv2=book&amp;lv3=sw_quality_-_SERVER||SCRIPT_NAME==/index.php_-_SERVER||PHP_SELF==/index.php_-_SERVER||PHP_AUTH_USER==djaffe_-_SERVER||REQUEST_TIME_FLOAT==1571747254.806_-_SERVER||REQUEST_TIME==1571747254'>
+<input tabindex=104 type='submit' value='Bug Report'>
+</form>
+    </div>    
+<div class='box1'>
+<h1 class='box1'><a href='index.php?lv1=home&amp;lv2=credits' class='error'>Credits</a></h1>
+
+<table class='menu_1' cellspacing='0px' width='100%'>
+
+
+  <tr class='menu_1'>
+    <td class='menu_1_active'><a class='menu_1_active'  href='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book' title=''>Book</a>
+  </tr>
+
+
+
+
+  <tr class='menu_1'>
+    <td class='menu_1'><a class='menu_1'  href='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=score' title=''>Rankings</a>
+  </tr>
+
+
+  <tr class='menu_1'>
+    <td class='menu_1'><a class='menu_1'  href='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=calendar' title=''>Calendar</a>
+  </tr>
+
+
+  <tr class='menu_1'>
+    <td class='menu_1'><a class='menu_1'  href='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=shftsummary' title=''>Shifter summary</a>
+  </tr>
+</table>
+</div></div><!-- div id="leftcolumn" -->
+
+
+
+
+
+
+
+
+
+
+<div id='contentmain'>
+  <div class='module_header'>
+    <h1>Shifts booking: 2019c BCG </h1>
+  </div>
+
+
+
+
+<table class='menu_3_3' cellspacing='0px' >
+  <tr class='menu_3_3'>
+    <td><img width='10px' height='1px' src='./images/spacer.gif' alt='SPACER'>
+    <td class='menu_3_3_active'><a class='menu_3_3_active'  href='?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg'  title=''>BCG</a>
+    <td><img width='10px' height='1px' src='./images/spacer.gif' alt='SPACER'>
+    <td class='menu_3_3'><a class='menu_3_3'  href='?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=big_shadow'  title=''>BCG Shadow</a>
+  </tr></table><table class='menu_3_3_b' cellspacing='0px' >
+</table>  <div class='module_main'>
+
+<p>The BCG is the liaison between Belle II and SuperKEKB. The BCG shifter closely follow machine, detector and background progress while sitting in the SuperKEKB Control Room in close contact with the machine group and the Belle II control room.</p><p>Please consult the BCG <a href="https://confluence.desy.de/display/BI/BCG+Shifting+Manual">shifter manual</a> for detailed instructions.&nbsp;</p><p>Please make sure you have passed the BCG shifter quiz before your shift:</p><p><a href="https://docs.google.com/forms/d/e/1FAIpQLSdhdZX2-AHm1Ap6E7WrUULpnQysgWmOI-bBBTuOrt0KsFplPg/viewform">https://docs.google.com/forms/d/e/1FAIpQLSdhdZX2-AHm1Ap6E7WrUULpnQysgWmOI-bBBTuOrt0KsFplPg/viewform</a></p><p>NOTE: The BCG shifts hours are the same as Phase 2 run, namely:</p><p>OWL (01:00-09:00)</p><p>DAY (09:00-17:00)</p><p>SWING (17:00-25:00)</p><p class='evidence'> Multiple period are avalable. Choose one<form name='period_id_form' method=POST action='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=bcg'>
+  <select name='period_id' onchange="javascript:document.period_id_form.submit();">
+    <option value='0'>Select Period</option>
+<option value='34'>2020b Remote</option>
+<option value='31'>2020b CR</option>
+<option value='30'>2020a CR</option>
+<option value='32'>2020 CR Training</option>
+<option value='33'>2020a Remote</option>
+<option value='17' selected='selected'>2019c BCG</option>
+<option value='26'>2019c TRG Expert</option>
+<option value='19'>2019c ECL Expert</option>
+<option value='29'>2019c ARICH Expert</option>
+<option value='22'>2019c KLM Expert</option>
+<option value='25'>2019c PXD Expert</option>
+<option value='27'>2019c TOP Expert</option>
+<option value='28'>2019c CDC Expert</option>
+<option value='16'>2019c CR</option>
+<option value='21'>2019c CR Training</option>
+<option value='2'>2019c SVD Expert Remote</option>
+<option value='4'>2019c SVD Expert Local</option>
+<option value='18'>2019c Remote</option>
+  </select></form>
+</p>
+
+<h4>Your current score is 0.00 (Requested is 0.29)<br>Number of your shift is 0</h4>
+<table class='shift_score'  width=' 0%' style='background-color: rgb(255,0,0)'><tr><td> 0%</td></tr></table>
+<a name='Oct19'>
+<table class='bookshift'>
+	<tr><th class='book_month' colspan=7 align='center' >October 2019</th></tr>
+	<tr><td class='noday' colspan='1'>
+		<td class='workday'>15 Tue
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shwartz@inp.nsk.su<br><br><b>First Institution: </b><br>BINP<br>',STICKY, CAPTION,'Boris Shwartz', WIDTH,250);" onmouseout="return nd()" >Boris ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shwartz@inp.nsk.su\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>jschuel@hawaii.edu<br><br><b>First Institution: </b><br>Hawaii<br>',STICKY, CAPTION,'Jeffrey Schueler', WIDTH,250);" onmouseout="return nd()" >Jeffre...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'jschuel@hawaii.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>tanigawa@hep.phys.s.u-tokyo.ac.jp<br><br><b>First Institution: </b><br>U-Tokyo<br>',STICKY, CAPTION,'Tanigawa Hikaru', WIDTH,250);" onmouseout="return nd()" >Taniga...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'tanigawa@hep.phys.s.u-tokyo.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>16 Wed
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ichiro.adachi@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Ichiro Adachi', WIDTH,250);" onmouseout="return nd()" >Ichiro...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ichiro.adachi@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>jschuel@hawaii.edu<br><br><b>First Institution: </b><br>Hawaii<br>',STICKY, CAPTION,'Jeffrey Schueler', WIDTH,250);" onmouseout="return nd()" >Jeffre...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'jschuel@hawaii.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>fernando.abudinen@ts.infn.it<br><br><b>First Institution: </b><br>Trieste<br>',STICKY, CAPTION,'Fernando Jesus Abudinen', WIDTH,250);" onmouseout="return nd()" >Fernan...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'fernando.abudinen@ts.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>17 Thu
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>derh.ecfm@uas.edu.mx<br><br><b>First Institution: </b><br>UAS<br>',STICKY, CAPTION,'Daniel Enrique Ricalde Herrmann', WIDTH,250);" onmouseout="return nd()" >Daniel...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'derh.ecfm@uas.edu.mx\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>noritsugu@hepl.phys.nagoya-u.ac.jp<br><br><b>First Institution: </b><br>Nagoya<br>',STICKY, CAPTION,'Noritsugu Tsuzuki', WIDTH,250);" onmouseout="return nd()" >Norits...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'noritsugu@hepl.phys.nagoya-u.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>derh.ecfm@uas.edu.mx<br><br><b>First Institution: </b><br>UAS<br>',STICKY, CAPTION,'Daniel Enrique Ricalde Herrmann', WIDTH,250);" onmouseout="return nd()" >Daniel...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'derh.ecfm@uas.edu.mx\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>18 Fri
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>awarburt@physics.mcgill.ca<br><br><b>First Institution: </b><br>McGill<br>',STICKY, CAPTION,'Andreas Warburton', WIDTH,250);" onmouseout="return nd()" >Andrea...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'awarburt@physics.mcgill.ca\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>adeyta@fis.cinvestav.mx<br><br><b>First Institution: </b><br>Cinvestav-IPN<br>',STICKY, CAPTION,'Alejandro De Yta Hernandez', WIDTH,250);" onmouseout="return nd()" >Alejan...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'adeyta@fis.cinvestav.mx\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>iwakuma21@gmail.com<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Taichiro Koga', WIDTH,250);" onmouseout="return nd()" >Taichi...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'iwakuma21@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>19 Sat
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>katsuro@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Katsuro Nakamura', WIDTH,250);" onmouseout="return nd()" >Katsur...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'katsuro@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ezio.torassa@pd.infn.it<br><br><b>First Institution: </b><br>Padova<br>',STICKY, CAPTION,'Ezio Torassa', WIDTH,250);" onmouseout="return nd()" >Ezio  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ezio.torassa@pd.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shohei.nishida@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Shohei Nishida', WIDTH,250);" onmouseout="return nd()" >Shohei...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shohei.nishida@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>20 Sun
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>francesco.forti@pi.infn.it<br><br><b>First Institution: </b><br>Pisa<br>',STICKY, CAPTION,'Francesco Forti', WIDTH,250);" onmouseout="return nd()" >France...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'francesco.forti@pi.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ezio.torassa@pd.infn.it<br><br><b>First Institution: </b><br>Padova<br>',STICKY, CAPTION,'Ezio Torassa', WIDTH,250);" onmouseout="return nd()" >Ezio  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ezio.torassa@pd.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>muroyama@hepl.phys.nagoya-u.ac.jp<br><br><b>First Institution: </b><br>Nagoya<br>',STICKY, CAPTION,'Muroyama Genta', WIDTH,250);" onmouseout="return nd()" >Muroya...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'muroyama@hepl.phys.nagoya-u.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='workday'>21 Mon
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>francesco.forti@pi.infn.it<br><br><b>First Institution: </b><br>Pisa<br>',STICKY, CAPTION,'Francesco Forti', WIDTH,250);" onmouseout="return nd()" >France...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'francesco.forti@pi.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>hulya.atmacan@gmail.com<br><br><b>First Institution: </b><br>Cincinnati<br>',STICKY, CAPTION,'Hulya Atmacan', WIDTH,250);" onmouseout="return nd()" >Hulya ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'hulya.atmacan@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>a.thampi@fz-juelich.de<br><br><b>First Institution: </b><br>Juelich<br>',STICKY, CAPTION,'Ashish Thampi', WIDTH,250);" onmouseout="return nd()" >Ashish...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'a.thampi@fz-juelich.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>22 Tue
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>derh.ecfm@uas.edu.mx<br><br><b>First Institution: </b><br>UAS<br>',STICKY, CAPTION,'Daniel Enrique Ricalde Herrmann', WIDTH,250);" onmouseout="return nd()" >Daniel...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'derh.ecfm@uas.edu.mx\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shihc@mail.ustc.edu.cn<br><br><b>First Institution: </b><br>USTC<br>',STICKY, CAPTION,'Huangchao Shi', WIDTH,250);" onmouseout="return nd()" >Huangc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shihc@mail.ustc.edu.cn\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>bean@hep1.phys.ntu.edu.tw<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Kunxian Huang', WIDTH,250);" onmouseout="return nd()" >Kunxia...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'bean@hep1.phys.ntu.edu.tw\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>23 Wed
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shwartz@inp.nsk.su<br><br><b>First Institution: </b><br>BINP<br>',STICKY, CAPTION,'Boris Shwartz', WIDTH,250);" onmouseout="return nd()" >Boris ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shwartz@inp.nsk.su\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>hulya.atmacan@gmail.com<br><br><b>First Institution: </b><br>Cincinnati<br>',STICKY, CAPTION,'Hulya Atmacan', WIDTH,250);" onmouseout="return nd()" >Hulya ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'hulya.atmacan@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>gevorg91@mail.yerphi.am<br><br><b>First Institution: </b><br>Yerevan<br>',STICKY, CAPTION,'Gevorg Nazaryan', WIDTH,250);" onmouseout="return nd()" >Gevorg...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'gevorg91@mail.yerphi.am\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>24 Thu
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>a.thampi@fz-juelich.de<br><br><b>First Institution: </b><br>Juelich<br>',STICKY, CAPTION,'Ashish Thampi', WIDTH,250);" onmouseout="return nd()" >Ashish...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'a.thampi@fz-juelich.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>bean@hep1.phys.ntu.edu.tw<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Kunxian Huang', WIDTH,250);" onmouseout="return nd()" >Kunxia...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'bean@hep1.phys.ntu.edu.tw\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>gevorg91@mail.yerphi.am<br><br><b>First Institution: </b><br>Yerevan<br>',STICKY, CAPTION,'Gevorg Nazaryan', WIDTH,250);" onmouseout="return nd()" >Gevorg...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'gevorg91@mail.yerphi.am\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>25 Fri
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>awarburt@physics.mcgill.ca<br><br><b>First Institution: </b><br>McGill<br>',STICKY, CAPTION,'Andreas Warburton', WIDTH,250);" onmouseout="return nd()" >Andrea...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'awarburt@physics.mcgill.ca\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ichiro.adachi@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Ichiro Adachi', WIDTH,250);" onmouseout="return nd()" >Ichiro...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ichiro.adachi@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>riccardo.desangro@lnf.infn.it<br><br><b>First Institution: </b><br>Frascati<br>',STICKY, CAPTION,'Riccardo De Sangro', WIDTH,250);" onmouseout="return nd()" >Riccar...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'riccardo.desangro@lnf.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>26 Sat
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>cmarinas@ific.uv.es<br><br><b>First Institution: </b><br>IFIC<br>',STICKY, CAPTION,'Carlos Marinas', WIDTH,250);" onmouseout="return nd()" >Carlos...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'cmarinas@ific.uv.es\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>debashis.sahoo@tifr.res.in<br><br><b>First Institution: </b><br>Tata<br>',STICKY, CAPTION,'Debashis Sahoo', WIDTH,250);" onmouseout="return nd()" >Debash...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'debashis.sahoo@tifr.res.in\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>takizawa@ac.shoyaku.ac.jp<br><br><b>First Institution: </b><br>NPC<br>',STICKY, CAPTION,'Makoto Takizawa', WIDTH,250);" onmouseout="return nd()" >Makoto...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'takizawa@ac.shoyaku.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>27 Sun
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>mario.merola@na.infn.it<br><br><b>First Institution: </b><br>Napoli<br>',STICKY, CAPTION,'Mario Merola', WIDTH,250);" onmouseout="return nd()" >Mario ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'mario.merola@na.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>debashis.sahoo@tifr.res.in<br><br><b>First Institution: </b><br>Tata<br>',STICKY, CAPTION,'Debashis Sahoo', WIDTH,250);" onmouseout="return nd()" >Debash...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'debashis.sahoo@tifr.res.in\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>takizawa@ac.shoyaku.ac.jp<br><br><b>First Institution: </b><br>NPC<br>',STICKY, CAPTION,'Makoto Takizawa', WIDTH,250);" onmouseout="return nd()" >Makoto...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'takizawa@ac.shoyaku.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='workday'>28 Mon
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>mario.merola@na.infn.it<br><br><b>First Institution: </b><br>Napoli<br>',STICKY, CAPTION,'Mario Merola', WIDTH,250);" onmouseout="return nd()" >Mario ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'mario.merola@na.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>michmx@phy.olemiss.edu<br><br><b>First Institution: </b><br>Mississippi<br>',STICKY, CAPTION,'Michel Hernandez Villanueva', WIDTH,250);" onmouseout="return nd()" >Michel...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'michmx@phy.olemiss.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>fernando.abudinen@ts.infn.it<br><br><b>First Institution: </b><br>Trieste<br>',STICKY, CAPTION,'Fernando Jesus Abudinen', WIDTH,250);" onmouseout="return nd()" >Fernan...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'fernando.abudinen@ts.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>29 Tue
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>mario.merola@na.infn.it<br><br><b>First Institution: </b><br>Napoli<br>',STICKY, CAPTION,'Mario Merola', WIDTH,250);" onmouseout="return nd()" >Mario ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'mario.merola@na.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>christoph.schwanda@oeaw.ac.at<br><br><b>First Institution: </b><br>HEPHY Vienna<br>',STICKY, CAPTION,'Christoph Schwanda', WIDTH,250);" onmouseout="return nd()" >Christ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'christoph.schwanda@oeaw.ac.at\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>matsuoka@hepl.phys.nagoya-u.ac.jp<br><br><b>First Institution: </b><br>Nagoya<br>',STICKY, CAPTION,'Matsuoka Kodai', WIDTH,250);" onmouseout="return nd()" >Matsuo...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'matsuoka@hepl.phys.nagoya-u.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>30 Wed
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>iwakuma21@gmail.com<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Taichiro Koga', WIDTH,250);" onmouseout="return nd()" >Taichi...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'iwakuma21@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>christoph.schwanda@oeaw.ac.at<br><br><b>First Institution: </b><br>HEPHY Vienna<br>',STICKY, CAPTION,'Christoph Schwanda', WIDTH,250);" onmouseout="return nd()" >Christ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'christoph.schwanda@oeaw.ac.at\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shuji.tanaka@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Shuji Tanaka', WIDTH,250);" onmouseout="return nd()" >Shuji ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shuji.tanaka@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>31 Thu
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ytlai@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Yun-Tsung Lai', WIDTH,250);" onmouseout="return nd()" >Yun-Ts...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ytlai@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>tanida@post.j-parc.jp<br><br><b>First Institution: </b><br>NPC<br>',STICKY, CAPTION,'Tanida Kiyoshi', WIDTH,250);" onmouseout="return nd()" >Tanida...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'tanida@post.j-parc.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>michmx@phy.olemiss.edu<br><br><b>First Institution: </b><br>Mississippi<br>',STICKY, CAPTION,'Michel Hernandez Villanueva', WIDTH,250);" onmouseout="return nd()" >Michel...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'michmx@phy.olemiss.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='noday' colspan='3'>
+	</tr>
+</table>
+<a name='Nov19'>
+<table class='bookshift'>
+	<tr><th class='book_month' colspan=7 align='center' >November 2019</th></tr>
+	<tr><td class='noday' colspan='4'>
+		<td class='workday'>01 Fri
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>bean@hep1.phys.ntu.edu.tw<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Kunxian Huang', WIDTH,250);" onmouseout="return nd()" >Kunxia...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'bean@hep1.phys.ntu.edu.tw\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>glazov@mail.desy.de<br><br><b>First Institution: </b><br>DESY<br>',STICKY, CAPTION,'Alexander Glazov', WIDTH,250);" onmouseout="return nd()" >Alexan...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'glazov@mail.desy.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>Yifan.Jin@ts.infn.it<br><br><b>First Institution: </b><br>Trieste<br>',STICKY, CAPTION,'Yifan Jin', WIDTH,250);" onmouseout="return nd()" >Yifan ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'Yifan.Jin@ts.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>02 Sat
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>schwaraz@ucmail.uc.edu<br><br><b>First Institution: </b><br>Cincinnati<br>',STICKY, CAPTION,'Alan Schwartz', WIDTH,250);" onmouseout="return nd()" >Alan  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'schwaraz@ucmail.uc.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>glazov@mail.desy.de<br><br><b>First Institution: </b><br>DESY<br>',STICKY, CAPTION,'Alexander Glazov', WIDTH,250);" onmouseout="return nd()" >Alexan...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'glazov@mail.desy.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>Yifan.Jin@ts.infn.it<br><br><b>First Institution: </b><br>Trieste<br>',STICKY, CAPTION,'Yifan Jin', WIDTH,250);" onmouseout="return nd()" >Yifan ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'Yifan.Jin@ts.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>03 Sun
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>schwaraz@ucmail.uc.edu<br><br><b>First Institution: </b><br>Cincinnati<br>',STICKY, CAPTION,'Alan Schwartz', WIDTH,250);" onmouseout="return nd()" >Alan  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'schwaraz@ucmail.uc.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>iwakuma21@gmail.com<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Taichiro Koga', WIDTH,250);" onmouseout="return nd()" >Taichi...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'iwakuma21@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>jkumar@andrew.cmu.edu<br><br><b>First Institution: </b><br>CMU<br>',STICKY, CAPTION,'Jitendra Kumar', WIDTH,250);" onmouseout="return nd()" >Jitend...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'jkumar@andrew.cmu.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='workday'>04 Mon
+
+
+
+
+
+
+		<div class='workday'>
+			<div class='shift_workday_free'  onclick="return overlib('This shift booking could not be canceled<br><input type=\'button\' value=\'Confirm\' onclick=\'javascript:document.bookday_1572825600.submit()\'>',CAPTION,'Booking confirmation',WIDTH,130,STICKY)"  onmouseover="return overlib('<b>Score</b>:: 1.05<br><b>Start time</b>:: Monday 04 00:00<br><b>End time</b>:: Monday 04 08:00',CAPTION,'Shift stats',WIDTH,130)"  onmouseout="return nd()">OWL
+				<form name='bookday_1572825600' method='POST' action='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=bcg#Nov19'>
+				<input name='shift_book'  type='hidden' value='booking'>
+				<input name='shift_period'  type='hidden' value='17'>
+				<input name='shift_type'  type='hidden' value='bcg'>
+				<input name='shift_time'  type='hidden' value='1572825600'>
+				<input name='shift_end'   type='hidden' value='1572854400'>
+				<input name='shift_score' type='hidden' value='1.05'>
+				</form>
+			</div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>bean@hep1.phys.ntu.edu.tw<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Kunxian Huang', WIDTH,250);" onmouseout="return nd()" >Kunxia...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'bean@hep1.phys.ntu.edu.tw\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>galina.pakhlova@phystech.edu<br><br><b>First Institution: </b><br>MIPT<br>',STICKY, CAPTION,'Galina Pakhlova', WIDTH,250);" onmouseout="return nd()" >Galina...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'galina.pakhlova@phystech.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>05 Tue
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>schwaraz@ucmail.uc.edu<br><br><b>First Institution: </b><br>Cincinnati<br>',STICKY, CAPTION,'Alan Schwartz', WIDTH,250);" onmouseout="return nd()" >Alan  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'schwaraz@ucmail.uc.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>glazov@mail.desy.de<br><br><b>First Institution: </b><br>DESY<br>',STICKY, CAPTION,'Alexander Glazov', WIDTH,250);" onmouseout="return nd()" >Alexan...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'glazov@mail.desy.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ichiro.adachi@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Ichiro Adachi', WIDTH,250);" onmouseout="return nd()" >Ichiro...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ichiro.adachi@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>06 Wed
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ytlai@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Yun-Tsung Lai', WIDTH,250);" onmouseout="return nd()" >Yun-Ts...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ytlai@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>glazov@mail.desy.de<br><br><b>First Institution: </b><br>DESY<br>',STICKY, CAPTION,'Alexander Glazov', WIDTH,250);" onmouseout="return nd()" >Alexan...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'glazov@mail.desy.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>galina.pakhlova@phystech.edu<br><br><b>First Institution: </b><br>MIPT<br>',STICKY, CAPTION,'Galina Pakhlova', WIDTH,250);" onmouseout="return nd()" >Galina...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'galina.pakhlova@phystech.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>07 Thu
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>bean@hep1.phys.ntu.edu.tw<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Kunxian Huang', WIDTH,250);" onmouseout="return nd()" >Kunxia...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'bean@hep1.phys.ntu.edu.tw\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>wang@mpp.mpg.de<br><br><b>First Institution: </b><br>MPP<br>',STICKY, CAPTION,'Boqun Wang', WIDTH,250);" onmouseout="return nd()" >Boqun ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'wang@mpp.mpg.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ichiro.adachi@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Ichiro Adachi', WIDTH,250);" onmouseout="return nd()" >Ichiro...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ichiro.adachi@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>08 Fri
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>janice.chen45@gmail.com<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Janice Chen', WIDTH,250);" onmouseout="return nd()" >Janice...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'janice.chen45@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>toru.tsuboyama@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Toru Tsuboyama', WIDTH,250);" onmouseout="return nd()" >Toru  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'toru.tsuboyama@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>Yifan.Jin@ts.infn.it<br><br><b>First Institution: </b><br>Trieste<br>',STICKY, CAPTION,'Yifan Jin', WIDTH,250);" onmouseout="return nd()" >Yifan ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'Yifan.Jin@ts.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>09 Sat
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shihc@mail.ustc.edu.cn<br><br><b>First Institution: </b><br>USTC<br>',STICKY, CAPTION,'Huangchao Shi', WIDTH,250);" onmouseout="return nd()" >Huangc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shihc@mail.ustc.edu.cn\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>toru.tsuboyama@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Toru Tsuboyama', WIDTH,250);" onmouseout="return nd()" >Toru  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'toru.tsuboyama@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>Yifan.Jin@ts.infn.it<br><br><b>First Institution: </b><br>Trieste<br>',STICKY, CAPTION,'Yifan Jin', WIDTH,250);" onmouseout="return nd()" >Yifan ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'Yifan.Jin@ts.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>10 Sun
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shihc@mail.ustc.edu.cn<br><br><b>First Institution: </b><br>USTC<br>',STICKY, CAPTION,'Huangchao Shi', WIDTH,250);" onmouseout="return nd()" >Huangc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shihc@mail.ustc.edu.cn\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+
+
+		<div class='workday'>
+			<div class='shift_holiday_free'  onclick="javascript:document.bookday_1573372800.submit()"   onmouseover="return overlib('<b>Score</b>:: 0.93<br><b>Start time</b>:: Sunday 10 08:00<br><b>End time</b>:: Sunday 10 16:00',CAPTION,'Shift stats',WIDTH,130)"  onmouseout="return nd()">DAY
+				<form name='bookday_1573372800' method='POST' action='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=bcg#Nov19'>
+				<input name='shift_book'  type='hidden' value='booking'>
+				<input name='shift_period'  type='hidden' value='17'>
+				<input name='shift_type'  type='hidden' value='bcg'>
+				<input name='shift_time'  type='hidden' value='1573372800'>
+				<input name='shift_end'   type='hidden' value='1573401600'>
+				<input name='shift_score' type='hidden' value='0.933'>
+				</form>
+			</div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>Yifan.Jin@ts.infn.it<br><br><b>First Institution: </b><br>Trieste<br>',STICKY, CAPTION,'Yifan Jin', WIDTH,250);" onmouseout="return nd()" >Yifan ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'Yifan.Jin@ts.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='workday'>11 Mon
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shuji.tanaka@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Shuji Tanaka', WIDTH,250);" onmouseout="return nd()" >Shuji ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shuji.tanaka@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>wang@mpp.mpg.de<br><br><b>First Institution: </b><br>MPP<br>',STICKY, CAPTION,'Boqun Wang', WIDTH,250);" onmouseout="return nd()" >Boqun ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'wang@mpp.mpg.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>toru.tsuboyama@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Toru Tsuboyama', WIDTH,250);" onmouseout="return nd()" >Toru  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'toru.tsuboyama@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>12 Tue
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>nkota@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Kota Nakagiri', WIDTH,250);" onmouseout="return nd()" >Kota  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'nkota@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>galina.pakhlova@phystech.edu<br><br><b>First Institution: </b><br>MIPT<br>',STICKY, CAPTION,'Galina Pakhlova', WIDTH,250);" onmouseout="return nd()" >Galina...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'galina.pakhlova@phystech.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>toru.tsuboyama@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Toru Tsuboyama', WIDTH,250);" onmouseout="return nd()" >Toru  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'toru.tsuboyama@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>13 Wed
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>nkota@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Kota Nakagiri', WIDTH,250);" onmouseout="return nd()" >Kota  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'nkota@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>janice.chen45@gmail.com<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Janice Chen', WIDTH,250);" onmouseout="return nd()" >Janice...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'janice.chen45@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>galina.pakhlova@phystech.edu<br><br><b>First Institution: </b><br>MIPT<br>',STICKY, CAPTION,'Galina Pakhlova', WIDTH,250);" onmouseout="return nd()" >Galina...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'galina.pakhlova@phystech.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>14 Thu
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ytlai@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Yun-Tsung Lai', WIDTH,250);" onmouseout="return nd()" >Yun-Ts...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ytlai@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+
+
+		<div class='workday'>
+			<div class='shift_workday_free'  onclick="javascript:document.bookday_1573718400.submit()"   onmouseover="return overlib('<b>Score</b>:: 0.70<br><b>Start time</b>:: Thursday 14 08:00<br><b>End time</b>:: Thursday 14 16:00',CAPTION,'Shift stats',WIDTH,130)"  onmouseout="return nd()">DAY
+				<form name='bookday_1573718400' method='POST' action='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=bcg#Nov19'>
+				<input name='shift_book'  type='hidden' value='booking'>
+				<input name='shift_period'  type='hidden' value='17'>
+				<input name='shift_type'  type='hidden' value='bcg'>
+				<input name='shift_time'  type='hidden' value='1573718400'>
+				<input name='shift_end'   type='hidden' value='1573747200'>
+				<input name='shift_score' type='hidden' value='0.7'>
+				</form>
+			</div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>miyabaya@cc.nara-wu.ac.jp<br><br><b>First Institution: </b><br>Nara-Wu<br>',STICKY, CAPTION,'Kenkichi Miyabayashi', WIDTH,250);" onmouseout="return nd()" >Kenkic...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'miyabaya@cc.nara-wu.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>15 Fri
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ichiro.adachi@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Ichiro Adachi', WIDTH,250);" onmouseout="return nd()" >Ichiro...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ichiro.adachi@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>galina.pakhlova@phystech.edu<br><br><b>First Institution: </b><br>MIPT<br>',STICKY, CAPTION,'Galina Pakhlova', WIDTH,250);" onmouseout="return nd()" >Galina...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'galina.pakhlova@phystech.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>takizawa@ac.shoyaku.ac.jp<br><br><b>First Institution: </b><br>NPC<br>',STICKY, CAPTION,'Makoto Takizawa', WIDTH,250);" onmouseout="return nd()" >Makoto...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'takizawa@ac.shoyaku.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>16 Sat
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shohei.nishida@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Shohei Nishida', WIDTH,250);" onmouseout="return nd()" >Shohei...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shohei.nishida@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+
+
+		<div class='workday'>
+			<div class='shift_holiday_free'  onclick="javascript:document.bookday_1573891200.submit()"   onmouseover="return overlib('<b>Score</b>:: 0.93<br><b>Start time</b>:: Saturday 16 08:00<br><b>End time</b>:: Saturday 16 16:00',CAPTION,'Shift stats',WIDTH,130)"  onmouseout="return nd()">DAY
+				<form name='bookday_1573891200' method='POST' action='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=bcg#Nov19'>
+				<input name='shift_book'  type='hidden' value='booking'>
+				<input name='shift_period'  type='hidden' value='17'>
+				<input name='shift_type'  type='hidden' value='bcg'>
+				<input name='shift_time'  type='hidden' value='1573891200'>
+				<input name='shift_end'   type='hidden' value='1573920000'>
+				<input name='shift_score' type='hidden' value='0.933'>
+				</form>
+			</div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>takizawa@ac.shoyaku.ac.jp<br><br><b>First Institution: </b><br>NPC<br>',STICKY, CAPTION,'Makoto Takizawa', WIDTH,250);" onmouseout="return nd()" >Makoto...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'takizawa@ac.shoyaku.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>17 Sun
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shihc@mail.ustc.edu.cn<br><br><b>First Institution: </b><br>USTC<br>',STICKY, CAPTION,'Huangchao Shi', WIDTH,250);" onmouseout="return nd()" >Huangc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shihc@mail.ustc.edu.cn\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>janice.chen45@gmail.com<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Janice Chen', WIDTH,250);" onmouseout="return nd()" >Janice...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'janice.chen45@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ichiro.adachi@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Ichiro Adachi', WIDTH,250);" onmouseout="return nd()" >Ichiro...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ichiro.adachi@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='workday'>18 Mon
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>zhukova@lebedev.ru<br><br><b>First Institution: </b><br>LPI<br>',STICKY, CAPTION,'Valentina Zhukova', WIDTH,250);" onmouseout="return nd()" >Valent...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'zhukova@lebedev.ru\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>zjl@hawaii.edu<br><br><b>First Institution: </b><br>Hawaii<br>',STICKY, CAPTION,'Zachary Liptak', WIDTH,250);" onmouseout="return nd()" >Zachar...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'zjl@hawaii.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>uehara@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Uehara Sadaharu', WIDTH,250);" onmouseout="return nd()" >Uehara...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'uehara@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>19 Tue
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>zhukova@lebedev.ru<br><br><b>First Institution: </b><br>LPI<br>',STICKY, CAPTION,'Valentina Zhukova', WIDTH,250);" onmouseout="return nd()" >Valent...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'zhukova@lebedev.ru\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>yutaka.ushiroda@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Yutaka Ushiroda', WIDTH,250);" onmouseout="return nd()" >Yutaka...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'yutaka.ushiroda@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>iwakuma21@gmail.com<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Taichiro Koga', WIDTH,250);" onmouseout="return nd()" >Taichi...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'iwakuma21@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>20 Wed
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>zhukova@lebedev.ru<br><br><b>First Institution: </b><br>LPI<br>',STICKY, CAPTION,'Valentina Zhukova', WIDTH,250);" onmouseout="return nd()" >Valent...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'zhukova@lebedev.ru\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shuji.tanaka@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Shuji Tanaka', WIDTH,250);" onmouseout="return nd()" >Shuji ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shuji.tanaka@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>seungchul9111@knu.ac.kr<br><br><b>First Institution: </b><br>Kyungpook<br>',STICKY, CAPTION,'Seungcheol Lee', WIDTH,250);" onmouseout="return nd()" >Seungc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'seungchul9111@knu.ac.kr\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>21 Thu
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>zhukova@lebedev.ru<br><br><b>First Institution: </b><br>LPI<br>',STICKY, CAPTION,'Valentina Zhukova', WIDTH,250);" onmouseout="return nd()" >Valent...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'zhukova@lebedev.ru\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>wang@mpp.mpg.de<br><br><b>First Institution: </b><br>MPP<br>',STICKY, CAPTION,'Boqun Wang', WIDTH,250);" onmouseout="return nd()" >Boqun ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'wang@mpp.mpg.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>seungchul9111@knu.ac.kr<br><br><b>First Institution: </b><br>Kyungpook<br>',STICKY, CAPTION,'Seungcheol Lee', WIDTH,250);" onmouseout="return nd()" >Seungc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'seungchul9111@knu.ac.kr\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>22 Fri
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>and.lindner@physik.uni-muenchen.de<br><br><b>First Institution: </b><br>LMU<br>',STICKY, CAPTION,'Andi Lindner', WIDTH,250);" onmouseout="return nd()" >Andi  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'and.lindner@physik.uni-muenchen.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>wang@mpp.mpg.de<br><br><b>First Institution: </b><br>MPP<br>',STICKY, CAPTION,'Boqun Wang', WIDTH,250);" onmouseout="return nd()" >Boqun ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'wang@mpp.mpg.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>seungchul9111@knu.ac.kr<br><br><b>First Institution: </b><br>Kyungpook<br>',STICKY, CAPTION,'Seungcheol Lee', WIDTH,250);" onmouseout="return nd()" >Seungc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'seungchul9111@knu.ac.kr\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>23 Sat
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>janice.chen45@gmail.com<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Janice Chen', WIDTH,250);" onmouseout="return nd()" >Janice...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'janice.chen45@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>jacobsw@indiana.edu<br><br><b>First Institution: </b><br>Indiana<br>',STICKY, CAPTION,'William Jacobs', WIDTH,250);" onmouseout="return nd()" >Willia...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'jacobsw@indiana.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shihc@mail.ustc.edu.cn<br><br><b>First Institution: </b><br>USTC<br>',STICKY, CAPTION,'Huangchao Shi', WIDTH,250);" onmouseout="return nd()" >Huangc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shihc@mail.ustc.edu.cn\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>24 Sun
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>and.lindner@physik.uni-muenchen.de<br><br><b>First Institution: </b><br>LMU<br>',STICKY, CAPTION,'Andi Lindner', WIDTH,250);" onmouseout="return nd()" >Andi  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'and.lindner@physik.uni-muenchen.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>jacobsw@indiana.edu<br><br><b>First Institution: </b><br>Indiana<br>',STICKY, CAPTION,'William Jacobs', WIDTH,250);" onmouseout="return nd()" >Willia...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'jacobsw@indiana.edu\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>janice.chen45@gmail.com<br><br><b>First Institution: </b><br>NTU-Taiwan<br>',STICKY, CAPTION,'Janice Chen', WIDTH,250);" onmouseout="return nd()" >Janice...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'janice.chen45@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='workday'>25 Mon
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>antonio.passeri@roma3.infn.it<br><br><b>First Institution: </b><br>Roma Tre<br>',STICKY, CAPTION,'Antonio Passeri', WIDTH,250);" onmouseout="return nd()" >Antoni...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'antonio.passeri@roma3.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>tanigawa@hep.phys.s.u-tokyo.ac.jp<br><br><b>First Institution: </b><br>U-Tokyo<br>',STICKY, CAPTION,'Tanigawa Hikaru', WIDTH,250);" onmouseout="return nd()" >Taniga...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'tanigawa@hep.phys.s.u-tokyo.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>seungchul9111@knu.ac.kr<br><br><b>First Institution: </b><br>Kyungpook<br>',STICKY, CAPTION,'Seungcheol Lee', WIDTH,250);" onmouseout="return nd()" >Seungc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'seungchul9111@knu.ac.kr\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>26 Tue
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>antonio.passeri@roma3.infn.it<br><br><b>First Institution: </b><br>Roma Tre<br>',STICKY, CAPTION,'Antonio Passeri', WIDTH,250);" onmouseout="return nd()" >Antoni...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'antonio.passeri@roma3.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>martina.laurenza@roma3.infn.it<br><br><b>First Institution: </b><br>Roma Tre<br>',STICKY, CAPTION,'Martina Laurenza', WIDTH,250);" onmouseout="return nd()" >Martin...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'martina.laurenza@roma3.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>seungchul9111@knu.ac.kr<br><br><b>First Institution: </b><br>Kyungpook<br>',STICKY, CAPTION,'Seungcheol Lee', WIDTH,250);" onmouseout="return nd()" >Seungc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'seungchul9111@knu.ac.kr\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>27 Wed
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ytlai@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Yun-Tsung Lai', WIDTH,250);" onmouseout="return nd()" >Yun-Ts...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ytlai@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>martina.laurenza@roma3.infn.it<br><br><b>First Institution: </b><br>Roma Tre<br>',STICKY, CAPTION,'Martina Laurenza', WIDTH,250);" onmouseout="return nd()" >Martin...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'martina.laurenza@roma3.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>seungchul9111@knu.ac.kr<br><br><b>First Institution: </b><br>Kyungpook<br>',STICKY, CAPTION,'Seungcheol Lee', WIDTH,250);" onmouseout="return nd()" >Seungc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'seungchul9111@knu.ac.kr\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>28 Thu
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>uehara@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Uehara Sadaharu', WIDTH,250);" onmouseout="return nd()" >Uehara...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'uehara@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+
+
+		<div class='workday'>
+			<div class='shift_workday_free'  onclick="javascript:document.bookday_1574928000.submit()"   onmouseover="return overlib('<b>Score</b>:: 0.70<br><b>Start time</b>:: Thursday 28 08:00<br><b>End time</b>:: Thursday 28 16:00',CAPTION,'Shift stats',WIDTH,130)"  onmouseout="return nd()">DAY
+				<form name='bookday_1574928000' method='POST' action='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=bcg#Nov19'>
+				<input name='shift_book'  type='hidden' value='booking'>
+				<input name='shift_period'  type='hidden' value='17'>
+				<input name='shift_type'  type='hidden' value='bcg'>
+				<input name='shift_time'  type='hidden' value='1574928000'>
+				<input name='shift_end'   type='hidden' value='1574956800'>
+				<input name='shift_score' type='hidden' value='0.7'>
+				</form>
+			</div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>m.naruki@scphys.kyoto-u.ac.jp<br><br><b>First Institution: </b><br>NPC<br>',STICKY, CAPTION,'Naruki Megumi', WIDTH,250);" onmouseout="return nd()" >Naruki...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'m.naruki@scphys.kyoto-u.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>29 Fri
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>iwakuma21@gmail.com<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Taichiro Koga', WIDTH,250);" onmouseout="return nd()" >Taichi...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'iwakuma21@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>wang@mpp.mpg.de<br><br><b>First Institution: </b><br>MPP<br>',STICKY, CAPTION,'Boqun Wang', WIDTH,250);" onmouseout="return nd()" >Boqun ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'wang@mpp.mpg.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shuji.tanaka@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Shuji Tanaka', WIDTH,250);" onmouseout="return nd()" >Shuji ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shuji.tanaka@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>30 Sat
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>akimasa.ishikawa@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Akimasa Ishikawa', WIDTH,250);" onmouseout="return nd()" >Akimas...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'akimasa.ishikawa@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>qidong.zhou@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Qidong Zhou', WIDTH,250);" onmouseout="return nd()" >Qidong...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'qidong.zhou@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>zhukova@lebedev.ru<br><br><b>First Institution: </b><br>LPI<br>',STICKY, CAPTION,'Valentina Zhukova', WIDTH,250);" onmouseout="return nd()" >Valent...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'zhukova@lebedev.ru\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='noday' colspan='1'>
+	</tr>
+</table>
+<a name='Dec19'>
+<table class='bookshift'>
+	<tr><th class='book_month' colspan=7 align='center' >December 2019</th></tr>
+	<tr><td class='noday' colspan='6'>
+		<td class='holiday'>01 Sun
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shohei.nishida@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Shohei Nishida', WIDTH,250);" onmouseout="return nd()" >Shohei...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shohei.nishida@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>zhukova@lebedev.ru<br><br><b>First Institution: </b><br>LPI<br>',STICKY, CAPTION,'Valentina Zhukova', WIDTH,250);" onmouseout="return nd()" >Valent...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'zhukova@lebedev.ru\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+
+
+		<div class='workday'>
+			<div class='shift_holiday_free'  onclick="javascript:document.bookday_1575216000.submit()"   onmouseover="return overlib('<b>Score</b>:: 1.17<br><b>Start time</b>:: Sunday 01 16:00<br><b>End time</b>:: Monday 02 00:00',CAPTION,'Shift stats',WIDTH,130)"  onmouseout="return nd()">SWING
+				<form name='bookday_1575216000' method='POST' action='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=bcg#Dec19'>
+				<input name='shift_book'  type='hidden' value='booking'>
+				<input name='shift_period'  type='hidden' value='17'>
+				<input name='shift_type'  type='hidden' value='bcg'>
+				<input name='shift_time'  type='hidden' value='1575216000'>
+				<input name='shift_end'   type='hidden' value='1575244800'>
+				<input name='shift_score' type='hidden' value='1.167'>
+				</form>
+			</div>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='workday'>02 Mon
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>thomas@epx.phys.tohoku.ac.jp<br><br><b>First Institution: </b><br>IPMU<br>',STICKY, CAPTION,'Thomas Rafael Czank', WIDTH,250);" onmouseout="return nd()" >Thomas...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'thomas@epx.phys.tohoku.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>toru.tsuboyama@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Toru Tsuboyama', WIDTH,250);" onmouseout="return nd()" >Toru  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'toru.tsuboyama@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>renu92garg@gmail.com<br><br><b>First Institution: </b><br>Panjab<br>',STICKY, CAPTION,'Renu Garg', WIDTH,250);" onmouseout="return nd()" >Renu  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'renu92garg@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>03 Tue
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>thomas@epx.phys.tohoku.ac.jp<br><br><b>First Institution: </b><br>IPMU<br>',STICKY, CAPTION,'Thomas Rafael Czank', WIDTH,250);" onmouseout="return nd()" >Thomas...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'thomas@epx.phys.tohoku.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>renu92garg@gmail.com<br><br><b>First Institution: </b><br>Panjab<br>',STICKY, CAPTION,'Renu Garg', WIDTH,250);" onmouseout="return nd()" >Renu  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'renu92garg@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>2016rpy9052@mnit.ac.in<br><br><b>First Institution: </b><br>MNIT-Jaipur<br>',STICKY, CAPTION,'Manish Chahal', WIDTH,250);" onmouseout="return nd()" >Manish...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'2016rpy9052@mnit.ac.in\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>04 Wed
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shohei.nishida@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Shohei Nishida', WIDTH,250);" onmouseout="return nd()" >Shohei...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shohei.nishida@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>renu92garg@gmail.com<br><br><b>First Institution: </b><br>Panjab<br>',STICKY, CAPTION,'Renu Garg', WIDTH,250);" onmouseout="return nd()" >Renu  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'renu92garg@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>2016rpy9052@mnit.ac.in<br><br><b>First Institution: </b><br>MNIT-Jaipur<br>',STICKY, CAPTION,'Manish Chahal', WIDTH,250);" onmouseout="return nd()" >Manish...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'2016rpy9052@mnit.ac.in\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>05 Thu
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ytlai@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Yun-Tsung Lai', WIDTH,250);" onmouseout="return nd()" >Yun-Ts...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ytlai@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>wang@mpp.mpg.de<br><br><b>First Institution: </b><br>MPP<br>',STICKY, CAPTION,'Boqun Wang', WIDTH,250);" onmouseout="return nd()" >Boqun ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'wang@mpp.mpg.de\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>renu92garg@gmail.com<br><br><b>First Institution: </b><br>Panjab<br>',STICKY, CAPTION,'Renu Garg', WIDTH,250);" onmouseout="return nd()" >Renu  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'renu92garg@gmail.com\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>06 Fri
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>nkota@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Kota Nakagiri', WIDTH,250);" onmouseout="return nd()" >Kota  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'nkota@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>antonio.paladino@pi.infn.it<br><br><b>First Institution: </b><br>Pisa<br>',STICKY, CAPTION,'Antonio Paladino', WIDTH,250);" onmouseout="return nd()" >Antoni...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'antonio.paladino@pi.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>miyabaya@cc.nara-wu.ac.jp<br><br><b>First Institution: </b><br>Nara-Wu<br>',STICKY, CAPTION,'Kenkichi Miyabayashi', WIDTH,250);" onmouseout="return nd()" >Kenkic...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'miyabaya@cc.nara-wu.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>07 Sat
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>nkota@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Kota Nakagiri', WIDTH,250);" onmouseout="return nd()" >Kota  ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'nkota@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>antonio.paladino@pi.infn.it<br><br><b>First Institution: </b><br>Pisa<br>',STICKY, CAPTION,'Antonio Paladino', WIDTH,250);" onmouseout="return nd()" >Antoni...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'antonio.paladino@pi.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ichiro.adachi@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Ichiro Adachi', WIDTH,250);" onmouseout="return nd()" >Ichiro...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ichiro.adachi@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='holiday'>08 Sun
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>akimasa.ishikawa@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Akimasa Ishikawa', WIDTH,250);" onmouseout="return nd()" >Akimas...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'akimasa.ishikawa@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+
+
+		<div class='workday'>
+			<div class='shift_holiday_free'  onclick="javascript:document.bookday_1575792000.submit()"   onmouseover="return overlib('<b>Score</b>:: 0.93<br><b>Start time</b>:: Sunday 08 08:00<br><b>End time</b>:: Sunday 08 16:00',CAPTION,'Shift stats',WIDTH,130)"  onmouseout="return nd()">DAY
+				<form name='bookday_1575792000' method='POST' action='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=bcg#Dec19'>
+				<input name='shift_book'  type='hidden' value='booking'>
+				<input name='shift_period'  type='hidden' value='17'>
+				<input name='shift_type'  type='hidden' value='bcg'>
+				<input name='shift_time'  type='hidden' value='1575792000'>
+				<input name='shift_end'   type='hidden' value='1575820800'>
+				<input name='shift_score' type='hidden' value='0.933'>
+				</form>
+			</div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>seungchul9111@knu.ac.kr<br><br><b>First Institution: </b><br>Kyungpook<br>',STICKY, CAPTION,'Seungcheol Lee', WIDTH,250);" onmouseout="return nd()" >Seungc...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'seungchul9111@knu.ac.kr\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='workday'>09 Mon
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>akimasa.ishikawa@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Akimasa Ishikawa', WIDTH,250);" onmouseout="return nd()" >Akimas...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'akimasa.ishikawa@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>antonio.paladino@pi.infn.it<br><br><b>First Institution: </b><br>Pisa<br>',STICKY, CAPTION,'Antonio Paladino', WIDTH,250);" onmouseout="return nd()" >Antoni...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'antonio.paladino@pi.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>kenji@hepl.phys.nagoya-u.ac.jp<br><br><b>First Institution: </b><br>Nagoya<br>',STICKY, CAPTION,'Kenji Inami', WIDTH,250);" onmouseout="return nd()" >Kenji ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'kenji@hepl.phys.nagoya-u.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>10 Tue
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>ytlai@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Yun-Tsung Lai', WIDTH,250);" onmouseout="return nd()" >Yun-Ts...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'ytlai@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>katsuro@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Katsuro Nakamura', WIDTH,250);" onmouseout="return nd()" >Katsur...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'katsuro@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>m.naruki@scphys.kyoto-u.ac.jp<br><br><b>First Institution: </b><br>NPC<br>',STICKY, CAPTION,'Naruki Megumi', WIDTH,250);" onmouseout="return nd()" >Naruki...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'m.naruki@scphys.kyoto-u.ac.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>11 Wed
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>shuji.tanaka@kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Shuji Tanaka', WIDTH,250);" onmouseout="return nd()" >Shuji ...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'shuji.tanaka@kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>antonio.paladino@pi.infn.it<br><br><b>First Institution: </b><br>Pisa<br>',STICKY, CAPTION,'Antonio Paladino', WIDTH,250);" onmouseout="return nd()" >Antoni...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'antonio.paladino@pi.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>katsuro@post.kek.jp<br><br><b>First Institution: </b><br>KEK<br>',STICKY, CAPTION,'Katsuro Nakamura', WIDTH,250);" onmouseout="return nd()" >Katsur...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'katsuro@post.kek.jp\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+		</td>
+		<td class='workday'>12 Thu
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>giacomo.depietro@roma3.infn.it<br><br><b>First Institution: </b><br>Roma Tre<br>',STICKY, CAPTION,'Giacomo De Pietro', WIDTH,250);" onmouseout="return nd()" >Giacom...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'giacomo.depietro@roma3.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+		<div class='workday'>
+			<div class='shift_assigned'><a href="javascript:void(0);" onmouseover="return overlib('<br><b>Mail address: </b><br>antonio.paladino@pi.infn.it<br><br><b>First Institution: </b><br>Pisa<br>',STICKY, CAPTION,'Antonio Paladino', WIDTH,250);" onmouseout="return nd()" >Antoni...</a><img alt='Chat' tag='Exchange shift' src='images/chat_icon.png' onmouseover="return overlib('<b>Click to contact shifter</b>',WIDTH,90)" onmouseout="return nd()" onclick="return overlib('<form name=\'contactshifter\' method=\'POST\' action=\'?expname=belle2&amp;period_id=17&amp;lv1=book&amp;lv2=book&amp;lv3=bcg\'><input name=\'receiver_mail\' type=\'hidden\' value=\'antonio.paladino@pi.infn.it\'><textarea name=\'mail\' rows=\'5\' cols=\'80\' >This mail will be sent as if where sent from your account</textarea><br><input name=\'send_mail\'type=\'submit\' value=\'Send\'></form>',CAPTION,'Contact shifter',STICKY,WIDTH,300)"height='100%' class='book_del'></div>
+		</div>
+
+
+
+
+
+
+		<div class='workday'>
+			<div class='shift_workday_free'  onclick="javascript:document.bookday_1576166400.submit()"   onmouseover="return overlib('<b>Score</b>:: 0.88<br><b>Start time</b>:: Thursday 12 16:00<br><b>End time</b>:: Friday 13 00:00',CAPTION,'Shift stats',WIDTH,130)"  onmouseout="return nd()">SWING
+				<form name='bookday_1576166400' method='POST' action='https://shift.belle2.org/./index.php?lv1=book&amp;lv2=book&amp;lv3=bcg#Dec19'>
+				<input name='shift_book'  type='hidden' value='booking'>
+				<input name='shift_period'  type='hidden' value='17'>
+				<input name='shift_type'  type='hidden' value='bcg'>
+				<input name='shift_time'  type='hidden' value='1576166400'>
+				<input name='shift_end'   type='hidden' value='1576195200'>
+				<input name='shift_score' type='hidden' value='0.875'>
+				</form>
+			</div>
+		</div>
+		</td>
+		<td class='noday' colspan='3'>
+	</tr>
+</table>
+  </div>
+</div><!-- div id='contentmain' -->
+<!-- Central slice - end -->
+<!-- Footer slice - begins -->
+<div id="footer">
+    <p>Webmasters:
+        <a href="mailto:antonio.desantis@lnf.infn.it">
+            A. De Santis</a>. </p>
+</div>
+<!-- Footer slice - end -->
+
+        </div><!-- container - end -->
+        <a href='http://validator.w3.org/check?uri=referer'><img src='http://www.w3.org/Icons/valid-html401-blue.png' alt='valid' border='0'></a>
+<a href="https://plus.google.com/105528784533610197416" rel="publisher">Google+</a>
+    </body>
+</html>
