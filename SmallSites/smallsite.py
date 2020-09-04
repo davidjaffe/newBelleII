@@ -25,7 +25,7 @@ class smallsite():
 
         self.gridsites = 'GridSites_20200902.xlsx'
 
-        self.noRDC = True
+        self.noRDC = False
         self.invalidSite = ['']
         if self.noRDC: 
             self.invalidSite = ['','JP-KEK-CRC-02','BNL-Belle-II']
@@ -175,7 +175,7 @@ return dict[site] = [ subject1, subject2, ...]
                 yearCol = col
                 break
         cell = sheet.cell_value(yearRow,yearCol)
-        if self.debug>0 : print 'smallsite.getRE yearRow,yearCol,year',yearRow,yearCol,cell
+        if self.debug>1 : print 'smallsite.getRE yearRow,yearCol,year',yearRow,yearCol,cell
         # get country names and pledged disk(PB)
         RE = {}
         col = 0
@@ -193,7 +193,51 @@ return dict[site] = [ subject1, subject2, ...]
                 disk = x[1]
                 print '{0:>8.3f} {1:>8.3f} {2}'.format(disk,disk/sumDisk,country)
         return RE
-    def justify(self,ntixC,RE,Year):
+    def readDowntimes(self,show=False):
+        '''
+        return DT[site] = [# of downtimes, days down]
+        and DTC[country] = [total # downtimes, total days down]
+        '''
+        self.downtimefn = 'GOCDB_downtimes_B2_SE_since_1Jan2020_20200903.txt'
+        f = open(self.downtimefn,'r')
+        DT = {}
+        DTC= {}
+        for l in f:
+            if l[0]!='#':
+                s = l[:-1].split()
+                fullsite,ndown,tdown = s
+                site = fullsite.split('_')[0]
+                DT[site] = [int(ndown),float(tdown)]
+                C = self.assignCtoS(site)
+                if C not in DTC: DTC[C] = [0, 0.]
+                DTC[C][0] += int(ndown)
+                DTC[C][1] += float(tdown)
+        f.close()
+        if show :
+            print 'smallsite.readDownTimes: input file {3}\n {0:>10} {1:>10} {2}'.format('# down','days down','Site',self.downtimefn)
+            for site in sorted(DT):
+                ndown,tdown = DT[site]
+                print '{0:>10} {1:>10.3f} {2}'.format(ndown,tdown,site)
+            print '\n {0:>10} {1:>10} {2}'.format('# down','days down','Country')
+            for country in sorted(DTC):
+                ndown,tdown = DTC[country]
+                print '{0:>10} {1:>10.3f} {2}'.format(ndown,tdown,country)
+        if self.debug>0:
+            print DT
+            print DTC
+                
+        return DT,DTC
+    def fixCountry(self,country):
+        '''
+        U.S.A. is same as USA
+        Japan  is same as KEK
+        '''
+        C = country
+        if country=='USA' : C = 'U.S.A.'
+        if country=='KEK' : C = 'Japan'
+        #if C!=country: print 'smallsite.fixCountry country,C',country,C
+        return C
+    def justify(self,ntixC,RE,DTC,Year):
         '''
         Table of tickets/country and fraction disk/country
         '''
@@ -202,20 +246,27 @@ return dict[site] = [ subject1, subject2, ...]
         for country in RE:
             sumDisk += RE[country]
         
-        print '{0:>8} {1:>8} {2:>8} {3}. Uses {4} resource estimate.'.format('Disk(PB)','Fraction','#tickets','Country',Year)
+        print '{0:>8}, {1:>8}, {2:>8}, {5:>8}, {6:>8}, {3}., Uses {4} resource estimate.'.format('Disk(PB)','Fraction','#tickets','Country',Year,'# down','days down')
         for x in sorted_RE:
             country = str(x[0])
             disk = x[1]
             n = 0
+            C = self.fixCountry(country)
             if country in ntixC: n = ntixC[country]
-            print '{0:>8.3f} {1:>8.3f} {2:>8} {3}'.format(disk, disk/sumDisk,n,country)
+            if C!=country and C in ntixC: n = ntixC[C]
+            ndown,tdown = 0,0.
+            if country in DTC: ndown,tdown = DTC[country]
+            if C!=country and C in DTC : ndown,tdown = DTC[C]
+            print '{0:>8.3f}, {1:>8.3f}, {2:>8}, {4:>8}, {5:>8.3f}, {3}'.format(disk, disk/sumDisk,n,country,ndown,tdown)
         return            
     def main(self,Year=2021):
+        show = True
         self.gridS = self.gridSites()
         Tix = self.rdr()
-        ntixC = self.tixBySite(Tix) # return number of tickets per country
-        RE = self.getRE(Year=Year)   # resources per country
-        self.justify(ntixC, RE,Year)
+        ntixC = self.tixBySite(Tix,show=show) # return number of tickets per country
+        RE = self.getRE(Year=Year,show=show)   # resources per country
+        DT,DTC = self.readDowntimes(show=show)
+        self.justify(ntixC, RE, DTC, Year)
 
         return
 if __name__ == '__main__' :

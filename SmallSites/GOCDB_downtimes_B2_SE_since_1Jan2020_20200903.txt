@@ -1,0 +1,28 @@
+# Cedric Serfon email of 20200903
+#Here it is : I used the GOCDB to extract the downtimes for the BelleII storage elements. The table below summarizes the number of downtimes and the number of days corresponding to these downtimes since January 1st (didn't manage to get 1 year snapshot) :
+#
+#Results here :
+#
+#Site_SEhost #downtime #days_of_downtime
+prague_cesnet_lcg2_dpm1.egee.cesnet.cz 1 0.208333333333
+FZK-LCG2_dcachesrm-kit.gridka.de 13 2.73380787037
+CYFRONET-LCG2_dpm.cyf-kr.edu.pl 2 28.1666666667
+INFN-TORINO_se-srm-00.to.infn.it 2 7.95833333333
+JP-KEK-CRC-02_kek2-se01.cc.kek.jp 6 8.67704861111
+INFN-T1_storm-fe-archive.cr.cnaf.infn.it 5 3.44166666667
+RECAS-NAPOLI_belle-dpm-01.na.infn.it 2 3.20833333333
+GRIF_grid05.lal.in2p3.fr 2 0.416666666667
+JP-KEK-CRC-02_kek2-se02.cc.kek.jp 7 9.16666666667
+Hephy-Vienna_hephyse.oeaw.ac.at 13 63.8300115741
+IL-TAU-HEP_tau-se.hep.tau.ac.il 3 3.88392361111
+IN2P3-IRES_sbgse1.in2p3.fr 3 3.20833333333
+TR-10-ULAKBIM_torik1.ulakbim.gov.tr 4 6.58333333333
+TW-NTU-HEP_bgrid3.phys.ntu.edu.tw 3 8.625
+JP-KEK-CRC-02_kek2-se03.cc.kek.jp 7 9.72916666667
+SiGNET_dcache.ijs.si 3 1.73864583333
+INFN-PISA_stormfe1.pi.infn.it 8 11.3402777778
+DESY-HH_dcache-se-desy.desy.de 4 1.14306712963
+CA-VICTORIA-WESTGRID-T2_charon01.westgrid.ca 12 3.57313657407
+MPPMU_grid-srm.rzg.mpg.de 4 5.91627314815
+#
+#Caveat : If 2 downtimes for the same service overlap, there will be double counting.
