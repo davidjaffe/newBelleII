@@ -95,7 +95,7 @@ return dict[site] = [ subject1, subject2, ...]
                     if w1 in sl and w2 in sl : n += 1
                 wordcount[Site].append( n )
         if self.debug>0: print '\nsmallsite.tagTix Site wordcount',words
-        header = ['Site']
+        header = ['Country','Site']
         words[-1] = 'Total'
         nw = []
         for w in words: nw.append(w.replace('_',' '))
@@ -104,7 +104,10 @@ return dict[site] = [ subject1, subject2, ...]
         data = [ header ]
         for Site in sorted(wordcount):
             if self.debug>0: print Site,wordcount[Site]
-            data.append( wordcount[Site] )
+            country = self.assignCtoS(Site)
+            L = copy.copy( wordcount[Site] )
+            L.insert(0,country)
+            data.append( L )
         if self.debug>0: print ''
         # write csv file by site    
         if self.debug>1: print data
@@ -133,7 +136,7 @@ return dict[site] = [ subject1, subject2, ...]
             L.insert(0,C)
             #print L
             data.append( L )
-        if self.debug>-1: print data
+        if self.debug>0: print data
         fn = 'tagTix_byCountry.csv'
         f = open(fn,'w')
         with f:
@@ -159,7 +162,7 @@ return dict[site] = [ subject1, subject2, ...]
             L.insert(1,country)
             #print L
             data.append( L )
-        if self.debug>-1: print data
+        if self.debug>0: print data
         fn = 'tagTix_byFraction.csv'
         f = open(fn,'w')
         with f:
@@ -206,24 +209,40 @@ return dict[site] = [ subject1, subject2, ...]
     def assignCtoS(self,Site):
         '''
         try to assign a country to each site
+        First try to get country from dict[site] = country
+        Then try to resolve based on dict[country] = [site1,site2,...]
         '''
         country = None
+
+        debugHere = False
+        
+        gridStoC = self.gridStoC
+        if Site in gridStoC :
+            country = gridStoC[Site]
+            if debugHere : print 'smallsite.assignCtoS 0th try Site,Country',Site,country
+            return country
+        
         gridS = self.gridS
         for c in gridS:
             for s in gridS[c]:
                 if Site==s or Site in s or Site.split('-')[0] in s:  # exact match or Site contained in name
+                    if debugHere : print 'smallsite.assignCtoS c,Site,s',c,Site,s
                     country = c
                     break
-        
+            if country is not None : break
+        if debugHere : print 'smallsite.assignCtoS 1st try Site,Country',Site,country
         if country is None:
-            print 'smallsite.assignCtoS Try special treatment for Site',Site
+            if debugHere : print 'smallsite.assignCtoS Try special treatment for Site',Site
             if 'INFN' in Site : country = 'Italy'
             if 'TW-'  in Site : country = 'Taiwan'
                 
+        if debugHere : print 'smallsite.assignCtoS 2nd try Site,Country',Site,country
         return country
     def gridSites(self):
         '''
-        return dict[country] = [site1,site2...]
+        return 
+        gridS = dict[country] = [site1,site2...]
+        gridStoC = dict[site] = country
         '''
         wb = xlrd.open_workbook(self.gridsites)
         sheet = wb.sheet_by_name('Sheet1')
@@ -231,15 +250,31 @@ return dict[site] = [ subject1, subject2, ...]
         colS  = 1 # Site
         colGN = 2 # grid name
         gridS = {}
+        gridStoC = {}
+        anyDup,acceptDup = False,True
         for row in range(340):
-            country = sheet.cell_value(row,colC)
+            country = self.clean(sheet.cell_value(row,colC))
             if country!='Country' and country!='':
                 if country not in gridS: gridS[country] = []
-                gn = sheet.cell_value(row,colGN)
-                site = sheet.cell_value(row,colS)
-                if self.debug>0 : print 'smallsite.gridSites country,site,gridname',country,site,gn
-                gridS[country].append(gn)
-        return gridS
+                gn = self.clean(sheet.cell_value(row,colGN))
+                site = self.clean(sheet.cell_value(row,colS))
+                if self.debug>-1 : print 'smallsite.gridSites country,site,gridname',country,site,gn
+                if gn!='': ### NO BLANK GRID NAMES
+                    gridS[country].append(gn)
+                    if gn in gridStoC :
+                        #print 'smallsites.gridSites: ERROR DUPLICATE? gridStoC[gn]=',gridStoC[gn],'gn',gn
+                        anyDup = True
+                    gridStoC[gn] = country
+        print 'smallsite.gridSites gridS',gridS
+        print 'smallsite.gridSites gridStoC',gridStoC
+        if anyDup :
+            if acceptDup: 
+                print 'smallsites.gridSites WARNING Duplicates found'
+            else:
+                sys.exit('smallsites.gridSites ERROR Duplicates found')
+        return gridS,gridStoC
+    def clean(self,x):
+        return str(x.replace(u'\xa0',''))
     def getRE(self,Year=2021,show=False):
         '''
         return dict[country] = PB of disk in Year
@@ -344,8 +379,13 @@ return dict[site] = [ subject1, subject2, ...]
         sumDisk = 0.
         for country in RE:
             sumDisk += RE[country]
+
+        fn = 'justify.csv'
+        f = open(fn,'w')
         
-        print '{0:>8}, {1:>8}, {2:>8}, {5:>8}, {6:>8}, {3}., Uses {4} resource estimate.'.format('Disk(PB)','Fraction','#tickets','Country',Year,'# down','days down')
+        line = '{0:>8}, {1:>8}, {2:>8}, {5:>8}, {6:>8}, {3}., Uses {4} resource estimate.'.format('Disk(PB)','Fraction','#tickets','Country',Year,'# down','days down')
+        print line
+        f.write(line+'\n')
         for x in sorted_RE:
             country = str(x[0])
             disk = x[1]
@@ -356,11 +396,15 @@ return dict[site] = [ subject1, subject2, ...]
             ndown,tdown = 0,0.
             if country in DTC: ndown,tdown = DTC[country]
             if C!=country and C in DTC : ndown,tdown = DTC[C]
-            print '{0:>8.3f}, {1:>8.3f}, {2:>8}, {4:>8}, {5:>8.3f}, {3}'.format(disk, disk/sumDisk,n,country,ndown,tdown)
+            line = '{0:>8.3f}, {1:>8.3f}, {2:>8}, {4:>8}, {5:>8.3f}, {3}'.format(disk, disk/sumDisk,n,country,ndown,tdown)
+            print line
+            f.write(line+'\n')
+        f.close()
+        print 'smallsite.justify Wrote',fn
         return            
     def main(self,Year=2021):
         show = True
-        self.gridS = self.gridSites()
+        self.gridS,self.gridStoC = self.gridSites()
         Tix = self.rdr()
         ntixC = self.tixBySite(Tix,show=show) # return number of tickets per country
         RE = self.getRE(Year=Year,show=show)   # resources per country
