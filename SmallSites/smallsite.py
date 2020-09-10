@@ -8,6 +8,9 @@ import sys,os
 import csv
 import operator
 import xlrd
+import copy
+
+#from collections import Counter
 
 #import datetime
 
@@ -35,7 +38,7 @@ class smallsite():
         return
     def rdr(self):
         '''
-        read in csv file
+        read in csv file of GGUS tickets
 return dict[site] = [ subject1, subject2, ...]
         '''
 
@@ -70,6 +73,102 @@ return dict[site] = [ subject1, subject2, ...]
         print 'smallsite.rdr',totTix,'valid tickets out of',totRows,'tickets'
 
         return Tix
+    def tagTix(self,Tix,RE):
+        '''
+        try to sort and filter GGUS tickets by subject content
+        input Tix[Site] = [subject1, subject2, ...]
+        input RE[Country] = PB of storage
+        output to csv
+        list of words
+        wordcount[site] = [ Site, count_word1, count_word2, ...]
+        '''
+        words = ['amga', 'voms', 'fts','cvmfs', 'pilot', 'file_fail', 'job_fail','condition_fail','transfer_fail','transfer_error','file','fail','']
+        wordcount = {}
+        for Site in Tix:
+            wordcount[Site] = [Site]
+            for w in words:
+                w1,w2 = w,w
+                if '_' in w: w1,w2 = w.split('_')[0],w.split('_')[1]
+                n = 0
+                for s in Tix[Site]:
+                    sl = s.lower()
+                    if w1 in sl and w2 in sl : n += 1
+                wordcount[Site].append( n )
+        if self.debug>0: print '\nsmallsite.tagTix Site wordcount',words
+        header = ['Site']
+        words[-1] = 'Total'
+        nw = []
+        for w in words: nw.append(w.replace('_',' '))
+        words = nw                                      
+        header.extend(words)
+        data = [ header ]
+        for Site in sorted(wordcount):
+            if self.debug>0: print Site,wordcount[Site]
+            data.append( wordcount[Site] )
+        if self.debug>0: print ''
+        # write csv file by site    
+        if self.debug>1: print data
+        fn = 'tagTix_bySite.csv'
+        f = open(fn,'w')
+        with f:
+            writer = csv.writer(f)
+            writer.writerows(data)
+        print 'smallsite.tagTix wrote to csv file',fn
+        byC = {}
+        for Site in wordcount:
+            C = self.assignCtoS(Site)
+            if C is not None: # no country for site 'CERN'
+                C = str(C)
+                if C not in byC :
+                    byC[C] = wordcount[Site][1:]
+                else:
+                    byC[C] = [sum(x) for x in zip(byC[C],wordcount[Site][1:])]
+        # write csv file by country
+        #print byC
+        header = ['Country']
+        header.extend(words)
+        data = [ header ]
+        for C in sorted(byC):
+            L = copy.copy(byC[C])
+            L.insert(0,C)
+            #print L
+            data.append( L )
+        if self.debug>-1: print data
+        fn = 'tagTix_byCountry.csv'
+        f = open(fn,'w')
+        with f:
+            writer = csv.writer(f)
+            writer.writerows(data)
+        print 'smallsite.tagTix wrote to csv file',fn
+        # write csv file ordered by storage fraction
+        sorted_RE = sorted(RE.items(), key=operator.itemgetter(1))
+        sumDisk = 0.
+        for country in RE:
+            sumDisk += RE[country]
+        nowords = ['' for x in words]
+        header = ['Fraction','Country']
+        header.extend(words)
+        data = [ header ]
+        for x in sorted_RE:
+            country = self.fixCountry(str(x[0]))
+            fraction = x[1]/sumDisk
+            L = copy.copy(nowords)
+            if country in byC: L = copy.copy(byC[country])
+            #print 'country,L',country,L
+            L.insert(0,'{0:.3f}'.format(fraction))
+            L.insert(1,country)
+            #print L
+            data.append( L )
+        if self.debug>-1: print data
+        fn = 'tagTix_byFraction.csv'
+        f = open(fn,'w')
+        with f:
+            writer = csv.writer(f)
+            writer.writerows(data)
+        print 'smallsite.tagTix wrote to csv file',fn
+        
+        
+        return
     def validTicket(self,Site,Subj,Type):
         ''' 
         return True if Site,Subj and Type are valid 
@@ -266,6 +365,7 @@ return dict[site] = [ subject1, subject2, ...]
         ntixC = self.tixBySite(Tix,show=show) # return number of tickets per country
         RE = self.getRE(Year=Year,show=show)   # resources per country
         DT,DTC = self.readDowntimes(show=show)
+        self.tagTix(Tix,RE) # make some csv files
         self.justify(ntixC, RE, DTC, Year)
 
         return
