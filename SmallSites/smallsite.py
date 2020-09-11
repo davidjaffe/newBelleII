@@ -94,6 +94,8 @@ return dict[site] = [ subject1, subject2, ...]
                     sl = s.lower()
                     if w1 in sl and w2 in sl : n += 1
                 wordcount[Site].append( n )
+
+        
         if self.debug>0: print '\nsmallsite.tagTix Site wordcount',words
         header = ['Country','Site']
         words[-1] = 'Total'
@@ -109,14 +111,16 @@ return dict[site] = [ subject1, subject2, ...]
             L.insert(0,country)
             data.append( L )
         if self.debug>0: print ''
+        descrip1 = ['Analysis of 2016-2020 GGUS tickets Subject by keyword(s) in column header']
+        descrip2 = ['Note that keywords are not exclusive, so sum of row does not equal Total in rightmost column.']
+        descrip3 = ['Leftmost columns are country and site names.']
+        data.extend( [ [],descrip1, descrip2, descrip3 ] )
         # write csv file by site    
         if self.debug>1: print data
         fn = 'tagTix_bySite.csv'
-        f = open(fn,'w')
-        with f:
-            writer = csv.writer(f)
-            writer.writerows(data)
-        print 'smallsite.tagTix wrote to csv file',fn
+        self.writeCSV(fn,data)
+
+        # write csv file by country
         byC = {}
         for Site in wordcount:
             C = self.assignCtoS(Site)
@@ -126,7 +130,6 @@ return dict[site] = [ subject1, subject2, ...]
                     byC[C] = wordcount[Site][1:]
                 else:
                     byC[C] = [sum(x) for x in zip(byC[C],wordcount[Site][1:])]
-        # write csv file by country
         #print byC
         header = ['Country']
         header.extend(words)
@@ -136,13 +139,12 @@ return dict[site] = [ subject1, subject2, ...]
             L.insert(0,C)
             #print L
             data.append( L )
+        descrip4 = ['Leftmost column is country name.']
+        data.extend( [ [],descrip1, descrip2, descrip4 ] )
         if self.debug>0: print data
         fn = 'tagTix_byCountry.csv'
-        f = open(fn,'w')
-        with f:
-            writer = csv.writer(f)
-            writer.writerows(data)
-        print 'smallsite.tagTix wrote to csv file',fn
+        self.writeCSV(fn,data)
+        
         # write csv file ordered by storage fraction
         sorted_RE = sorted(RE.items(), key=operator.itemgetter(1))
         sumDisk = 0.
@@ -162,15 +164,24 @@ return dict[site] = [ subject1, subject2, ...]
             L.insert(1,country)
             #print L
             data.append( L )
+        descrip5 = ['Leftmost columns are disk storage fraction by 2021 pledge and country name.']
+        data.extend( [ [],descrip1, descrip2, descrip5 ] )
         if self.debug>0: print data
+
         fn = 'tagTix_byFraction.csv'
+        self.writeCSV(fn,data)
+
+
+        return
+    def writeCSV(self,fn,data):
+        '''
+        write csv file containing data
+        '''
         f = open(fn,'w')
         with f:
             writer = csv.writer(f)
             writer.writerows(data)
-        print 'smallsite.tagTix wrote to csv file',fn
-        
-        
+        print 'smallsite.writeCSV Wrote',fn
         return
     def validTicket(self,Site,Subj,Type):
         ''' 
@@ -240,9 +251,11 @@ return dict[site] = [ subject1, subject2, ...]
         return country
     def gridSites(self):
         '''
+        process gridsites table
+        note duplicates
         return 
-        gridS = dict[country] = [site1,site2...]
-        gridStoC = dict[site] = country
+           gridS = dict[country] = [site1,site2...]
+           gridStoC = dict[site] = country
         '''
         wb = xlrd.open_workbook(self.gridsites)
         sheet = wb.sheet_by_name('Sheet1')
@@ -258,15 +271,16 @@ return dict[site] = [ subject1, subject2, ...]
                 if country not in gridS: gridS[country] = []
                 gn = self.clean(sheet.cell_value(row,colGN))
                 site = self.clean(sheet.cell_value(row,colS))
-                if self.debug>-1 : print 'smallsite.gridSites country,site,gridname',country,site,gn
+                if self.debug>0 : print 'smallsite.gridSites country,site,gridname',country,site,gn
                 if gn!='': ### NO BLANK GRID NAMES
                     gridS[country].append(gn)
                     if gn in gridStoC :
                         #print 'smallsites.gridSites: ERROR DUPLICATE? gridStoC[gn]=',gridStoC[gn],'gn',gn
                         anyDup = True
                     gridStoC[gn] = country
-        print 'smallsite.gridSites gridS',gridS
-        print 'smallsite.gridSites gridStoC',gridStoC
+        if self.debug>0:
+            print 'smallsite.gridSites gridS',gridS
+            print 'smallsite.gridSites gridStoC',gridStoC
         if anyDup :
             if acceptDup: 
                 print 'smallsites.gridSites WARNING Duplicates found'
