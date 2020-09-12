@@ -73,6 +73,126 @@ return dict[site] = [ subject1, subject2, ...]
         print 'smallsite.rdr',totTix,'valid tickets out of',totRows,'tickets'
 
         return Tix
+    def uniqTix(self,Tix,RE):
+        '''
+        uniquely categorize GGUS tickets by subject content
+        Paul's suggestion
+        storage : 'file fail', 'transfer fail/error', 'file'
+        service : 'amga', 'voms', 'fts', 'cvmfs', 'conditions fail' 
+        job : 'pilot','job fail'
+        other : everything else
+        input Tix[Site] = [subject1, subject2, ...]
+        input RE[Country] = PB of storage
+        output to csv : tickets and fraction of total tickets
+        '''
+
+        debug_here = 0
+        if debug_here > 0 : print 'smallsite.uniqTix RE',RE
+        
+        pb = {'storage' : ['storage', 'transfer_fail','transfer_error','file','access_fail','upload','download','i/o_fail','i/o_error','disk'],
+                  'service' : ['install','amga', 'voms', 'fts', 'cvmfs', 'condition_fail','authorization_fail','connection_fail','expir','revision','certificate'],
+                  'job' : ['job','pilot','submission_fail','submission_error'],
+                  'other' : [''] 
+                  }
+        pb_order = ['service', 'job', 'storage', 'other']
+        blanks   = [0 for x in range(len(pb_order))]
+
+        pb_count = {} # categorized problems by site
+        pb_byC   = {} # categorized problems by country
+        totDisk = sum(RE.values())
+        for country in RE:
+            pb_byC[country] = [RE[country]/totDisk, country]
+            pb_byC[country].extend( blanks )
+        totTix = 0
+        for Site in Tix:
+            country = self.assignCtoS(Site)
+            if debug_here > 1 : print 'smallsite.uniqTix Site,country',Site,country
+            pb_count[Site] = [country,Site]
+            Subj = copy.copy(Tix[Site])
+            totTix += len(Subj)
+            if debug_here>0: print '\nsmallsite.uniqTix Site,Subj',Site,Subj
+            for pcat in pb_order:
+                words = pb[pcat]
+                n = 0
+                if debug_here>1: print 'smallsite.uniqTix Site,pcat,words,Subj',Site,pcat,words,Subj
+                for w in words:
+                    w1,w2 = w,w
+                    if '_' in w: w1,w2 = w.split('_')[0],w.split('_')[1]
+                    for s in Subj[:]:
+                        if debug_here>2: print 'smallsite.uniqTix Site,w,s,len(Subj)',Site,w,s,len(Subj)
+                        sl = s.lower()
+                        if w1 in sl and w2 in sl :
+                            n += 1
+                            Subj.remove(s)
+                            if debug_here>1:print 'smallsite.uniqTix Site, REMOVE',s
+                pb_count[Site].append( n )
+                if debug_here>0: print 'smallsite.uniqTix Site,pcat,n,Subj',Site,pcat,n,Subj
+            for i,n in enumerate(pb_count[Site]):
+                if type(n) is int : pb_byC[country][i] += n
+        if debug_here > 0:
+            print 'smallsite.uniqTix pb_order',pb_order
+            print 'smallsite.uniqTix pb_count',pb_count
+            print 'smallsite.uniqTix pb_byC',pb_byC
+        # prepare output for csv files
+        
+        # tickets/category per site
+        header = ['Country','Site']
+        header.extend(pb_order)
+        data = [ header ]
+        totpbs = 0
+        for Site in pb_count:
+            data.append( pb_count[Site] )
+            totpbs += sum(pb_count[Site][2:])
+        if totTix!=totpbs : sys.exit('smallsite.uniqTix ERROR totTix '+str(totTix)+' differs from totpbs '+str(totpbs))
+
+        caption = []
+        
+        caption.append( [] )
+        caption.append( ['Analysis of 2016-2020 GGUS tickets by Subject keywords'] )
+        caption.append( ['Keyword or word pairs used to define exclusive categories: ' + ' '.join(pb_order)])
+        for key in pb_order:
+            caption.append( [ key + ' = ' + self.render(pb[key]) ] )
+        data.extend( caption )
+        fn = 'uniqTix_bySite.csv'
+        self.writeCSV(fn,data)
+
+        # tickets/category ordered by disk fraction/country
+        sorted_RE = sorted(RE.items(), key=operator.itemgetter(1))
+        header = ['Fraction','Site']
+        header.extend(pb_order)
+        data = [ header ]
+        for x in sorted_RE:
+            country = str(x[0])
+            data.append(pb_byC[country])
+        data.extend( caption )
+        fn = 'uniqTix_byFraction.csv'
+        self.writeCSV(fn,data)
+
+        # fractional tickets/category ordered by disk fraction/country
+        data = [ header ]
+        for x in sorted_RE:
+            country = str(x[0])
+            L = pb_byC[country]
+            newL = []
+            for y in L:
+                z = y
+                if type(y) is int: z = float(y)/float(totTix)
+                newL.append(z)
+            data.append(newL)
+        data.extend( caption )
+        fn = 'uniqTixFraction_byFraction.csv'
+        self.writeCSV(fn,data)
+                    
+        return
+    def render(self,klist):
+        '''
+        return formatted list of keywords used in uniqTix given list
+        '''
+        l = []
+        for w in klist:
+            l.append( w.replace('_',' ') )
+        line = ' / '.join(l)
+        return line
     def tagTix(self,Tix,RE):
         '''
         try to sort and filter GGUS tickets by subject content
@@ -191,6 +311,7 @@ return dict[site] = [ subject1, subject2, ...]
             if Site==s: return False
                 
         if Type=='USER': return False
+        if Site=='CERN-PROD' : return False
 
         for s in self.invalidSubject:
             if Subj.lower()==s : return False
@@ -268,6 +389,9 @@ return dict[site] = [ subject1, subject2, ...]
         for row in range(340):
             country = self.clean(sheet.cell_value(row,colC))
             if country!='Country' and country!='':
+                if country=='Czech Republic' : country = 'Czech'
+                if country=='U.S.A.'         : country = 'USA'
+                if country=='Japan'          : country = 'KEK'
                 if country not in gridS: gridS[country] = []
                 gn = self.clean(sheet.cell_value(row,colGN))
                 site = self.clean(sheet.cell_value(row,colS))
@@ -424,6 +548,7 @@ return dict[site] = [ subject1, subject2, ...]
         RE = self.getRE(Year=Year,show=show)   # resources per country
         DT,DTC = self.readDowntimes(show=show)
         self.tagTix(Tix,RE) # make some csv files
+        self.uniqTix(Tix,RE) # uniquely categorize problems
         self.justify(ntixC, RE, DTC, Year)
 
         return
