@@ -56,12 +56,16 @@ return dict[site] = [ subject1, subject2, ...]
             colidx[w] = header.index(w)
         Tix = {}
         totRows,totTix = 0,0
+        allSites = []
         for row in rdr:
             totRows += 1
             Site   = row[colidx['Site']]
             Type   = row[colidx['Type']]
             Subj   = row[colidx['Subject']]
 
+            allSites.append(Site)
+
+                
             if self.validTicket(Site,Subj,Type):
                 totTix += 1
                 if Site not in Tix: Tix[Site] = []
@@ -72,6 +76,13 @@ return dict[site] = [ subject1, subject2, ...]
         f.close()
         print 'smallsite.rdr',totTix,'valid tickets out of',totRows,'tickets'
 
+        uniqueSites = list(set(allSites))
+        uniqueSites.sort()
+        if self.debug>0: print 'smallsite.rdr list of unique sites ',uniqueSites
+        noValidTicket = []
+        for Site in uniqueSites:
+            if Site not in Tix: noValidTicket.append(Site)
+        if self.debug>0: print 'smallsite.rdr list of sites with no valid ticket',noValidTicket
         return Tix
     def uniqTix(self,Tix,RE):
         '''
@@ -410,6 +421,13 @@ return dict[site] = [ subject1, subject2, ...]
                 print 'smallsites.gridSites WARNING Duplicates found'
             else:
                 sys.exit('smallsites.gridSites ERROR Duplicates found')
+        print 'smallsites.gridSites country, #sites, sites'
+        noSites = []
+        for country in sorted(gridS):
+            print country,len(gridS[country]),gridS[country]
+            if len(gridS[country])==0: noSites.append(country)
+        print 'smallsites.gridSites Countries with no grid sites',', '.join(noSites)
+                
         return gridS,gridStoC
     def clean(self,x):
         return str(x.replace(u'\xa0',''))
