@@ -22,7 +22,7 @@ class analyzeCUF():
 
         print 'analyzeCUF.__init__'
         
-        self.debug = 0
+        self.debug = 0 
 
         self.DATA_DIR = 'DATA/'
 
@@ -160,11 +160,12 @@ class analyzeCUF():
                             iline += 1
                             content += lines[iline][:-1]
 
+                        content = content.strip() # remove leading and trailing spaces
                         j = jref[key]
                         if favInFile[archive][j][key]=='' : favInFile[archive][j][key] = content
                             
                         if self.debug > 1:
-                            print 'analyzeCUF.processFiles archive,key,content',archive,key,content
+                            print 'analyzeCUF.processFiles archive,key,content,`content`',archive,key,content,`content`
                         
                     iline += 1
             
@@ -192,10 +193,11 @@ class analyzeCUF():
         ### report on threads
         print '\nanalyzeCUF.processFiles   REPORT ON THREADS +++++++++++++++++++++++++++++++++++++++'
         print 'Total files',len(files),'Total threads',len(Threads)
+        threadOrder = []
         ThreadSubjects = {}
         for archive in self.msgOrder:
             if archive in Threads:
-
+                threadOrder.append(archive)
                 subject = Threads[archive][0]
                 subject = self.cleanSubject(subject)
                 ThreadSubjects[archive] = subject
@@ -213,17 +215,21 @@ class analyzeCUF():
 
         ### look for threads with identical 'clean' subjects
         print '\nanalyzeCUF.processFiles Check threads for identical or similar subjects'
-        for i,archive in enumerate(self.msgOrder):
+        dupThreads = []
+        dupIsNextThread = []
+        for i,archive in enumerate(threadOrder):
             if archive in ThreadSubjects:
                 s1 = ThreadSubjects[archive]
                 dups,sims = [],[]
                 sdups, ssims = [],[]
                 
-                for a in self.msgOrder[i+1:]:
-                    if a in ThreadSubjects:
+                for j,a in enumerate(threadOrder[i+1:]):
+                    if a not in dupThreads:
                         if a!=archive:
                             s2 = ThreadSubjects[a]
                             if s1==s2 :
+                                if a not in dupThreads: dupThreads.append(a)
+                                if j==0: dupIsNextThread.append(a)
                                 dups.append(a)
                                 sdups.append(s2)
                             if len(s1)>0 and len(s2)>0 and (s1 in s2 or s2 in s1) :
@@ -231,7 +237,8 @@ class analyzeCUF():
                                 ssims.append(s2)
                 if len(dups)>0 or (len(sims)>0 and self.debug>1) :
                     print archive,s1,'has',len(dups),'identical threads:',dups,sdups,'and',len(sims),'similar threads',sims,ssims
-                    
+        print 'analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread'
+             
         return
     def locateRef(self,Threads,irt,ref,archive,subj):
         '''
