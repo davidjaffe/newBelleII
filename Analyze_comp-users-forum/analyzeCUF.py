@@ -176,11 +176,17 @@ class analyzeCUF():
             else:
                 print 'analyzeCUF.processFiles WARNING archive',archive,'No favorites found'
 
-        # establish threads
+        # establish threads.
+        # first step is to use metadata (Message-id, References and In-Reply-To) to create threads.
+        # second step is to merge neighboring threads with identical subjects
             ref     = favInFile[archive][jref['References:']]['References:']
             subject = favInFile[archive][jref['Subject:']]['Subject:']
             msgid   = favInFile[archive][jref['Message-ID:']]['Message-ID:']
             irt     = favInFile[archive][jref['In-Reply-To:']]['In-Reply-To:']
+
+        ## 'clean' the subject line, this removes superfluous information in the subject.
+        ## Note that cleaning can yield a zero-length string for the subject
+            subject = self.cleanSubject(subject)
 
             arch0 = self.locateRef(Threads,irt,ref,archive,subject)
             if arch0 is None:    # could not find reference or irt, so make this first message in a thread
@@ -190,6 +196,11 @@ class analyzeCUF():
             else:
                 Threads[arch0][1].append( (archive,msgid,irt) )
 
+        ### try to merge neighboring threads with identical subjects
+        Threads = self.mergeNeighbors(Threads)
+        ### now merge interleaved threads
+        Threads = self.mergeInterleaved(Threads)
+                
         ### report on threads
         print '\nanalyzeCUF.processFiles   REPORT ON THREADS +++++++++++++++++++++++++++++++++++++++'
         print 'Total files',len(files),'Total threads',len(Threads)
@@ -199,7 +210,6 @@ class analyzeCUF():
             if archive in Threads:
                 threadOrder.append(archive)
                 subject = Threads[archive][0]
-                subject = self.cleanSubject(subject)
                 ThreadSubjects[archive] = subject
 
                 if subject=='' or subject==' ':
@@ -220,8 +230,8 @@ class analyzeCUF():
         for i,archive in enumerate(threadOrder):
             if archive in ThreadSubjects:
                 s1 = ThreadSubjects[archive]
-                dups,sims = [],[]
-                sdups, ssims = [],[]
+                dups,sims,dupspan = [],[],[]    # archive or message numbers of duplicates, similar, span between duplicate threads
+                sdups, ssims = [],[] # subject of duplicates, similar messages
                 
                 for j,a in enumerate(threadOrder[i+1:]):
                     if a not in dupThreads:
@@ -232,20 +242,100 @@ class analyzeCUF():
                                 if j==0: dupIsNextThread.append(a)
                                 dups.append(a)
                                 sdups.append(s2)
+                                dupspan.append(j)
                             if len(s1)>0 and len(s2)>0 and (s1 in s2 or s2 in s1) :
                                 sims.append(a)
                                 ssims.append(s2)
                 if len(dups)>0 or (len(sims)>0 and self.debug>1) :
-                    print archive,s1,'has',len(dups),'identical threads:',dups,sdups,'and',len(sims),'similar threads',sims,ssims
+                    #print archive,dups,dupspan
+                    words = '{0} {1} has {2} identical threads(span):'.format(archive,s1,len(dups))
+                    fmt = " {}({}),"
+                    for w1,w2 in zip(dups,dupspan): words += fmt.format(w1,w2)
+                    if self.debug>1:
+                        fmt  = ("{:>"+str(max([len(q) for q in sims])+1)+"}")*len(sims)
+                        words += 'and {0} similar threads:' + fmt.format(*sims)
+                        fmt  = ("{:>"+str(max([len(q) for q in ssims])+1)+"}")*len(ssims)
+                        words += fmt.format(*ssims)
+                    print words
+                    #print archive,s1,'has',len(dups),'identical threads:',dups,sdups,'and',len(sims),'similar threads',sims,ssims
         print 'analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread'
              
         return
+    def mergeInterleaved(self,Threads):
+        '''
+        return dict newThreads with interleaved threads with identical subjects merged
+
+        Let Li = list of message numbers from Thread Ti with Lij as the jth message in list Li, 
+        then T1 is interleaved with T2, if L10< L2j < L1n for 0<=j<len(L2)
+
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+
+        Use 2 step procedure. 
+        First loop through threads in order to create all the merged threads, 
+        then add all the original threads that did not need to be merged
+        '''
+        newThreads = {}
+        badThreads = []
+        for i,a1 in enumerate(self.msgOrder):
+            if a1 in Threads:
+                S1 = Threads[a1][0]
+                limits = []
+                for j in [0,-1]:  # get index of first,last message number
+                    A = Threads[a1][1][j][0]
+                    if A in self.msgOrder:
+                        jx = self.msgOrder.index(A)
+                    else:
+                        print 'analyzeCUF.mergeInterleaved ERROR j,A',j,A,'not in self.msgOrder for a1,Threads[a1]',a1,Threads[a1]
+                        jx = 0
+                    limits.append(jx)
+                for a2 in self.msgOrder[i+1:]:
+                    if a2 in Threads:
+                        S2 = Threads[a2][0]
+                        if S2==S1:
+                            jx = self.msgOrder.index(a2)
+                            A0 = Threads[a1][1][0][0]
+                            An = Threads[a1][1][-1][0]
+                            if self.debug > 2 : print 'analyzeCUF.mergeInterleaved a1,S1,limits,A0,An,a2,jx',a1,S1,limits,A0,An,a2,jx,'Interleaved=',limits[0]<jx<limits[1]
+                            if limits[0]<jx<limits[1]:
+                                if a1 in newThreads: print 'analyzeCUF.mergeInterleaved ERROR Overwriting newThreads for key',a1
+                                newThreads[a1] = Threads[a1]
+                                newThreads[a1][1].extend( Threads[a2][1] )
+                                badThreads.append( a2 )
+        if self.debug > 2 : print 'analyzeCUF.mergeInterleaved badThreads',badThreads,'keys in newThreads',[key for key in sorted(newThreads)]
+        for a1 in Threads:
+            if a1 not in badThreads and a1 not in newThreads: newThreads[a1] = Threads[a1]
+        print 'analyzeCUF.mergeInterleaved',len(Threads),'input Threads,',len(newThreads),'output Threads, so',len(badThreads),'were merged.'
+        return newThreads
+    def mergeNeighbors(self,Threads):
+        '''
+        return dict newThreads with neighboring threads with identical subjects merged
+
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+        '''
+        newThreads = {}
+        lastA,lastSubject = None,None
+        for archive in self.msgOrder:
+            if archive in Threads:
+                if self.debug > 2 : print 'ananlyzeCUF.mergeNeighbors archive,lastA',archive,lastA
+                Subject = Threads[archive][0]
+                if lastA is None:
+                    newThreads[archive] = Threads[archive]
+                else:
+                    if lastSubject==Subject:
+                        newThreads[lastA][1].extend( Threads[archive][1] )
+                    else:
+                        newThreads[archive] = Threads[archive]
+                lastA = archive
+                lastSubject = Subject
+        print 'analyzeCUF.mergeNeighbors',len(Threads),'initial threads and',len(newThreads),'after merge. So',len(Threads)-len(newThreads),'were merged.'
+        return newThreads                        
     def locateRef(self,Threads,irt,ref,archive,subj):
         '''
         return key of Threads such that msgid of Threads[key] is found in irt (=In-Response-To), 
         if nothing in irt, then try ref (=References)
         archive is the message identifier that contains ref
-        check if there are multiple keys that satisfy this requirement
+        check if there are multiple keys that satisfy this requirement.
+        Note that input subj is only used for print statements and not or locating the reference of the input message. 
 
         Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
         '''
