@@ -6,11 +6,12 @@ analyze archive information from comp-users-forum
 #import math
 import sys,os
 import glob
-#import csv
-#import operator
-#import xlrd
-#import copy
+import matplotlib.pyplot as plt
+import numpy
 
+#import operator
+
+#import copy
 
 #from collections import Counter
 
@@ -18,11 +19,14 @@ import glob
 
 
 class analyzeCUF():
-    def __init__(self):
+    def __init__(self,debug=0,plotToFile=False):
 
-        print 'analyzeCUF.__init__'
         
-        self.debug = 0 
+        self.debug = debug
+        self.plotToFile = plotToFile
+        print 'analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile
+
+        self.figDir = 'FIGURES'
 
         self.DATA_DIR = 'DATA/'
 
@@ -106,6 +110,28 @@ class analyzeCUF():
         s = s.strip()
         if self.debug > 2 : print 'analyzeCUF.cleanSubject Original subject',subject,'Final subject',s
         return s
+    def getSpan(self,a1,a2):
+        '''
+        return span between two messages with keys a1, a2
+        if a1 or a2 is not a valid key, print an error message and
+        return -1 
+        '''
+        i1,i2 = -2,-1
+        hdr = 'analyzeCUF.getSPAN ERROR'
+        words = ''
+        if a1 in self.msgOrder :
+            i1 = self.msgOrder.index(a1)
+        else:
+            words += ' {} is not a valid message key.'.format(a1)
+        if a2 in self.msgOrder :
+            i2 = self.msgOrder.index(a2)
+        else:
+            words += ' {} is not a valid message key.'.format(a2)
+        if len(words)>0 :
+            print hdr,words
+            return -1
+
+        return abs(i1-i2)
     def processFiles(self,files):
         '''
         process files. Each file is one entry in the archive.
@@ -216,15 +242,16 @@ class analyzeCUF():
                     print archive,'Subject',Threads[archive][0],'has weird clean subject',subject
                 
                 alist = [a[0] for a in Threads[archive][1] ]   # list of message in archive
-                sep   = [self.msgOrder.index(a[0]) for a in Threads[archive][1] ] # indices of message in archive in list
-                span  = max(sep) - min(sep)  # #messages between last,first message in thread
+                span  =self.getSpan(alist[0],alist[-1])  # #messages between last,first message in thread
                 tlen = len(alist)  # total length of thread
                 
                 if self.debug >-1 : print 'Thread',archive,'subject',subject,'length',tlen,'span',span,'entries',alist
                 if self.debug > 0 : print 'Thread',archive,'Contents',Threads[archive]
 
         ### look for threads with identical 'clean' subjects
-        print '\nanalyzeCUF.processFiles Check threads for identical or similar subjects'
+        print '\nanalyzeCUF.processFiles Check threads for identical',
+        if self.debug>1: print 'or similar',
+        print 'subjects. Span is the number of messages between the first message of two threads.'
         dupThreads = []
         dupIsNextThread = []
         for i,archive in enumerate(threadOrder):
@@ -242,7 +269,7 @@ class analyzeCUF():
                                 if j==0: dupIsNextThread.append(a)
                                 dups.append(a)
                                 sdups.append(s2)
-                                dupspan.append(j)
+                                dupspan.append( self.getSpan(archive,a) )
                             if len(s1)>0 and len(s2)>0 and (s1 in s2 or s2 in s1) :
                                 sims.append(a)
                                 ssims.append(s2)
@@ -260,6 +287,47 @@ class analyzeCUF():
                     #print archive,s1,'has',len(dups),'identical threads:',dups,sdups,'and',len(sims),'similar threads',sims,ssims
         print 'analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread'
              
+        return Threads
+    def analyzeThreads(self,Threads):
+        '''
+        analyze of dict Threads
+
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+
+        Number of message per thread
+        Span of messages in thread
+        '''
+        nFiles = self.nFiles # total number of messages in archive
+        nThreads = len(Threads) # total number of threads among messages
+        print '\nanalyzeCUF.analyzeThreads',nFiles,'total messages in archive with',nThreads,'threads identified'
+        
+        msgPerT = [] # number of messages per thread
+        spanPerT= [] # span of messages in thread
+        for archive in self.msgOrder:
+            if archive in Threads:
+                msgIds = [x[0] for x in Threads[archive][1]]
+                msgPerT.append( len(msgIds) )
+                span = self.getSpan( msgIds[0],msgIds[-1] )
+                spanPerT.append( span )
+
+        # plots
+        for A,label in zip([msgPerT,spanPerT], ['Messages per thread', 'Span of messages in threads']):
+            x1 = 0.5
+            nbin = max(A)+1
+            x2 = float(nbin) + x1
+            Y = numpy.array(A)
+            plt.hist(Y,nbin, range=[x1,x2] )
+            plt.xlabel(label)
+            median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
+            title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
+            plt.title(title)
+            print 'analyzeCUF.analyzeThreads',label,title
+
+            plt.grid()
+            self.showOrPlot(label)
+
+        
+                
         return
     def mergeInterleaved(self,Threads):
         '''
@@ -374,16 +442,60 @@ class analyzeCUF():
                 print 'analyzeCUF.locateRef matchedKeys',matchedKeys
             key = matchedKeys[0]
         return key
+
+    def showOrPlot(self,words):
+        '''
+        show plot interactively or put it in a file
+
+        and clear plot after showing or drawing
+        '''
+
+        if self.plotToFile:
+            filename = self.titleAsFilename(words)
+            pdf = self.figDir + '/' + filename + '.pdf'
+            plt.savefig(pdf)
+            print 'analyzeCUF.showOrPlot Wrote',pdf
+            plt.close() # avoid runtime warning?
+        else:
+            plt.show()
+        plt.clf()
+        return
+    def titleAsFilename(self,title):
+        '''
+        return ascii suitable for use as a filename
+        list of characters to be replaced is taken from https://stackoverflow.com/questions/4814040/allowed-characters-in-filename
+        '''
+        r = {'_': [' ', ',',  '\\', '/', ':', '"', '<', '>', '|'], 'x': ['*']}
+        filename = title
+        filename = ' '.join(filename.split()) # substitutes single whitespace for multiple whitespace
+        for new in r:
+            for old in r[new]:
+                if old in filename : filename = filename.replace(old,new)
+        return filename    
     def main(self):
         '''
         main module for analysis
         '''
         files,msgOrder = self.getArchive()
         self.msgOrder = msgOrder
+        self.nFiles   = len(files)
         if self.debug > 2 : print 'analyzeCUF.main self.msgOrder',self.msgOrder
-        self.processFiles(files)
+        Threads = self.processFiles(files)
+        self.analyzeThreads(Threads)
 if __name__ == '__main__' :
 
-    ss = analyzeCUF()
-    ss.main()
+    debug = -1
+    plotToFile = False
+
+    if len(sys.argv)>1 :
+        w = sys.argv[1]
+        if 'help' in w.lower():
+            print 'USAGE:    python analyzeCUF.py [debug] [plotToFile] '
+            print 'DEFAULTS: python analyzeCUF.py',debug,plotToFile
+            sys.exit('help was provided. use it')
+    if len(sys.argv)>1 : debug = int(sys.argv[1])
+    if len(sys.argv)>2 : plotToFile = bool(sys.argv[2])
+    
+    aCUF = analyzeCUF(debug=debug,plotToFile=plotToFile)
+    aCUF.main()
     
