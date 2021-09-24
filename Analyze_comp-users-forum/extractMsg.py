@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 '''
 extract the original email text from a message from comp-users-forum
+
+main use is extractMsg.getEmailMsg(filename) 
+where filename is the file that contains one message from 
+the comp-users-forum archive
+
 20210922
 '''
 #import math
@@ -133,7 +138,7 @@ class extractMsg():
         open input file, get the best part of the message using msgFix
         and decode it if it is base64-encoded
         '''
-        dthres = 0 -1 # overall debug threshold in this module
+        dthres = 1 # overall debug threshold in this module
         
         f = open(fn,'r')
         if self.debug > 0 : print 'extractMsg.decodeText fn',fn
@@ -143,10 +148,8 @@ class extractMsg():
         msg = self.msgFix(msg)
                     
         if self.debug > dthres : print 'extractMsg.decodeText fixed msg',msg
-
         if self.debug > dthres : print 'extractMsg.decodeText msg.items()',msg.items()
-            
-        decoded = False
+
         plaintext, charset = False, None
         for item in msg.items():
             if 'Content-Type' in item[0]:
@@ -162,17 +165,18 @@ class extractMsg():
                 k = s.index(charset) + len(charset)
                 if self.debug > dthres : print 'extractMsg.decodeText charset k',k
                 s = s[k:]
-            extraClean = True  # try to remove header before base64 decoding
+            extraClean = True  # try to remove header and extraneous text before base64 decoding
             if extraClean:
-                colon = ': '
-                while colon in s:
-                    k = s.index(colon) + len(colon)
-                    if self.debug > dthres : print 'extractMsg.decodeText colon k',k
-                    s = s[k:]
                 cr = '\n'
-                if cr in s:
+                while cr in s:
                     k = s.index(cr) + len(cr)
-                    s = s[k:]
+                    l1 = len(s[:k])
+                    l2 = len(s[:k].strip())
+                    l3 = len(s[:k].replace(' ',''))
+                    if min(l1,l2,l3)>0 and l1==l3 and l2+1==l1:
+                        break
+                    else:
+                        s = s[k:]
                     
             if self.debug > dthres : print 'extractMsg.decodeText final s\n',s
             
@@ -180,7 +184,9 @@ class extractMsg():
                 s = base64.b64decode(s)
             except:
                 s = ''
-            if s=='' and self.debug > dthres : print 'extractMsg.decodeText base64 decode Exception' 
+
+            if s=='' and self.debug > dthres : print 'extractMsg.decodeText base64 decode Exception'
+                
         if self.debug > dthres : print 'extractMsg.decodeText after base64 decoding, s\n',s
         return s
     def msgFix(self,msg):
@@ -232,7 +238,7 @@ if __name__ == '__main__' :
         eM.listParts(fn)
         sys.exit('extractMsg listParts ' + fn)
 
-    getEmailMsg =  not False
+    getEmailMsg =  False
     if getEmailMsg:
         fn = 'DATA/comp-users-forum_2021-01/107'
         fn = 'DATA/comp-users-forum_2021-06/27'
@@ -242,7 +248,7 @@ if __name__ == '__main__' :
         print 'message from',fn,'\n',msg
         sys.exit('extractMsg '+fn)
 
-    finalTest = False
+    finalTest = not False
     if finalTest:
         eM.finalTest()
         sys.exit('extractMsg.finalTest completed')
