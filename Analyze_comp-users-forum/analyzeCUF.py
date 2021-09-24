@@ -9,13 +9,15 @@ import glob
 import matplotlib.pyplot as plt
 import numpy
 
+import extractMsg   # extracts the email message from a file
+
 #import operator
 
 #import copy
 
 #from collections import Counter
 
-#import datetime
+import datetime
 
 
 class analyzeCUF():
@@ -25,6 +27,8 @@ class analyzeCUF():
         self.debug = debug
         self.plotToFile = plotToFile
         print 'analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile
+
+        self.extractMsg = extractMsg.extractMsg()
 
         self.figDir = 'FIGURES'
 
@@ -85,6 +89,17 @@ class analyzeCUF():
         i = fn.index(self.MLname) + len(self.MLname) + 1
         archive = fn[i:]   # = yyyy-mm/msg#
         return archive
+    def getMonth(self,s):
+        '''
+        return yyyy-mm = year and month of message specified by input string s
+        '''
+        y = s
+        if self.MLname in y:
+            y = self.getMessage(y)
+        if '/' in y:
+            i = y.index('/')
+            y = y[:i]
+        return y
     def cleanSubject(self,subject):
         '''
         clean up subject line by removing every speck of dirt
@@ -296,21 +311,34 @@ class analyzeCUF():
 
         Number of message per thread
         Span of messages in thread
+        Threads per month
         '''
         nFiles = self.nFiles # total number of messages in archive
         nThreads = len(Threads) # total number of threads among messages
         print '\nanalyzeCUF.analyzeThreads',nFiles,'total messages in archive with',nThreads,'threads identified'
         
+        # list threads by subject, alphabetically
+        print '\nanalyzeCUF.analyzeThreads list of threads by subject, alphabetically'
+        for aT in sorted(Threads.items(), key=lambda v: v[1][0]):
+            key = aT[0]
+            Subject = Threads[key][0]
+            print key,Subject
+        
         msgPerT = [] # number of messages per thread
         spanPerT= [] # span of messages in thread
+        tPerM   = {} # threads per month
+        
         for archive in self.msgOrder:
             if archive in Threads:
+                ym = self.getMonth(archive)
+                if ym not in tPerM : tPerM[ym] = 0
+                tPerM[ym] += 1
                 msgIds = [x[0] for x in Threads[archive][1]]
                 msgPerT.append( len(msgIds) )
                 span = self.getSpan( msgIds[0],msgIds[-1] )
                 spanPerT.append( span )
 
-        # plots
+        # histograms
         for A,label in zip([msgPerT,spanPerT], ['Messages per thread', 'Span of messages in threads']):
             x1 = 0.5
             nbin = max(A)+1
@@ -326,6 +354,28 @@ class analyzeCUF():
             plt.grid()
             self.showOrPlot(label)
 
+        # plots
+        title = 'Threads per month'
+        x,y = [],[]
+        xlims = [ sorted(tPerM)[0], sorted(tPerM)[-1] ]
+        xlims[0] = xlims[0][:5]+'01'
+        xlims[1] = xlims[1][:5]+'12'
+        dtlims = [datetime.datetime.strptime(q,'%Y-%m') for q in xlims]
+        for ym in sorted(tPerM):
+            y.append( tPerM[ym] )
+            dt = datetime.datetime.strptime(ym,'%Y-%m') # YYYY-MM
+            x.append( dt )
+        ax = plt.subplot(111)
+        ax.bar(x,y)
+        ax.set_xlim(dtlims)
+
+        ax.xaxis_date()
+        ax.set_title(title)
+        ax.figure.autofmt_xdate(rotation=80)
+        plt.grid()
+        
+        self.showOrPlot(title)
+        
         
                 
         return

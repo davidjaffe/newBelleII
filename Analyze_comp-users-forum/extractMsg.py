@@ -18,6 +18,7 @@ class extractMsg():
     def __init__(self):
         self.debug = 0
         self.badKeys = {}
+        print 'extractMsg.__init__ completed'
         return
     def bigTest(self):
         '''
