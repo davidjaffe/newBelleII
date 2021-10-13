@@ -151,11 +151,13 @@ class analyzeCUF():
     def processFiles(self,files):
         '''
         process files. Each file is one entry in the archive.
-        collect threads in dict. Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+        collect threads in dict. 
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
         where archive0 is the message identifier of the form yyyy-mm/N for message#N,
         msgid0 = Message-Id0 = Message-Id for archive0. Subsequent messages with Message-Id in References are part of the thread
         irt0 = In-Response-To for archive0
         Subject0    = Subject for archive0
+        from0 = From for archive0
 
         References for processing
         Thread identification: https://www.mhonarc.org/MHonArc/doc/faq/threads.html
@@ -176,8 +178,8 @@ class analyzeCUF():
 
         ignoreAfterThis = ['Begin forwarded message:']
 
-        favPerFile = {} # favPerFile[archive] = [ {key1:instances1}, {key2:instances2},...] where key1 is a key in favorites and instances are the number of instances of the key in the file referenced by archive
-        favInFile  = {} # favPerFile[archive] = [ {key1:content1}, {key2:content2} ] same as favPerFile except content is recorded for the first instance of key
+
+        favInFile  = {} # favInFile[archive] = [ {key1:content1}, {key2:content2} ] same as key1 is a key in favorites and content is recorded for the first instance of key
         Threads = {}
         
         for fn in files:
@@ -196,16 +198,14 @@ class analyzeCUF():
                         content = msg[msgKey]
                         content = content.strip() # remove leading and trailing spaces
                         
-                        if archive not in favPerFile: # initialization of dicts, increment favInFile
-                            favPerFile[archive] = [{K:0} for K in sorted(favorites)]
+                        if archive not in favInFile: # initialization of dicts, increment favInFile
                             favInFile[archive]  = [{K:''} for K in sorted(favorites)]
-                            favPerFile[archive][jref[key]][key] += 1
+
                         j = jref[key]
                         if favInFile[archive][j][key]=='' : favInFile[archive][j][key] = content
             
-            if archive in favPerFile:
+            if archive in favInFile:
                 if self.debug > 2 :
-                    print 'analyzeCUF.processFiles archive,favPerFile[archive]',archive,favPerFile[archive]
                     print 'analyzeCUF.processFiles archive,favInFile[archive]',archive,favInFile[archive]
             else:
                 print 'analyzeCUF.processFiles WARNING archive',archive,'No favorites found'
@@ -217,6 +217,7 @@ class analyzeCUF():
             subject = favInFile[archive][jref['Subject']]['Subject']
             msgid   = favInFile[archive][jref['Message-ID']]['Message-ID']
             irt     = favInFile[archive][jref['In-Reply-To']]['In-Reply-To']
+            whoFrom = favInFile[archive][jref['From']]['From']
 
         ## 'clean' the subject line, this removes superfluous information in the subject.
         ## Note that cleaning can yield a zero-length string for the subject
@@ -224,11 +225,11 @@ class analyzeCUF():
 
             arch0 = self.locateRef(Threads,irt,ref,archive,subject)
             if arch0 is None:    # could not find reference or irt, so make this first message in a thread
-                Threads[archive] = [subject, [(archive,msgid,irt)] ]
+                Threads[archive] = [subject, [(archive,msgid,irt,whoFrom)] ]
             elif arch0 not in Threads:
                 sys.exit('analyzeCUF:processFiles ERROR arch0 '+arch0+' not in Threads')
             else:
-                Threads[arch0][1].append( (archive,msgid,irt) )
+                Threads[arch0][1].append( (archive,msgid,irt,whoFrom) )
 
         ### try to merge neighboring threads with identical subjects
         Threads = self.mergeNeighbors(Threads)
@@ -376,6 +377,7 @@ class analyzeCUF():
             msgid   = favInFile[archive][jref['Message-ID:']]['Message-ID:']
             irt     = favInFile[archive][jref['In-Reply-To:']]['In-Reply-To:']
 
+
         ## 'clean' the subject line, this removes superfluous information in the subject.
         ## Note that cleaning can yield a zero-length string for the subject
             subject = self.cleanSubject(subject)
@@ -458,7 +460,7 @@ class analyzeCUF():
         '''
         analyze of dict Threads
 
-        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
 
         Number of message per thread
         Span of messages in thread
@@ -474,6 +476,30 @@ class analyzeCUF():
             key = aT[0]
             Subject = Threads[key][0]
             print key,Subject
+
+        # analyze thread by reporter and responder
+        print '\nanalyzeCUF.analyzeThreads by reporter and responder'
+        Reporters = []
+        Responders= []
+        for archive in self.msgOrder:
+            if archive in Threads:
+                whoFrom = []
+                for tupl in Threads[archive][1]:
+                    whoFrom.append(tupl[3])
+                rep,res = None,None
+                if len(whoFrom)>0: rep = whoFrom[0]
+                if len(whoFrom)>1: res = whoFrom[1]
+                Reporters.append(rep)
+                Responders.append(res)
+                print 'analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom
+                print 'analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res
+        print 'analyzeCUF.analyzeThreads Reporters',Reporters
+        print 'analyzeCUF.analyzeThreads Responders',Responders
+        dictReporters = {i:Reporters.count(i) for i in Reporters}
+        dictResponders= {i:Responders.count(i) for i in Responders}
+        print 'analyzeCUF.analyzeThreads dictReporters',dictReporters
+        print 'analyzeCUF.analyzeThreads dictRespoinders',dictResponders
+        
         
         msgPerT = [] # number of messages per thread
         spanPerT= [] # span of messages in thread
@@ -537,7 +563,7 @@ class analyzeCUF():
         Let Li = list of message numbers from Thread Ti with Lij as the jth message in list Li, 
         then T1 is interleaved with T2, if L10< L2j < L1n for 0<=j<len(L2)
 
-        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
 
         Use 2 step procedure. 
         First loop through threads in order to create all the merged threads, 
@@ -562,8 +588,8 @@ class analyzeCUF():
                         S2 = Threads[a2][0]
                         if S2==S1:
                             jx = self.msgOrder.index(a2)
-                            A0 = Threads[a1][1][0][0]
-                            An = Threads[a1][1][-1][0]
+                            A0 = Threads[a1][1][0][0]   # archive for first entry in thread
+                            An = Threads[a1][1][-1][0]  # archive for last entry in thread
                             if self.debug > 2 : print 'analyzeCUF.mergeInterleaved a1,S1,limits,A0,An,a2,jx',a1,S1,limits,A0,An,a2,jx,'Interleaved=',limits[0]<jx<limits[1]
                             if limits[0]<jx<limits[1]:
                                 if a1 in newThreads: print 'analyzeCUF.mergeInterleaved ERROR Overwriting newThreads for key',a1
@@ -579,7 +605,7 @@ class analyzeCUF():
         '''
         return dict newThreads with neighboring threads with identical subjects merged
 
-        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
         '''
         newThreads = {}
         lastA,lastSubject = None,None
@@ -606,7 +632,8 @@ class analyzeCUF():
         check if there are multiple keys that satisfy this requirement.
         Note that input subj is only used for print statements and not or locating the reference of the input message. 
 
-        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+
         '''
         if self.debug > 1 : print 'analyzeCUF.locateRef: inputs archive, subj, irt, ref',archive, subj, irt, ref
 
@@ -617,7 +644,7 @@ class analyzeCUF():
             if key in Threads:
                 keysInSearch.append(key)
                 for tupl in Threads[key][1]:
-                    archN,msgidN,irtN = tupl
+                    archN,msgidN,irtN,fromN = tupl
                     if msgidN in irt:
                         if key not in irtMatchedKeys: irtMatchedKeys.append(key)
                     if msgidN in ref:
