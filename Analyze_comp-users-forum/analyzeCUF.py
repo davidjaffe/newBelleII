@@ -11,6 +11,7 @@ import numpy
 
 import extractMsg   # extracts the email message from a file
 
+import email
 #import operator
 
 #import copy
@@ -160,6 +161,156 @@ class analyzeCUF():
         Thread identification: https://www.mhonarc.org/MHonArc/doc/faq/threads.html
         '''
 
+        # define favorite keys and instructions
+        # jref[key] is the index of key in order of sorted keys
+        favorites = {'Subject' : [0, self.MLname,'noRequirement'],
+                         'References' : [0,'noRequirement'],
+                         'In-Reply-To': [0,'noRequirement'],
+                         'Message-ID' : [0,'lastLower3'],
+                         'From' : [0,'noRequirement']
+                         } # {keyword : [required index,required string1]}
+        jref = {}
+        for j,key in enumerate(sorted(favorites)):
+            jref[key] = j
+
+
+        ignoreAfterThis = ['Begin forwarded message:']
+
+        favPerFile = {} # favPerFile[archive] = [ {key1:instances1}, {key2:instances2},...] where key1 is a key in favorites and instances are the number of instances of the key in the file referenced by archive
+        favInFile  = {} # favPerFile[archive] = [ {key1:content1}, {key2:content2} ] same as favPerFile except content is recorded for the first instance of key
+        Threads = {}
+        
+        for fn in files:
+            archive = self.getMessageN(fn) # = yyyy-mm/msg#
+            if self.debug > 0 : print 'analyzeCUF.processFiles archive',archive
+            f = open(fn,'r')
+            msg = email.message_from_file(f)
+            f.close()
+
+            if self.debug > 1 : print 'analyzerCUF.processFiles archive',archive,'msg.keys()',msg.keys()
+
+            for key in favorites:
+                favLow = key.lower()
+                for msgKey in msg.keys():
+                    if msgKey.lower() == favLow:
+                        content = msg[msgKey]
+                        content = content.strip() # remove leading and trailing spaces
+                        
+                        if archive not in favPerFile: # initialization of dicts, increment favInFile
+                            favPerFile[archive] = [{K:0} for K in sorted(favorites)]
+                            favInFile[archive]  = [{K:''} for K in sorted(favorites)]
+                            favPerFile[archive][jref[key]][key] += 1
+                        j = jref[key]
+                        if favInFile[archive][j][key]=='' : favInFile[archive][j][key] = content
+            
+            if archive in favPerFile:
+                if self.debug > 2 :
+                    print 'analyzeCUF.processFiles archive,favPerFile[archive]',archive,favPerFile[archive]
+                    print 'analyzeCUF.processFiles archive,favInFile[archive]',archive,favInFile[archive]
+            else:
+                print 'analyzeCUF.processFiles WARNING archive',archive,'No favorites found'
+
+        # establish threads.
+        # first step is to use metadata (Message-id, References and In-Reply-To) to create threads.
+        # second step is to merge neighboring threads with identical subjects
+            ref     = favInFile[archive][jref['References']]['References']
+            subject = favInFile[archive][jref['Subject']]['Subject']
+            msgid   = favInFile[archive][jref['Message-ID']]['Message-ID']
+            irt     = favInFile[archive][jref['In-Reply-To']]['In-Reply-To']
+
+        ## 'clean' the subject line, this removes superfluous information in the subject.
+        ## Note that cleaning can yield a zero-length string for the subject
+            subject = self.cleanSubject(subject)
+
+            arch0 = self.locateRef(Threads,irt,ref,archive,subject)
+            if arch0 is None:    # could not find reference or irt, so make this first message in a thread
+                Threads[archive] = [subject, [(archive,msgid,irt)] ]
+            elif arch0 not in Threads:
+                sys.exit('analyzeCUF:processFiles ERROR arch0 '+arch0+' not in Threads')
+            else:
+                Threads[arch0][1].append( (archive,msgid,irt) )
+
+        ### try to merge neighboring threads with identical subjects
+        Threads = self.mergeNeighbors(Threads)
+        ### now merge interleaved threads
+        Threads = self.mergeInterleaved(Threads)
+                
+        ### report on threads
+        print '\nanalyzeCUF.processFiles   REPORT ON THREADS +++++++++++++++++++++++++++++++++++++++'
+        print 'Total files',len(files),'Total threads',len(Threads)
+        threadOrder = []
+        ThreadSubjects = {}
+        for archive in self.msgOrder:
+            if archive in Threads:
+                threadOrder.append(archive)
+                subject = Threads[archive][0]
+                ThreadSubjects[archive] = subject
+
+                if subject=='' or subject==' ':
+                    print archive,'Subject',Threads[archive][0],'has weird clean subject',subject
+                
+                alist = [a[0] for a in Threads[archive][1] ]   # list of message in archive
+                span  =self.getSpan(alist[0],alist[-1])  # #messages between last,first message in thread
+                tlen = len(alist)  # total length of thread
+                
+                if self.debug >-1 : print 'Thread',archive,'subject',subject,'length',tlen,'span',span,'entries',alist
+                if self.debug > 0 : print 'Thread',archive,'Contents',Threads[archive]
+
+        ### look for threads with identical 'clean' subjects
+        print '\nanalyzeCUF.processFiles Check threads for identical',
+        if self.debug>1: print 'or similar',
+        print 'subjects. Span is the number of messages between the first message of two threads.'
+        dupThreads = []
+        dupIsNextThread = []
+        for i,archive in enumerate(threadOrder):
+            if archive in ThreadSubjects:
+                s1 = ThreadSubjects[archive]
+                dups,sims,dupspan = [],[],[]    # archive or message numbers of duplicates, similar, span between duplicate threads
+                sdups, ssims = [],[] # subject of duplicates, similar messages
+                
+                for j,a in enumerate(threadOrder[i+1:]):
+                    if a not in dupThreads:
+                        if a!=archive:
+                            s2 = ThreadSubjects[a]
+                            if s1==s2 :
+                                if a not in dupThreads: dupThreads.append(a)
+                                if j==0: dupIsNextThread.append(a)
+                                dups.append(a)
+                                sdups.append(s2)
+                                dupspan.append( self.getSpan(archive,a) )
+                            if len(s1)>0 and len(s2)>0 and (s1 in s2 or s2 in s1) :
+                                sims.append(a)
+                                ssims.append(s2)
+                if len(dups)>0 or (len(sims)>0 and self.debug>1) :
+                    #print archive,dups,dupspan
+                    words = '{0} {1} has {2} identical threads(span):'.format(archive,s1,len(dups))
+                    fmt = " {}({}),"
+                    for w1,w2 in zip(dups,dupspan): words += fmt.format(w1,w2)
+                    if self.debug>1:
+                        fmt  = ("{:>"+str(max([len(q) for q in sims])+1)+"}")*len(sims)
+                        words += 'and {0} similar threads:' + fmt.format(*sims)
+                        fmt  = ("{:>"+str(max([len(q) for q in ssims])+1)+"}")*len(ssims)
+                        words += fmt.format(*ssims)
+                    print words
+                    #print archive,s1,'has',len(dups),'identical threads:',dups,sdups,'and',len(sims),'similar threads',sims,ssims
+        print 'analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread'
+             
+        return Threads
+    def OLDprocessFiles(self,files):
+        '''
+        process files. Each file is one entry in the archive.
+        collect threads in dict. Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+        where archive0 is the message identifier of the form yyyy-mm/N for message#N,
+        msgid0 = Message-Id0 = Message-Id for archive0. Subsequent messages with Message-Id in References are part of the thread
+        irt0 = In-Response-To for archive0
+        Subject0    = Subject for archive0
+
+        References for processing
+        Thread identification: https://www.mhonarc.org/MHonArc/doc/faq/threads.html
+        '''
+
+        # define favorite keys and instructions
+        # jref[key] is the index of key in order of sorted keys
         favorites = {'Subject:' : [0, self.MLname,'noRequirement'],
                          'References:' : [0,'noRequirement'],
                          'In-Reply-To:': [0,'noRequirement'],
@@ -191,7 +342,7 @@ class analyzeCUF():
                     key,key2 = self.filter(line,favorites)
                     if key is not None:
                         
-                        if archive not in favPerFile:
+                        if archive not in favPerFile: # initialization of dicts, increment favInFile
                             favPerFile[archive] = [{K:0} for K in sorted(favorites)]
                             favInFile[archive]  = [{K:''} for K in sorted(favorites)]
                             favPerFile[archive][jref[key]][key] += 1
