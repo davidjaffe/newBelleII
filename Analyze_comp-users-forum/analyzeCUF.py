@@ -38,6 +38,33 @@ class analyzeCUF():
         self.MLname = 'comp-users-forum'
         
         self.msgOrder= None    # messages in proper numerical order
+
+        self.ADB = {} # Address DataBase ADB[ad0] = [ [ad0,name0], [ad1,name1], ...]
+
+        # prime address database with persons with problematic address,name combos
+        self.ADB['jvbennet@olemiss.edu'] =  [
+            ['jvbennet@olemiss.edu', 'jvbennet'],
+            ['jvbennet@olemiss.edu', 'Jake V Bennett'],
+            ['jvbennett@cmu.edu', 'Jake Bennett'],
+            ['jbennett@phy.olemiss.edu', 'Jake Bennett']]
+        self.ADB['mattb@post.kek.jp'] =  [
+            ['mattb@post.kek.jp', 'Matt Barrett'], 
+            ['matthew.barrett2@wayne.edu', 'Matthew Barrett']]
+        self.ADB['racha.cheaib@desy.de'] =  [
+            ['racha.cheaib@desy.de', 'RachaWork'],
+            ['racha.chouiab@mail.mcgill.ca', 'Racha Chouiab, Miss'],
+            ['rcheaib@olemiss.edu', 'rcheaib'],
+            ['rcheaib@phas.ubc.ca', 'Cheaib, Racha'],
+            ['rachac@mail.ubc.ca', 'Cheaib, Racha']]
+        self.ADB['sam.cunliffe@desy.de'] =[
+            ['sam.cunliffe@desy.de', 'Sam Cunliffe'],
+            ['samuel.cunliffe@pnnl.gov', 'Cunliffe, Samuel T']]
+        self.ADB['kato@hepl.phys.nagoya-u.ac.jp'] = [
+            ['kato@hepl.phys.nagoya-u.ac.jp', 'Yuji Kato'],
+            ['kato@hepl.phys.nagoya-u.ac.jp', ''],
+            ['kato@hepl.phys.nagoya-u.ac.jp', 'Yuji kato'],
+            ['katouyuuji@gmail.com', '=?UTF-8?B?5Yqg6Jek5oKg5Y+4?=']]
+
         
         return
     def getArchive(self):
@@ -53,36 +80,6 @@ class analyzeCUF():
             msgN = self.getMessageN(fn)
             msgOrder.append(msgN)
         return f,msgOrder
-    def filter(self,line,favorites):
-        '''
-        return keyword,key2 if line satisfies requirements in dict favorites[keyword], key2 is keyword as found
-        otherwise return None,None
-
-        dict :  {keyword : [required index,required string1,...,directive]}
-        where directive can be 'lastLowerN' where N is the number of characters 
-        at the end of the string to be checked for a match as lower case
-        '''
-        for key in favorites:
-            key2 = key
-            i,n = 1,0
-            if 'lastLower' in favorites[key][-1]: n = int(favorites[key][-1][-1])
-            found = key2 in line
-            while not found and i<=n:
-                key2 = key2[:-i] + key2[-i:].lower()
-                found = key2 in line
-                i += 1
-            OK = found
-
-            if OK:
-                OK = line.index(key2)==favorites[key][0]
-                if OK:
-                    for s in favorites[key][1:-1]:
-                        if self.debug > 2 : print 'analyzeCUF.filter s,line[:-1]',s,line[:-1]
-                        OK = OK and (s in line)
-            if OK:
-                if self.debug > 2 : print 'analyzeCUF.filter key,line[:-1]',key,line[:-1]
-                return key,key2
-        return None,None
     def getMessageN(self,fn):
         '''
         extract message number from file name fn
@@ -148,6 +145,78 @@ class analyzeCUF():
             return -1
 
         return abs(i1-i2)
+    def getAddr(self,whoFrom):
+        '''
+        return email address and name from contents of email 'From' field 
+        example: if usual content is 'Name <name@place>', then return name@place, Name
+
+        '''
+        if '<' not in whoFrom:
+            if '@' in whoFrom:
+                ad = whoFrom.strip()
+                name = ad
+            else:
+                sys.exit('analyzeCUF.getAddr INVALID CONTENT From='+whoFrom)
+        else:
+            s = whoFrom.split('<')
+            ad = s[1].replace('>','')
+            name = s[0].replace('"','').strip()
+        return ad,name
+    def fillADB(self,whoFrom):
+        '''
+        fill address database and return best email address based on content of 'From' field
+        best email address is the first email address encountered for a user with multiple 'From' field content
+        self.ADB = {} is the Address DataBase where
+        self.ADB[ad0] = [ [ad0,name0], [ad1,name1], ...]
+        ad0,name0 = first address,name encountered
+        ad1,name1 = second address,name encountered
+
+        when trying to associate different whoFrom content, 
+        require a match of the addresses or the names or the part of the address before '@'
+        '''
+        adOut = None # should get assigned below
+        ad,name = self.getAddr(whoFrom)
+        adB = ad.split('@')[0]
+        if self.debug > 2 : print 'analyzeCUF.fillADB input whoFrom,ad,name,adB',whoFrom,ad,name,adB,'len(self.ADB)',len(self.ADB)
+        if ad in self.ADB:
+            adOut = ad
+            found = False
+            for pair in self.ADB[ad]:
+                adX,nameX = pair
+                if adX==ad and nameX==name : found = True
+            if not found: self.ADB[ad].append( [ad,name] )
+        else:
+            done = False
+            for key in self.ADB:
+                new = []
+                for pair in self.ADB[key]:
+                    adX,nameX = pair
+                    if adX==ad or adX.split('@')[0]==adB or nameX==name:
+                        adOut = key
+                        new.append( [ad,name] )
+                        done = True
+                        break
+
+                if done:
+                    if len(new)>0 and new[0] not in self.ADB[key]: self.ADB[key].extend( new )
+                    break
+            if not done:
+                adOut = ad
+                if ad not in self.ADB : self.ADB[ad] = [ [ad,name] ]
+        if adOut is None:
+            print 'analyzeCUF.fillADB ERROR adOut',adOut,'whoFrom',whoFrom,'ad,name',ad,name,'self.ADB follows\n',self.ADB
+            sys.exit('analyzeCUF.fillADB ERROR adOut in None')
+        if self.debug > 2 : print 'analyzeCUF.fillADB output whoFrom,adOut',whoFrom,adOut,'len(self.ADB)',len(self.ADB)
+        return adOut
+    def reportADB(self):
+        '''
+        write contents of ADB to terminal
+        '''
+        print '\nanalyzeCUF.reportADB Contents of Address DataBase'
+        for key in sorted(self.ADB):
+            print key,self.ADB[key]
+        print '\n'
+        return
     def processFiles(self,files):
         '''
         process files. Each file is one entry in the archive.
@@ -212,12 +281,17 @@ class analyzeCUF():
 
         # establish threads.
         # first step is to use metadata (Message-id, References and In-Reply-To) to create threads.
+        # as part of first step, create a database of email addresses and names from the 'From' content of each message. alter the 'From' content to be an email address. Try to make the email address unique by tracking all addresses used by the same individual. 
         # second step is to merge neighboring threads with identical subjects
+        
             ref     = favInFile[archive][jref['References']]['References']
             subject = favInFile[archive][jref['Subject']]['Subject']
             msgid   = favInFile[archive][jref['Message-ID']]['Message-ID']
             irt     = favInFile[archive][jref['In-Reply-To']]['In-Reply-To']
-            whoFrom = favInFile[archive][jref['From']]['From']
+            whoFrom = wF0 = favInFile[archive][jref['From']]['From']
+            whoFrom = wF1 = self.fillADB(whoFrom)
+            if self.debug>2 and wF0!=wF1 :
+                print 'analyzeCUF.processFiles initial whoFrom',wF0,'final whoFrom',wF1
 
         ## 'clean' the subject line, this removes superfluous information in the subject.
         ## Note that cleaning can yield a zero-length string for the subject
@@ -231,165 +305,9 @@ class analyzeCUF():
             else:
                 Threads[arch0][1].append( (archive,msgid,irt,whoFrom) )
 
-        ### try to merge neighboring threads with identical subjects
-        Threads = self.mergeNeighbors(Threads)
-        ### now merge interleaved threads
-        Threads = self.mergeInterleaved(Threads)
+        ### report address database?
+        if self.debug > 1 : self.reportADB()
                 
-        ### report on threads
-        print '\nanalyzeCUF.processFiles   REPORT ON THREADS +++++++++++++++++++++++++++++++++++++++'
-        print 'Total files',len(files),'Total threads',len(Threads)
-        threadOrder = []
-        ThreadSubjects = {}
-        for archive in self.msgOrder:
-            if archive in Threads:
-                threadOrder.append(archive)
-                subject = Threads[archive][0]
-                ThreadSubjects[archive] = subject
-
-                if subject=='' or subject==' ':
-                    print archive,'Subject',Threads[archive][0],'has weird clean subject',subject
-                
-                alist = [a[0] for a in Threads[archive][1] ]   # list of message in archive
-                span  =self.getSpan(alist[0],alist[-1])  # #messages between last,first message in thread
-                tlen = len(alist)  # total length of thread
-                
-                if self.debug >-1 : print 'Thread',archive,'subject',subject,'length',tlen,'span',span,'entries',alist
-                if self.debug > 0 : print 'Thread',archive,'Contents',Threads[archive]
-
-        ### look for threads with identical 'clean' subjects
-        print '\nanalyzeCUF.processFiles Check threads for identical',
-        if self.debug>1: print 'or similar',
-        print 'subjects. Span is the number of messages between the first message of two threads.'
-        dupThreads = []
-        dupIsNextThread = []
-        for i,archive in enumerate(threadOrder):
-            if archive in ThreadSubjects:
-                s1 = ThreadSubjects[archive]
-                dups,sims,dupspan = [],[],[]    # archive or message numbers of duplicates, similar, span between duplicate threads
-                sdups, ssims = [],[] # subject of duplicates, similar messages
-                
-                for j,a in enumerate(threadOrder[i+1:]):
-                    if a not in dupThreads:
-                        if a!=archive:
-                            s2 = ThreadSubjects[a]
-                            if s1==s2 :
-                                if a not in dupThreads: dupThreads.append(a)
-                                if j==0: dupIsNextThread.append(a)
-                                dups.append(a)
-                                sdups.append(s2)
-                                dupspan.append( self.getSpan(archive,a) )
-                            if len(s1)>0 and len(s2)>0 and (s1 in s2 or s2 in s1) :
-                                sims.append(a)
-                                ssims.append(s2)
-                if len(dups)>0 or (len(sims)>0 and self.debug>1) :
-                    #print archive,dups,dupspan
-                    words = '{0} {1} has {2} identical threads(span):'.format(archive,s1,len(dups))
-                    fmt = " {}({}),"
-                    for w1,w2 in zip(dups,dupspan): words += fmt.format(w1,w2)
-                    if self.debug>1:
-                        fmt  = ("{:>"+str(max([len(q) for q in sims])+1)+"}")*len(sims)
-                        words += 'and {0} similar threads:' + fmt.format(*sims)
-                        fmt  = ("{:>"+str(max([len(q) for q in ssims])+1)+"}")*len(ssims)
-                        words += fmt.format(*ssims)
-                    print words
-                    #print archive,s1,'has',len(dups),'identical threads:',dups,sdups,'and',len(sims),'similar threads',sims,ssims
-        print 'analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread'
-             
-        return Threads
-    def OLDprocessFiles(self,files):
-        '''
-        process files. Each file is one entry in the archive.
-        collect threads in dict. Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
-        where archive0 is the message identifier of the form yyyy-mm/N for message#N,
-        msgid0 = Message-Id0 = Message-Id for archive0. Subsequent messages with Message-Id in References are part of the thread
-        irt0 = In-Response-To for archive0
-        Subject0    = Subject for archive0
-
-        References for processing
-        Thread identification: https://www.mhonarc.org/MHonArc/doc/faq/threads.html
-        '''
-
-        # define favorite keys and instructions
-        # jref[key] is the index of key in order of sorted keys
-        favorites = {'Subject:' : [0, self.MLname,'noRequirement'],
-                         'References:' : [0,'noRequirement'],
-                         'In-Reply-To:': [0,'noRequirement'],
-                         'Message-ID:' : [0,'lastLower3'],
-                         } # {keyword : [required index,required string1]}
-        jref = {}
-        for j,key in enumerate(sorted(favorites)): jref[key] = j
-
-        ignoreAfterThis = ['Begin forwarded message:']
-
-        favPerFile = {} # favPerFile[archive] = [ {key1:instances1}, {key2:instances2},...] where key1 is a key in favorites and instances are the number of instances of the key in the file referenced by archive
-        favInFile  = {} # favPerFile[archive] = [ {key1:content1}, {key2:content2} ] same as favPerFile except content is recorded for the first instance of key
-        Threads = {}
-        
-        for fn in files:
-            archive = self.getMessageN(fn) # = yyyy-mm/msg#
-            if self.debug > 0 : print 'analyzeCUF.processFiles archive',archive
-            f = open(fn,'r')
-            lines = f.readlines()
-            f.close()
-            
-            last = len(lines)
-            iline = 0
-            while iline<last:
-                line = lines[iline]
-                if any([(s in line) for s in ignoreAfterThis]) :
-                    iline = last
-                else:
-                    key,key2 = self.filter(line,favorites)
-                    if key is not None:
-                        
-                        if archive not in favPerFile: # initialization of dicts, increment favInFile
-                            favPerFile[archive] = [{K:0} for K in sorted(favorites)]
-                            favInFile[archive]  = [{K:''} for K in sorted(favorites)]
-                            favPerFile[archive][jref[key]][key] += 1
-
-                        content = line[:-1].replace(key2,'').lstrip()
-                        while iline<last and lines[iline+1][0]==' ':
-                            iline += 1
-                            content += lines[iline][:-1]
-
-                        content = content.strip() # remove leading and trailing spaces
-                        j = jref[key]
-                        if favInFile[archive][j][key]=='' : favInFile[archive][j][key] = content
-                            
-                        if self.debug > 1:
-                            print 'analyzeCUF.processFiles archive,key,content,`content`',archive,key,content,`content`
-                        
-                    iline += 1
-            
-            if archive in favPerFile:
-                if self.debug > 2 :
-                    print 'analyzeCUF.processFiles archive,favPerFile[archive]',archive,favPerFile[archive]
-                    print 'analyzeCUF.processFiles archive,favInFile[archive]',archive,favInFile[archive]
-            else:
-                print 'analyzeCUF.processFiles WARNING archive',archive,'No favorites found'
-
-        # establish threads.
-        # first step is to use metadata (Message-id, References and In-Reply-To) to create threads.
-        # second step is to merge neighboring threads with identical subjects
-            ref     = favInFile[archive][jref['References:']]['References:']
-            subject = favInFile[archive][jref['Subject:']]['Subject:']
-            msgid   = favInFile[archive][jref['Message-ID:']]['Message-ID:']
-            irt     = favInFile[archive][jref['In-Reply-To:']]['In-Reply-To:']
-
-
-        ## 'clean' the subject line, this removes superfluous information in the subject.
-        ## Note that cleaning can yield a zero-length string for the subject
-            subject = self.cleanSubject(subject)
-
-            arch0 = self.locateRef(Threads,irt,ref,archive,subject)
-            if arch0 is None:    # could not find reference or irt, so make this first message in a thread
-                Threads[archive] = [subject, [(archive,msgid,irt)] ]
-            elif arch0 not in Threads:
-                sys.exit('analyzeCUF:processFiles ERROR arch0 '+arch0+' not in Threads')
-            else:
-                Threads[arch0][1].append( (archive,msgid,irt) )
-
         ### try to merge neighboring threads with identical subjects
         Threads = self.mergeNeighbors(Threads)
         ### now merge interleaved threads
@@ -477,28 +395,53 @@ class analyzeCUF():
             Subject = Threads[key][0]
             print key,Subject
 
-        # analyze thread by reporter and responder
+        # analyze thread by reporter and responder by year
+        # first 'From' is reporter, second 'From' is responder
         print '\nanalyzeCUF.analyzeThreads by reporter and responder'
-        Reporters = []
-        Responders= []
+        Reporters, Responders = {}, {}
         for archive in self.msgOrder:
             if archive in Threads:
+                year = archive[:4]
                 whoFrom = []
                 for tupl in Threads[archive][1]:
                     whoFrom.append(tupl[3])
                 rep,res = None,None
                 if len(whoFrom)>0: rep = whoFrom[0]
                 if len(whoFrom)>1: res = whoFrom[1]
-                Reporters.append(rep)
-                Responders.append(res)
-                print 'analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom
-                print 'analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res
-        print 'analyzeCUF.analyzeThreads Reporters',Reporters
-        print 'analyzeCUF.analyzeThreads Responders',Responders
-        dictReporters = {i:Reporters.count(i) for i in Reporters}
-        dictResponders= {i:Responders.count(i) for i in Responders}
-        print 'analyzeCUF.analyzeThreads dictReporters',dictReporters
-        print 'analyzeCUF.analyzeThreads dictRespoinders',dictResponders
+                if year not in Reporters: Reporters[year], Responders[year]= [],[]
+                Reporters[year].append(rep)
+                Responders[year].append(res)
+                if self.debug > 1 : print 'analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom
+                if self.debug > 1 : print 'analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res
+        if self.debug > 1 : print 'analyzeCUF.analyzeThreads Reporters',Reporters
+        if self.debug > 1 : print 'analyzeCUF.analyzeThreads Responders',Responders
+
+        ## create pie charts of reporters and responders per year
+        ## reporters, responders identified by name in name@address
+        dictReporters, dictResponders = {},{}
+        for year in Reporters:
+            dictReporters[year] = {i:Reporters[year].count(i) for i in Reporters[year]}
+            dictResponders[year]= {i:Responders[year].count(i) for i in Responders[year]}
+        for year in sorted(dictReporters):
+            for name,DICT in zip(['Reporters','Responders'], [dictReporters,dictResponders] ):
+                title = '{} {}'.format(name,year)
+                counts,labels = [],[]
+                for k,v in sorted(DICT[year].items(), key=lambda x:x[1]):
+                    if k is not None:
+                        label = k
+                        if '@' in k: label = k.split('@')[0]
+                        labels.append(label)
+                        counts.append(v)
+                plt.pie(counts,labels=labels)
+                plt.axis('equal')
+                plt.title(title,loc='left')
+                self.showOrPlot(title)
+            
+            if self.debug > 1 :
+                print 'analyzeCUF.analyzeThreads year',year,'dictReporters[year]',sorted(dictReporters[year].items(), key=lambda x:x[1], reverse=True)
+                for k,v in sorted(dictReporters[year].items(), key=lambda x:x[1], reverse=True): print k,v
+                print 'analyzeCUF.analyzeThreads year',year,'dictResponders[year]',sorted(dictResponders[year].items(), key=lambda x:x[1], reverse=True)
+                for k,v in sorted(dictResponders[year].items(), key=lambda x:x[1], reverse=True): print k,v
         
         
         msgPerT = [] # number of messages per thread
@@ -555,6 +498,13 @@ class analyzeCUF():
         
         
                 
+        return
+    def fixFrom(self,Addresses):
+        '''
+        return 'fixed' list of email addresses
+        '''
+        newAddressess = []
+
         return
     def mergeInterleaved(self,Threads):
         '''
