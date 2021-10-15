@@ -104,6 +104,9 @@ class analyzeCUF():
         at some point the "[comp-users-forum]" inserted in every subject was 
         changed to "[comp-users-forum:nnnn]" where nnnn is the sequential message number.
         clean this up, too.
+
+        ref:
+        https://stackoverflow.com/questions/8270092/remove-all-whitespace-in-a-string
         '''
         ml = '['+self.MLname+']'
         dirt = [ml, '[SPAM]', 'Re:', 'Fwd:']
@@ -120,7 +123,7 @@ class analyzeCUF():
         if mlr in s: i2 = s.index(mlr)
         if i2>i1 : s = s[:max(i1-1,0)] + s[i2+1:]
             
-        s = s.strip()
+        s = " ".join(s.split())
         if self.debug > 2 : print 'analyzeCUF.cleanSubject Original subject',subject,'Final subject',s
         return s
     def getSpan(self,a1,a2):
@@ -390,10 +393,18 @@ class analyzeCUF():
         
         # list threads by subject, alphabetically
         print '\nanalyzeCUF.analyzeThreads list of threads by subject, alphabetically'
+        fn = 'threads'
+        nwrite = 0
+        f = open(fn,'w')
         for aT in sorted(Threads.items(), key=lambda v: v[1][0]):
             key = aT[0]
             Subject = Threads[key][0]
-            print key,Subject
+            words = '{} {}'.format(key,Subject)
+            print words
+            f.write(words+'\n')
+            nwrite += 1
+        f.close()
+        print '\nanalyzeCUF.analyzeThreads Wrote',nwrite,'thread subjects to file',fn
 
         # analyze thread by reporter and responder by year
         # first 'From' is reporter, second 'From' is responder
