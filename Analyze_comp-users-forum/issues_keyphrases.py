@@ -9,10 +9,17 @@ import sys,os
 import glob
 import email, base64
 import numpy
+import matplotlib.pyplot as plt
+
 
 class issues_keyphrases():
     def __init__(self):
         self.debug = 0
+
+        ## used by getWords
+        ignoreThese = ['Belle']
+        self.ignoreThese = [x.lower() for x in ignoreThese]
+
         print 'issues_keyphrases.__init__ completed'
         return
     def define(self):
@@ -24,6 +31,21 @@ class issues_keyphrases():
         systems = list of systems
         actions = list of actions
         case is ignored
+
+        Michel's report at the 39th B2GM 17 June 2021 identified 13 issues
+        Downloading files 20.5%
+        Failed jobs   14.8%
+        Jobs in waiting 13.6%
+        Registering output 10.2%
+        Input data not available 8.0%
+        Submitting jobs 6.8%
+        Bug report 6.8%
+        Proxy/VOMS 6.8%
+        Installing gbasf2 5.7%
+        Deleting files 3.4%
+        Site Platform   1.1%
+        Website not available 1.1%
+        Dataset search 1.1%
 
         '''
         idict = {}
@@ -48,7 +70,7 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Failed jobs'
-        systems = ['Jobs']
+        systems = ['Jobs', 'job submission']
         actions= ['fail', 'error','crash']
         idict[name] = [ systems, actions ]
         idictOrder.append(name)
@@ -60,7 +82,7 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Submitting jobs'
-        systems = ['submit']
+        systems = ['submit', 'submission']
         actions= ['cannot','troubles','problem','Resubmit','not show','environment','How to']
         idict[name] = [ systems, actions ]
         idictOrder.append(name)
@@ -71,7 +93,14 @@ class issues_keyphrases():
         idict[name] = [ systems, actions ]
         idictOrder.append(name)
         
-        
+        name =  'Register output'
+
+
+        name = 'Bug report'
+        systems = ['belle2.org','MC generation','TypeError','gb2_']
+        actions = ['system error','wrong mass',' --']
+        idict[name] = [ systems, actions ]
+        idictOrder.append(name)
 
         
         return idict
@@ -108,15 +137,49 @@ class issues_keyphrases():
                     print '\nissues_keyphrases.classifyThreads Threads that are classified under >1 issue:'
                 Subject = Threads[key][0]
                 print key,Subject,":",", ".join(thread_issues[key])
-        if not First: print 'issues_keyphrases.classifyThreads NO threads classified under >1 issue!'
+        if First: print 'issues_keyphrases.classifyThreads NO threads classified under >1 issue!'
 
             
         print '\nissues_keyphrases.classifyThreads HERE ARE THE UNCLASSIFIED THREADS'
         for key in Threads:
             if key not in Classified:
                 print key,Threads[key][0]
-                        
+
+        self.wordFrequency(Threads,threshold=5)
         return
+    def wordFrequency(self,Threads,threshold=5):
+        '''
+        frequency distribution of words in Subject of threads
+
+        vaguely based on https://github.com/amueller/word_cloud/blob/master/wordcloud/wordcloud.py
+        '''
+        allWords = []
+        for key in Threads:
+            Subject = Threads[key][0]
+            words = self.getWords( Subject )
+            allWords.extend( words )
+
+        freq = {x:allWords.count(x) for x in allWords}
+        print '\nissues_keyphrases.wordFrequency Frequency of words in Threads. Minimum frequency is',threshold
+        for word in sorted( freq, key=freq.get, reverse=True):
+            f = freq[word]
+            if f>threshold: print word,f
+        return
+    def getWords(self,sentence,lmin=4):
+        '''
+        return list of words in sentence
+        Requirements
+        words must be >lmin characters long
+        words must not be numbers
+        words must not be in list of words to ignore
+        '''
+        s = sentence.split()
+        words = []
+        for w in s:
+            if len(w)>lmin and not w.isdigit() and w not in self.ignoreThese:
+                words.append(w)
+        return words
+        
     def findN(self,Subject,Reqmts):
         '''
         return True if at least one requirement from each set of requirements is found in Subject
