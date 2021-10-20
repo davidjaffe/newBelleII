@@ -156,7 +156,7 @@ class issues_keyphrases():
         allWords = []
         for key in Threads:
             Subject = Threads[key][0]
-            words = self.getWords( Subject )
+            words = self.getWords( Subject.lower() )
             allWords.extend( words )
 
         freq = {x:allWords.count(x) for x in allWords}
