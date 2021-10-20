@@ -15,9 +15,10 @@ import email, base64
 import numpy
 
 class extractMsg():
-    def __init__(self):
+    def __init__(self,prefix='DATA/comp-users-forum'):
         self.debug = 0
         self.badKeys = {}
+        self.dirPrefix = prefix
         print 'extractMsg.__init__ completed'
         return
     def bigTest(self):
@@ -26,7 +27,7 @@ class extractMsg():
 
         mostly diagnostic
         '''
-        files = glob.glob('DATA/comp-users-forum_2021*/*')
+        files = glob.glob(self.dirPrefix + '_2021*/*')
         L,E = 0,0
         for i,fn in enumerate(files):
             lines = self.getText(fn)
@@ -74,13 +75,17 @@ class extractMsg():
             if Ldict[key] > fiveSigma:
                 print 'extractMsg.finalTest fn',key,'length',Ldict[key],'msg\n',Msgs[key]
             
-        return        
-    def getText(self,fn):
+        return
+    def getText(self,INPUT,input='file'):
         '''
         return string with best guess at email message text
         use msgFix to pick the best part of the original message
         '''
-
+        fn = None
+        if input=='file': fn = INPUT
+        if input=='archive' : fn = self.dirPrefix + '_' + INPUT
+        if fn is None : sys.exit('extractMsg.getText ERROR Invalid input='+input)
+            
         dthres = 1
         f = open(fn,'r')
         if self.debug > 0 : print 'extractMsg.getText fn',fn
@@ -249,7 +254,7 @@ if __name__ == '__main__' :
         print 'message from',fn,'\n',msg
         sys.exit('extractMsg '+fn)
 
-    finalTest = not False
+    finalTest = False
     if finalTest:
         eM.finalTest()
         sys.exit('extractMsg.finalTest completed')
@@ -259,15 +264,23 @@ if __name__ == '__main__' :
     if bigTest : 
         eM.bigTest()
         sys.exit('extractMsg.bigTest completed')
-    
-    fn = 'DATA/comp-users-forum_2020-02/5'
-    if len(sys.argv)>1 : fn = sys.argv[1]
-    s = eM.decodeText(fn)
-    print 'len(s)',len(s)
-    print 's\n',s
-    sys.exit('extractMsg.decodeText '+fn)
-    
-    #fn = 'DATA/comp-users-forum_2017-06/61'
-    lines = eM.getText(fn)
-    print lines
+
+    decodeTest = False
+    if decodeTest:
+        fn = 'DATA/comp-users-forum_2020-02/5'
+        if len(sys.argv)>1 : fn = sys.argv[1]
+        s = eM.decodeText(fn)
+        print 'len(s)',len(s)
+        print 's\n',s
+        sys.exit('extractMsg.decodeText '+fn)
+
+    getArchiveText = True
+    if getArchiveText:
+        #fn = 'DATA/comp-users-forum_2017-06/61'
+        input = 'archive'
+        archive = '2020-11/25'
+        archive = '2021-05/32'
+        if len(sys.argv)>1 : archive = sys.argv[1]
+        lines = eM.getText(archive,input=input)
+        print lines
     

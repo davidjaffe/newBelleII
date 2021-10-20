@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 '''
 analyze archive information from comp-users-forum
+
+base initial analysis on mimicing results in Michel's
+https://indico.belle2.org/event/4490/contributions/23141/attachments/11560/17627/userAnalysis_b2gm_jun2021.pdf
+
 20210916
 '''
 #import math

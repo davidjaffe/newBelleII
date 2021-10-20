@@ -52,26 +52,39 @@ class issues_keyphrases():
         idictOrder = []
 
         name = 'Announcements'
-        systems = ['Distributed Computing', 'BelleDIRAC', 'DIRAC', 'KEKCC', 'network', 'gbasf2','VOMS membership','Please use gbasf2','Call for volunteer','Integration of BelleDIRAC','gbasf2 tutorial','Coming gbasf2','Release']
-        actions = ['intervention','to be down','shutdown', 'downtime','timeout', 'update', 'restart', 'security patch', 'release', 'is down','Please use gbasf2','test of','with Rucio','feedback','follow-up','migration to Rucio','available on']
+        systems = ['Distributed Computing', 'BelleDIRAC', 'DIRAC', 'KEKCC', 'network',
+                       'gbasf2','VOMS membership','Please use gbasf2','Call for volunteer',
+                       'Integration of BelleDIRAC','gbasf2 tutorial','Coming gbasf2','Release',
+                       'Singularity recipe']
+        actions = ['intervention','to be down','shutdown', 'downtime','timeout', 'update',
+                       'restart', 'security patch', 'release', 'is down','Please use gbasf2',
+                       'test of','with Rucio','feedback','follow-up','migration to Rucio','available on',
+                       'Singularity recipe']
+        idict[name] = [ systems, actions ]
+        idictOrder.append(name)
+
+        name = 'Queries'
+        systems = ['How to','module','Running on']
+        actions = ['use','save','delete','on the grid','dataset']
+        idict[name] = [ systems, actions ]
+        idictOrder.append(name)
+        
+
+        name = 'Failed jobs'
+        systems = ['Jobs', 'job submission']
+        actions= ['fail', 'error','crash']
         idict[name] = [ systems, actions ]
         idictOrder.append(name)
 
         name = 'Downloading files'
-        systems = ['Download','Cannot get files']
-        actions = ['fail',"can't",'error','unable','problem','slow','grid','files','issues','jobs','from LCG']
+        systems = ['Download','Cannot get files','files stuck']
+        actions = ['fail',"can't",'error','unable','problem','slow','grid','files','issues','jobs','from LCG','stuck at']
         idict[name] = [ systems, actions ]
         idictOrder.append(name)
 
         name = 'Jobs in waiting'
         systems = ['Jobs']
-        actions = ['waiting','stuck','stall','too long']
-        idict[name] = [ systems, actions ]
-        idictOrder.append(name)
-
-        name = 'Failed jobs'
-        systems = ['Jobs', 'job submission']
-        actions= ['fail', 'error','crash']
+        actions = ['waiting','stall','too long']
         idict[name] = [ systems, actions ]
         idictOrder.append(name)
 
@@ -149,7 +162,7 @@ class issues_keyphrases():
         return
     def wordFrequency(self,Threads,threshold=5):
         '''
-        frequency distribution of words in Subject of threads
+        frequency distribution of words in Subject of threads, ignoring case
 
         vaguely based on https://github.com/amueller/word_cloud/blob/master/wordcloud/wordcloud.py
         '''
