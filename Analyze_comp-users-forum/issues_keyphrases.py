@@ -10,6 +10,7 @@ import glob
 import email, base64
 import numpy
 import matplotlib.pyplot as plt
+import extractMsg
 
 
 class issues_keyphrases():
@@ -20,16 +21,21 @@ class issues_keyphrases():
         ignoreThese = ['Belle']
         self.ignoreThese = [x.lower() for x in ignoreThese]
 
+
+        self.extractMsg = extractMsg.extractMsg()
+
+        
         print 'issues_keyphrases.__init__ completed'
         return
     def define(self):
         '''
         return idict = dictionary defining issues with requirements systems and actions
         and idictOrder = order that issues are to be applied
-        idict[issue] = [ systems, actions ]
+        idict[issue] = [ [ systems, actions ], [ phrase1, phrase2, ... ] ] 
         
-        systems = list of systems
-        actions = list of actions
+        systems = list of systems in Subject
+        actions = list of actions in Subject
+        phraseN = list of phrases in email text, phraseN must precede phraseN+1 in text
         case is ignored
 
         Michel's report at the 39th B2GM 17 June 2021 identified 13 issues
@@ -53,94 +59,181 @@ class issues_keyphrases():
 
         name = 'Announcements'
         systems = ['Distributed Computing', 'BelleDIRAC', 'DIRAC', 'KEKCC', 'network',
-                       'gbasf2','VOMS membership','Please use gbasf2','Call for volunteer',
+                       'VOMS membership','Please use gbasf2','Call for volunteer',
                        'Integration of BelleDIRAC','gbasf2 tutorial','Coming gbasf2','Release',
-                       'Singularity recipe']
+                       'Singularity recipe','Draft of','Unscheduled','AMGA']
         actions = ['intervention','to be down','shutdown', 'downtime','timeout', 'update',
                        'restart', 'security patch', 'release', 'is down','Please use gbasf2',
                        'test of','with Rucio','feedback','follow-up','migration to Rucio','available on',
-                       'Singularity recipe']
-        idict[name] = [ systems, actions ]
+                       'Singularity recipe','proceedings','power cut','not available']
+        phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone',
+                       'Dear gbasf2 users', 'Dear colleagues','Dear all * gbasf2']
+        UNIQUE = True
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
         name = 'Queries'
-        systems = ['How to','module','Running on']
-        actions = ['use','save','delete','on the grid','dataset']
-        idict[name] = [ systems, actions ]
+        systems = ['How to','module','Running on','To run on']
+        actions = ['use','save','delete','on the grid','dataset','full data proc 10']
+        phrase1 = ['How can','Is there a * way','Is it possible','I need to understand','Does anyone know','Can anyone comment',
+                       'what I can do if', 'Is there anyway to get * files', 'wondering why','Is there * a way',
+                       'wondering if * a way','I wonder if there * a way', 'Is there any method',
+                       'Is there a command', 'how to fix','What is the correct method',
+                       'How do I do','there is something missing * script','Please tell me how to', 
+                       'Is it fine * to run',
+                       'What does * indicate', 'Could you help','like to know * possible','I have a question','Could * help me',
+                       'when I try * gb2',
+                       'like to confirm * ignored','questions.belle2.org','development of gbasf2',
+                       'not sure if this is the right place to ask','give me some suggestion']
+        UNIQUE = True
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
         
 
-        name = 'Failed jobs'
-        systems = ['Jobs', 'job submission']
-        actions= ['fail', 'error','crash']
-        idict[name] = [ systems, actions ]
+        name = 'Proxy/VOMS'
+        systems = ['VOMS', 'proxy', 'Certificate','PEM']
+        actions= ['Error', 'fail', 'unable', '_init','not register', 'expired']
+        phrase1 = ['gb2_proxy_init * Error: Operation not permitted']
+        UNIQUE = False
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
         name = 'Downloading files'
         systems = ['Download','Cannot get files','files stuck']
-        actions = ['fail',"can't",'error','unable','problem','slow','grid','files','issues','jobs','from LCG','stuck at']
-        idict[name] = [ systems, actions ]
+        actions = ['fail',"can't",'cannot','error','unable','problem','slow','grid','files','issues','jobs','from LCG','stuck at']
+        phrase1 = ['trying to download * error','unable to retrieve * output','gb2_ds_get * crash',
+                       "don't get rescheduled * download",'download * from the grid','error when download',
+                       'trying to download * too long','download output * empty','files * size 0',
+                       'Maximum input file size exceeds limit',
+                       'output file * not download','gbs2_ds_get * re-download']
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
+        idictOrder.append(name)        
+
+        name = 'Failed jobs'
+        systems = ['Jobs','Job failing','Grid Job','project failure']
+        actions= ['fail', 'error','crash','Exited']
+        phrase1 = ['jobs getting stuck','job * failed','job * failing', 'maximum * reschedul','max no *reschedul']
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
-        name = 'Jobs in waiting'
+        name = 'Jobs in waiting/stuck'
         systems = ['Jobs']
         actions = ['waiting','stall','too long']
-        idict[name] = [ systems, actions ]
+        phrase1 = ['stuck * Pilot Agent', 'running on the grid * more than','jobs * stalled','jobs * stuck',
+                       'project * still waiting','Waiting for Scout Job Completion','job * in "Waiting"',
+                       'submit * ago','jobs * no sign of activity']
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
-        name = 'Proxy/VOMS'
-        systems = ['VOMS', 'proxy', 'Certificate']
-        actions= ['Error', 'fail', 'unable', '_init','not register']
-        idict[name] = [ systems, actions ]
+        name = 'Input data unavailable'
+        systems = ['Input data', 'datasets']
+        actions= ['not available', 'error on']
+        phrase1 = ['Input data not available' , 'fail * Input data resolution','job * Input data resolution' ]
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
         name = 'Submitting jobs'
         systems = ['submit', 'submission']
-        actions= ['cannot','troubles','problem','Resubmit','not show','environment','How to']
-        idict[name] = [ systems, actions ]
+        actions= ['cannot','troubles','problem','Resubmit','not show','environment','How to','fail']
+        phrase1 = ['trouble submitting jobs','issue submitting jobs','on the grid * error','to the GRID * error',
+                       'submit a job * not allowed']
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
         name = 'Installing gbasf2'
         systems = ['gbasf2','light-2106-rhea']
-        actions= ['install','Problems updating','setting up','issue','help','unable to setup','updating error','not available at LCG']
-        idict[name] = [ systems, actions ]
+        actions= [
+            'install','Problems updating','setting up','issue','help',
+            'unable to setup','updating error','not available at LCG']
+        phrase1 = ['some trouble * gb2_check_release', 'unable to install gbasf2','error * basf2 not found'
+                       'update gbasf * error message']
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
+        idictOrder.append(name)
+
+        name = 'Deleting files'
+        systems = ['delete','deleting']
+        actions= ['file']
+        phrase1 = ['not able * remove director']
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
         
         name =  'Register output'
 
 
         name = 'Bug report'
-        systems = ['belle2.org','MC generation','TypeError','gb2_']
-        actions = ['system error','wrong mass',' --']
-        idict[name] = [ systems, actions ]
+        systems = ['belle2.org','MC generation','TypeError','gb2_','Wildcard','BelleDIRAC job monitor','Production']
+        actions = ['system error','wrong mass',' --','crash', 'broken','fails','wrong number of files']
+        phrase1 = ['problem connecting * at KEK', 'feature of gbasf2 * stop working','trouble running * FEI',
+                       'try to reschedule * following error:','now deprecate','dirac portal * Bad gateway',
+                       "Can't load RucioFileCatalogClient",'error * rucio list',
+                      'limit on the allowed number of characters','Project is too long (max'
+                       'gb2_ds_ * error', 'gb2_ds_ * strange' ]
+        idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
+        for iname, name in enumerate(idictOrder):
+            Unique = idict[name][2]
+            if Unique : print 'issues_keyphrases.define Classification of issue#',iname,name,'is UNIQUE.', \
+                'It supersedes subsequent issues.'
+
         
-        return idict
+        return idict,idictOrder
     def classifyThreads(self,Threads):
         '''
-        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+        Classify threads by issue. 
+        Issues are named and specified in issues_keyphrases.define()
+        Hierarchy for determination of issue: Subject, email text 
+
+        input  Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
 
         '''
-        idict = self.define()
-        issues = {}
-        thread_issues = {}
-        Classified = []
-        for issue in idict:
-            Reqmts = idict[issue]
+        idict, idictOrder = self.define()
+        issues = {}         # {issue: [archive0, archive1, ...] } = list of threads for this issue
+        thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
+        Classified = []     # list of threads classified in >0 issues
+        IgnoreThese= []     # list of threads classified uniquely which should be ignored
+
+        ### first assign thread to issue by Subject 
+        for issue in idictOrder:
+            Reqmts = idict[issue][0] ## Subject
+            Unique = idict[issue][2]
             issues[issue] = []
-            for key in Threads:
+            for key in [x for x in Threads if x not in IgnoreThese]:
                 Subject = Threads[key][0].lower()
                 if self.findN(Subject,Reqmts) :
                     issues[issue].append( Subject )
                     if key not in thread_issues: thread_issues[key] = []
                     thread_issues[key].append(issue)
-                    Classified.append( key )
+                    if key not in Classified : Classified.append( key )
+                    if Unique : IgnoreThese.append( key )
 
-        print 'issues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified),'successfully classified'
-        for issue in sorted(issues):
+        print 'issues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified),'successfully classified by Subject'
+        for issue in idictOrder:
             print 'issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times'
 
+
+        ### next, for unassigned threads, assign thread to issue using email text
+        unClassified = []
+        for key in Threads:
+            if key not in Classified : unClassified.append( key )
+        for issue in idictOrder:
+            Reqmts = idict[issue][1]
+            Unique = idict[issue][0]
+            if self.debug > 2 : print 'issues_keyphrases.classifyThreads by email text, issue',issue,'Reqmts',Reqmts
+            for key in [x for x in unClassified if x not in IgnoreThese]:
+                text = self.extractMsg.getText(key,input='archive')
+                if self.debug > 2 : print 'issues_keyphrases.classifyThreads by email text, key',key
+                if self.findN(text,Reqmts) :
+                    issues[issue].append( Subject )
+                    if key not in thread_issues: thread_issues[key] = []
+                    thread_issues[key].append(issue)
+                    if key not in Classified : Classified.append( key )
+                    if Unique : IgnoreThese.append( key )
+                        
+        print 'issues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified),'successfully classified by email message text'
+        for issue in idictOrder:
+            print 'issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times'
+            
         # list of threads that are classified under >1 issue
         First = True
         for key in thread_issues:
@@ -156,7 +249,9 @@ class issues_keyphrases():
         print '\nissues_keyphrases.classifyThreads HERE ARE THE UNCLASSIFIED THREADS'
         for key in Threads:
             if key not in Classified:
-                print key,Threads[key][0]
+                print '\nUNCLASSIFIED THREAD:',key,Threads[key][0]
+                words = self.extractMsg.getText(key,input='archive')
+                print words
 
         self.wordFrequency(Threads,threshold=5)
         return
@@ -192,7 +287,6 @@ class issues_keyphrases():
             if len(w)>lmin and not w.isdigit() and w not in self.ignoreThese:
                 words.append(w)
         return words
-        
     def findN(self,Subject,Reqmts):
         '''
         return True if at least one requirement from each set of requirements is found in Subject
@@ -208,12 +302,22 @@ class issues_keyphrases():
     def basicFind(self,Subject,phrases):
         '''
         return True if a phrase in list phrases is found in string Subject
+
+        if the wildcard '*' is found in a phrase, eg: 'part1 * part2', 
+        then both 'part1' and 'part2' must be found in Subject and the location of 'part1' must precede 'part2'
         matching ignores case
         '''
         subject = Subject.lower()
         for phrase in phrases:
             p = phrase.lower()
-            if p in subject : return True
+            if '*' in p:
+                i = p.index('*')
+                p1 = p[:i].strip()
+                p2 = p[i+1:].strip()
+                if p1 in subject and p2 in subject:
+                    return subject.index(p1)<subject.index(p2)
+            else:
+                if p in subject : return True
         return False
 
     def readFileThreads(self):

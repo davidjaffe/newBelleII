@@ -14,11 +14,32 @@ import glob
 import email, base64
 import numpy
 
+
 class extractMsg():
     def __init__(self,prefix='DATA/comp-users-forum'):
         self.debug = 0
         self.badKeys = {}
         self.dirPrefix = prefix
+
+        ## salutation phrases used in getText
+        S1 = ['Dear','Hello','Hi','HI','Hello again','Good morning']
+        S2 = [
+            'experts','Experts','Belle 2 computing experts', 
+            'gbasf2','colleagues', 
+            'comp-users-forum','Comp users forum','team',
+            'All','all','everyone','everybody',
+            'computing experts','computer experts',
+            'grid-experts','GRID experts','grid experts','Grid experts']
+        Salutations = []
+        for s1 in S1:
+            for s2 in S2:
+                s = s1 + ' ' + s2
+                Salutations.append( s )
+        FirstColumn = S1
+        self.Salutations = Salutations
+        self.FirstColumn = FirstColumn
+
+        
         print 'extractMsg.__init__ completed'
         return
     def bigTest(self):
@@ -80,30 +101,65 @@ class extractMsg():
         '''
         return string with best guess at email message text
         use msgFix to pick the best part of the original message
+
+        if input=='file', then INPUT is the filename
+        if input=='archive', then INPUT is the archive identifier eg., 2021-03/32
+
+        DEPRECATED ?? if omitPreSalutation==True, then find salutation and remove the text prior to salutation, if salutation is found
         '''
         fn = None
         if input=='file': fn = INPUT
-        if input=='archive' : fn = self.dirPrefix + '_' + INPUT
+        if input=='archive': fn = self.dirPrefix + '_' + INPUT
         if fn is None : sys.exit('extractMsg.getText ERROR Invalid input='+input)
             
         dthres = 1
         f = open(fn,'r')
         if self.debug > 0 : print 'extractMsg.getText fn',fn
-        msg = email.message_from_file(f)
+        originalMsg = msg = email.message_from_file(f)
+        f.close()
+
+        msg = self.msgFix(msg)
+
+        s = self.get_text(msg)
+        
+        if self.debug > dthres : print 'extractMsg.getText before exit len(s),s',len(s),s
+        return s
+    def OLDgetText(self,INPUT,input='file',omitPreSalutation=True):
+        '''
+        return string with best guess at email message text
+        use msgFix to pick the best part of the original message
+
+        if input=='file', then INPUT is the filename
+        if input=='archive', then INPUT is the archive identifier eg., 2021-03/32
+
+        if omitPreSalutation==True, then find salutation and remove the text prior to salutation, if salutation is found
+        '''
+        fn = None
+        if input=='file': fn = INPUT
+        if input=='archive' : fn = self.dirPrefix + '_' + INPUT
+        if fn is None : sys.exit('extractMsg.OLDgetText ERROR Invalid input='+input)
+            
+        dthres = 1
+        f = open(fn,'r')
+        if self.debug > 0 : print 'extractMsg.OLDgetText fn',fn
+        originalMsg = msg = email.message_from_file(f)
         f.close()
 
         msg = self.msgFix(msg)
         
         keys = msg.keys()
-        if self.debug > dthres : print 'extractMsg.getText initially len(msg)',len(msg),'len(keys)',len(keys)
-        if self.debug > dthres : print 'extractMsg.getText keys',keys
-        if self.debug > dthres : print 'extractMsg.getText original msg\n',msg
+        if self.debug > dthres : print 'extractMsg.OLDgetText initially len(msg)',len(msg),'len(keys)',len(keys)
+        if self.debug > dthres : print 'extractMsg.OLDgetText keys',keys
+        if self.debug > dthres : print 'extractMsg.OLDgetText original msg\n',msg
 
 
+        ### Remove all key,value pairs except the last one to leave
+        ### the most likely part of email to be the message.
+        ### This procedure was determined empirically.
         s1 = ''
         for key in keys:
             s1 = msg.as_string()
-            if self.debug > dthres : print 'extractMsg.getText pre-delitem key',key,'type(msg)',type(msg),'len(msg)',len(msg),'len(s1)',len(s1)
+            if self.debug > dthres : print 'extractMsg.OLDgetText pre-delitem key',key,'type(msg)',type(msg),'len(msg)',len(msg),'len(s1)',len(s1)
             msg.__delitem__(key)
             try:
                 s2 = msg.as_string()
@@ -112,11 +168,33 @@ class extractMsg():
                     self.badKeys[key] += 1
                 else:
                     self.badKeys[key] = 1
-                if self.debug > dthres : print 'extractMsg.getText Exception after removing',key,'now break'
+                if self.debug > dthres : print 'extractMsg.OLDgetText Exception after removing',key,'now break'
                 break
         s = s1
 
-        if self.debug > dthres : print 'extractMsg.getText before exit len(s),s',len(s),s
+        ### Try to find the salutation and remove all text prior to the salutation
+        if omitPreSalutation :
+            idx = -1
+            for salut in self.Salutations:
+                if salut in s :
+                    idx = s.index(salut)
+                    break
+            if idx < 0 :
+                for salut in self.FirstColumn:
+                    offset = 0
+                    for line in s.split('\n'):
+                        offset += len(line) + len('\n')
+                        if salut in line:
+                            if line.index(salut)==0 :
+                                idx = offset + line.index(salut)
+                                break
+            if idx > 0 :
+                s = s[idx:]
+            else:
+                print 'extractMsg.OLDgetText COULD NOT FIND SALUTATION'
+                print 'extractMsg.OLDgetText here is the originalMsg\n',originalMsg
+
+        if self.debug > dthres : print 'extractMsg.OLDgetText before exit len(s),s',len(s),s
         return s
     def listParts(self,fn):
         '''
@@ -232,7 +310,51 @@ class extractMsg():
             msg = self.getText(fn)
         msg = self.msgReducer(msg)
         return msg
-        
+    def get_text(self,msg):
+        '''
+        this code taken verbatim from the most popular answer at
+        https://stackoverflow.com/questions/4824376/parse-multi-part-email-with-sub-parts-using-python
+        on 20211021
+
+        I added idiot_html2text to do rudimentary html to text translation
+        Added check on charset
+        '''
+        text = ""
+        if msg.is_multipart():
+            html = None
+            for part in msg.get_payload():
+                if part.get_content_charset() is None:
+                    charset = chardet.detect(str(part))['encoding']
+                else:
+                    charset = part.get_content_charset()
+                if part.get_content_type() == 'text/plain':
+                    text = unicode(part.get_payload(decode=True),str(charset),"ignore").encode('utf8','replace')
+                if part.get_content_type() == 'text/html':
+                    html = unicode(part.get_payload(decode=True),str(charset),"ignore").encode('utf8','replace')
+            if html is None:
+                return text.strip()
+            else:
+                html = self.idiot_html2text(html) ## added
+                return html.strip()
+        else:
+            cs = msg.get_content_charset()   ## added
+            if cs is None : cs = 'us-ascii'  ## added
+            text = unicode(msg.get_payload(decode=True),cs,'ignore').encode('utf8','replace') ## altered
+            return text.strip()
+    def idiot_html2text(self,html):
+        '''
+        return text given html using knucklehead's method
+        '''
+        boring = ['&nbsp;','<i>','<\i>']
+        text = ''
+        for line in html.split('\n'):
+            if '<div>' in line and '</div>' in line:
+                l = line[line.index('<div>')+len('<div>'):line.index('</div>')-1]
+                for s in boring:
+                    l = l.replace(s,'').strip()
+                text += l + '\n'
+        return text
+            
 if __name__ == '__main__' :
     eM = extractMsg()
     fn = 'DATA/comp-users-forum_2020-02/22'
@@ -274,7 +396,7 @@ if __name__ == '__main__' :
         print 's\n',s
         sys.exit('extractMsg.decodeText '+fn)
 
-    getArchiveText = True
+    getArchiveText = False
     if getArchiveText:
         #fn = 'DATA/comp-users-forum_2017-06/61'
         input = 'archive'
@@ -283,4 +405,16 @@ if __name__ == '__main__' :
         if len(sys.argv)>1 : archive = sys.argv[1]
         lines = eM.getText(archive,input=input)
         print lines
-    
+
+    betterGetText = True
+    if betterGetText :
+        for n in range(38,39):
+#            fn = 'DATA/comp-users-forum_2021-03/'+str(n)
+            fn = 'DATA/comp-users-forum_2021-02/'+str(n)
+            f = open(fn,'r')
+            print '\n\nextractMsg -------------------------------- test get_text for fn',fn
+            msg = email.message_from_file(f)
+            f.close()
+            msg = eM.msgFix(msg)
+            lines = eM.get_text(msg)
+            print lines
