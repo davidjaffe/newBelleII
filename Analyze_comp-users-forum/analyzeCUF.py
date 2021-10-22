@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import numpy
 
 import extractMsg   # extracts the email message from a file
+import issues_keyphrases
 
 import email
 #import operator
@@ -34,6 +35,7 @@ class analyzeCUF():
         print 'analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile
 
         self.extractMsg = extractMsg.extractMsg()
+        self.issues_keyphrases = issues_keyphrases.issues_keyphrases()
 
         self.figDir = 'FIGURES'
 
@@ -381,11 +383,14 @@ class analyzeCUF():
         print 'analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread'
              
         return Threads
-    def analyzeThreads(self,Threads):
+    def analyzeThreads(self,Threads,issues,issueOrder,issueUnique):
         '''
-        analyze of dict Threads
+        analyze dict Threads
 
         Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+        issues = {}         # {issue: [archive0, archive1, ...] } = list of threads for this issue
+        issueOrder = list with issue names in order of analysis
+        issueUnique= list of booleans, entry is true if issue is `Unique`
 
         Number of message per thread
         Span of messages in thread
@@ -394,21 +399,46 @@ class analyzeCUF():
         nFiles = self.nFiles # total number of messages in archive
         nThreads = len(Threads) # total number of threads among messages
         print '\nanalyzeCUF.analyzeThreads',nFiles,'total messages in archive with',nThreads,'threads identified'
-        
-        # list threads by subject, alphabetically
-        print '\nanalyzeCUF.analyzeThreads list of threads by subject, alphabetically'
-        fn = 'threads'
-        nwrite = 0
-        f = open(fn,'w')
-        for aT in sorted(Threads.items(), key=lambda v: v[1][0]):
-            key = aT[0]
-            Subject = Threads[key][0]
-            words = '{} {}'.format(key,Subject)
-            print words
-            f.write(words+'\n')
-            nwrite += 1
-        f.close()
-        print '\nanalyzeCUF.analyzeThreads Wrote',nwrite,'thread subjects to file',fn
+
+        listThreads = False
+        if listThreads : 
+            # list threads by subject, alphabetically
+            print '\nanalyzeCUF.analyzeThreads list of threads by subject, alphabetically'
+            fn = 'threads'
+            nwrite = 0
+            f = open(fn,'w')
+            for aT in sorted(Threads.items(), key=lambda v: v[1][0]):
+                key = aT[0]
+                Subject = Threads[key][0]
+                words = '{} {}'.format(key,Subject)
+                print words
+                f.write(words+'\n')
+                nwrite += 1
+            f.close()
+            print '\nanalyzeCUF.analyzeThreads Wrote',nwrite,'thread subjects to file',fn
+
+
+        # issues by year
+        print '\nanalyzeCUF.analyzeThreads issues',issues
+        iByY = {} # {year: [N(issue0), N(issue1), ...}
+        for issue in issueOrder:
+            NperY = {}
+            NperY['AllYears'] = 0
+            for archive in issues[issue]:
+                year = archive[:4]
+                if year not in NperY : NperY[year] = 0
+                NperY[year] += 1
+                NperY['AllYears'] += 1
+            for year in NperY:
+                if year not in iByY : iByY[year] = []
+                iByY[year].append( NperY[year] )
+        years = sorted(iByY)
+        print ' '.join(years),'Issue'
+        for I,issue in enumerate(issueOrder):
+            NperY = []
+            for year in years:
+                NperY.append( iByY[year][I] )
+            print ' '.join(str(x) for x in NperY),issue
 
         # analyze thread by reporter and responder by year
         # first 'From' is reporter, second 'From' is responder
@@ -674,7 +704,9 @@ class analyzeCUF():
         self.nFiles   = len(files)
         if self.debug > 2 : print 'analyzeCUF.main self.msgOrder',self.msgOrder
         Threads = self.processFiles(files)
-        self.analyzeThreads(Threads)
+        issues,issueOrder,issueUnique = self.issues_keyphrases.classifyThreads(Threads)
+
+        self.analyzeThreads(Threads,issues,issueOrder,issueUnique)
 if __name__ == '__main__' :
 
     debug = -1

@@ -285,7 +285,7 @@ class issues_keyphrases():
             for key in [x for x in Threads if x not in IgnoreThese]:
                 Subject = Threads[key][0].lower()
                 if self.findN(Subject,Reqmts) :
-                    issues[issue].append( Subject )
+                    issues[issue].append( key )
                     if key not in thread_issues: thread_issues[key] = []
                     thread_issues[key].append(issue)
                     if key not in Classified : Classified.append( key )
@@ -313,7 +313,7 @@ class issues_keyphrases():
                 text = self.extractMsg.getText(key,input='archive')
                 if self.debug > 2 : print 'issues_keyphrases.classifyThreads by email text, key',key
                 if self.findN(text,Reqmts) :
-                    issues[issue].append( Subject )
+                    issues[issue].append( key )
                     if key not in thread_issues: thread_issues[key] = []
                     thread_issues[key].append(issue)
                     if key not in Classified : Classified.append( key )
