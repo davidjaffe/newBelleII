@@ -11,6 +11,7 @@ import email, base64
 import numpy
 import matplotlib.pyplot as plt
 import extractMsg
+import itertools
 
 
 class issues_keyphrases():
@@ -27,7 +28,7 @@ class issues_keyphrases():
         
         print 'issues_keyphrases.__init__ completed'
         return
-    def define(self):
+    def define(self,report=True):
         '''
         return idict = dictionary defining issues with requirements systems and actions
         and idictOrder = order that issues are to be applied
@@ -37,6 +38,8 @@ class issues_keyphrases():
         actions = list of actions in Subject
         phraseN = list of phrases in email text, phraseN must precede phraseN+1 in text
         case is ignored
+
+        if report==True, then report definitions
 
         Michel's report at the 39th B2GM 17 June 2021 identified 13 issues
         Downloading files 20.5%
@@ -64,10 +67,13 @@ class issues_keyphrases():
                        'Singularity recipe','Draft of','Unscheduled','AMGA']
         actions = ['intervention','to be down','shutdown', 'downtime','timeout', 'update',
                        'restart', 'security patch', 'release', 'is down','Please use gbasf2',
-                       'test of','with Rucio','feedback','follow-up','migration to Rucio','available on',
-                       'Singularity recipe','proceedings','power cut','not available']
+                       'test of','with Rucio','feedback','follow-up',
+                       'migration to Rucio','available on',
+                       'Singularity recipe','proceedings','power cut','not available',
+                       'access GPFS']
         phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone',
-                       'Dear gbasf2 users', 'Dear colleagues','Dear all * gbasf2']
+                       'Dear gbasf2 users', 'Dear colleagues','Dear all * gbasf2',
+                       'CNAF outage * over', 'issue * Rucio server']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
@@ -77,14 +83,21 @@ class issues_keyphrases():
         actions = ['use','save','delete','on the grid','dataset','full data proc 10']
         phrase1 = ['How can','Is there a * way','Is it possible','I need to understand','Does anyone know','Can anyone comment',
                        'what I can do if', 'Is there anyway to get * files', 'wondering why','Is there * a way',
-                       'wondering if * a way','I wonder if there * a way', 'Is there any method',
+                       'wondering if * a way','I wonder if there * a way','wondering if I',
+                       'Is there any method',
                        'Is there a command', 'how to fix','What is the correct method',
                        'How do I do','there is something missing * script','Please tell me how to', 
                        'Is it fine * to run',
-                       'What does * indicate', 'Could you help','like to know * possible','I have a question','Could * help me',
+                       'What does * indicate', 'Could you help','like to know * possible',
+                       'I have a question','Could * help me',
+                       'I am not sure this * correct place',
                        'when I try * gb2',
                        'like to confirm * ignored','questions.belle2.org','development of gbasf2',
-                       'not sure if this is the right place to ask','give me some suggestion']
+                       'not sure if this is the right place to ask','give me some suggestion',
+                       'Is there  a new * version','How is * calculated',
+                       'what I am doing wrong. Could you please',
+                       'would like to use * interface',
+                       'would like to know * status']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
@@ -112,15 +125,18 @@ class issues_keyphrases():
         name = 'Failed jobs'
         systems = ['Jobs','Job failing','Grid Job','project failure']
         actions= ['fail', 'error','crash','Exited']
-        phrase1 = ['jobs getting stuck','job * failed','job * failing', 'maximum * reschedul','max no *reschedul']
+        phrase1 = ['job * failed','job * failing',
+                       'maximum * reschedul','max no *reschedul','scouting to fail']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
         name = 'Jobs in waiting/stuck'
         systems = ['Jobs']
-        actions = ['waiting','stall','too long']
-        phrase1 = ['stuck * Pilot Agent', 'running on the grid * more than','jobs * stalled','jobs * stuck',
-                       'project * still waiting','Waiting for Scout Job Completion','job * in "Waiting"',
+        actions = ['waiting','stall','too long','stuck in Completed status']
+        phrase1 = ['stuck * Pilot Agent', 'running on the grid * more than','jobs * stalled',
+                       'jobs * stuck',
+                       'project * still waiting','Waiting for Scout Job Completion',
+                       'job * in "Waiting"',
                        'submit * ago','jobs * no sign of activity']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
@@ -135,7 +151,9 @@ class issues_keyphrases():
         name = 'Submitting jobs'
         systems = ['submit', 'submission']
         actions= ['cannot','troubles','problem','Resubmit','not show','environment','How to','fail']
-        phrase1 = ['trouble submitting jobs','issue submitting jobs','on the grid * error','to the GRID * error',
+        phrase1 = ['trouble submitting jobs','issue submitting jobs','difficult * submitting jobs',
+                       'on the grid * error','to the GRID * error',
+                       'submitted several jobs * wrong', 
                        'submit a job * not allowed']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
@@ -145,7 +163,7 @@ class issues_keyphrases():
         actions= [
             'install','Problems updating','setting up','issue','help',
             'unable to setup','updating error','not available at LCG']
-        phrase1 = ['some trouble * gb2_check_release', 'unable to install gbasf2','error * basf2 not found'
+        phrase1 = ['some trouble * gb2_check_release', 'unable to install gbasf2','error * basf2 not found', 
                        'update gbasf * error message']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
@@ -157,24 +175,88 @@ class issues_keyphrases():
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
         
-        name =  'Register output'
+        #name =  'Register output'
+        #systems = []
+        #actions= []
+        #phrase1 = []
+        #idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
+        #idictOrder.append(name)
 
 
         name = 'Bug report'
-        systems = ['belle2.org','MC generation','TypeError','gb2_','Wildcard','BelleDIRAC job monitor','Production']
-        actions = ['system error','wrong mass',' --','crash', 'broken','fails','wrong number of files']
-        phrase1 = ['problem connecting * at KEK', 'feature of gbasf2 * stop working','trouble running * FEI',
-                       'try to reschedule * following error:','now deprecate','dirac portal * Bad gateway',
-                       "Can't load RucioFileCatalogClient",'error * rucio list',
-                      'limit on the allowed number of characters','Project is too long (max'
-                       'gb2_ds_ * error', 'gb2_ds_ * strange' ]
+        systems = ['belle2.org','MC generation','TypeError','gb2_',
+                       'Wildcard','BelleDIRAC job monitor','Production','verification failed']
+        actions = ['system error','wrong mass',' --','crash', 'broken',
+                    'fails','wrong number of files','failed']
+        phrase1 = ['problem connecting * at KEK', 'feature of gbasf2 * stop working',
+                    'trouble running * FEI',
+                    'try to reschedule * following error:','now deprecate','dirac portal * Bad gateway',
+                    "Can't load RucioFileCatalogClient",'error * rucio list',
+                    'limit on the allowed number of characters','Project is too long (max', 
+                    'gb2_ds_ * error', 'gb2_ds_ * strange',
+                    'strange status * job',
+                    'Rescheduling * many times',
+                    'skim job * files are so large',
+                    'cannot * output error','am trying * error','troubles log * KEKCC',
+                    'dataset searcher * no results']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
+        ### check for overlap between classification schemes
+        print '\nissues_keyphrases.define Check for overlap between classification schemes'
+        originalDebug = self.debug
+        #self.debug = 3
+        nOverlaps = 0
+        for i1, name1 in enumerate(idictOrder):
+            sys1,act1 = idict[name1][0]
+            for Subject in [a + ' ' + b for a,b in itertools.product(sys1,act1)]:
+                if self.debug > 2 : print 'i1,name1,Subject',i1,name1,Subject
+                for i2 in range(i1+1,len(idictOrder)):
+                    name2 = idictOrder[i2]
+                    Reqmts = idict[name2][0]
+                    if self.findN(Subject,Reqmts):
+                        print 'Subject overlap: issue#',i1,name1,'Subject','`'+Subject+'`','overlaps issue#',i2,name2
+                        nOverlaps += 1
+                
+            phr1      = idict[name1][1][0]
+            if type(phr1) is not list: sys.exit('ERROR phr1 is '+str(type(phr1)))
+            if self.debug > 2 : print 'phr1',phr1
+            for p1 in phr1:
+                for i2 in range(i1+1,len(idictOrder)):
+                    name2 = idictOrder[i2]
+                    phr2 = idict[name2][1]
+                    if type(phr2) is not list: sys.exit('ERROR phr2 is '+str(type(phr2)))                    
+                    if self.debug > 2 : print 'i1,name1,p1',i1,name1,p1,'i2,name2,phr2',i2,name2,phr2
+                    if self.findN(p1,phr2):
+                        print 'Message overlap: issue#',i1,name1,'p1','`'+p1+'`','overlaps issue#',i2,name2
+                        nOverlaps += 1
+        if nOverlaps==0:
+            print 'issues_keyphrases.define NO OVERLAPS FOUND'
+        else:
+            print 'issues_keyphrases.define Found',nOverlaps,'overlaps'
+        self.debug = originalDebug
+
+        
+        ### Informative output
         for iname, name in enumerate(idictOrder):
             Unique = idict[name][2]
-            if Unique : print 'issues_keyphrases.define Classification of issue#',iname,name,'is UNIQUE.', \
+            if Unique :
+                print 'issues_keyphrases.define Classification of issue#',iname,name,'is UNIQUE.', \
                 'It supersedes subsequent issues.'
+        if report:
+            print '\n issues_keyphrases.define Issue definitions.\n Email subject classification uses `systems` and `actions`.\n Email text classification uses `phrases`.'
+            for iname, name in enumerate(idictOrder):
+                u = 'not unique'
+                if idict[name][2] : u = 'UNIQUE'
+                print '\nDefinition of issue#',iname,name,'is',u
+                systems,actions = idict[name][0]
+                print 'systems: `'+'` `'.join(systems)+'`'
+                print 'actions: `'+'` `'.join(actions)+'`'
+                phrases = idict[name][1][0]
+                print 'phrases: `'+'` `'.join(phrases)+'`'
+            print ''
+
+            
 
         
         return idict,idictOrder
@@ -186,8 +268,10 @@ class issues_keyphrases():
 
         input  Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
 
+        output issues[issue0] = [achive0, archive1, ...]
+
         '''
-        idict, idictOrder = self.define()
+        idict, idictOrder = self.define()  # Note that Unclassified issue is added below
         issues = {}         # {issue: [archive0, archive1, ...] } = list of threads for this issue
         thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
         Classified = []     # list of threads classified in >0 issues
@@ -213,14 +297,19 @@ class issues_keyphrases():
 
 
         ### next, for unassigned threads, assign thread to issue using email text
+        originalDebug = self.debug
         unClassified = []
         for key in Threads:
             if key not in Classified : unClassified.append( key )
         for issue in idictOrder:
             Reqmts = idict[issue][1]
-            Unique = idict[issue][0]
+            Unique = idict[issue][2]
             if self.debug > 2 : print 'issues_keyphrases.classifyThreads by email text, issue',issue,'Reqmts',Reqmts
             for key in [x for x in unClassified if x not in IgnoreThese]:
+                ##### SPECIAL FOR DEBUG
+                ##self.debug = originalDebug 
+                ##if key=='2019-12/31' : self.debug = 3
+                ##### SPECIAL FOR DEBUG
                 text = self.extractMsg.getText(key,input='archive')
                 if self.debug > 2 : print 'issues_keyphrases.classifyThreads by email text, key',key
                 if self.findN(text,Reqmts) :
@@ -229,22 +318,33 @@ class issues_keyphrases():
                     thread_issues[key].append(issue)
                     if key not in Classified : Classified.append( key )
                     if Unique : IgnoreThese.append( key )
+
+        #### Bookkeeping: add Unclassified issue
+        name = 'Unclassified'
+        issues[name] = []
+        idictOrder.append( name ) 
+        for key in Threads:
+            if key not in Classified:
+                issues[name].append(key)
+
                         
-        print 'issues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified),'successfully classified by email message text'
+        print '\nissues_keyphrases.classifyThreads',len(Threads),'total threads with', \
+          len(Classified),'successfully classified by email message text'
         for issue in idictOrder:
             print 'issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times'
             
-        # list of threads that are classified under >1 issue
-        First = True
-        for key in thread_issues:
-            if len(thread_issues[key])>1 :
-                if First :
-                    First = False
-                    print '\nissues_keyphrases.classifyThreads Threads that are classified under >1 issue:'
-                Subject = Threads[key][0]
-                print key,Subject,":",", ".join(thread_issues[key])
-        if First: print 'issues_keyphrases.classifyThreads NO threads classified under >1 issue!'
-
+        ### list of threads that are classified under >1 issue
+        maxClass = -1
+        for key in thread_issues: maxClass = max(maxClass, len(thread_issues[key]))
+        if maxClass==1 :
+            print '\nissues_keyphrases.classifyThreads NO threads classified under >1 issue!'
+        else:
+            for LEN in range(2,maxClass+1):
+                print '\nissues_keyphrases.classifyThreads Threads classified under',LEN,'issues:'
+                for key in thread_issues:
+                    if len(thread_issues[key])==LEN:
+                        Subject = Threads[key][0]
+                        print key,Subject+":",", ".join(thread_issues[key])
             
         print '\nissues_keyphrases.classifyThreads HERE ARE THE UNCLASSIFIED THREADS'
         for key in Threads:
@@ -253,8 +353,18 @@ class issues_keyphrases():
                 words = self.extractMsg.getText(key,input='archive')
                 print words
 
-        self.wordFrequency(Threads,threshold=5)
-        return
+        # self.wordFrequency(Threads,threshold=5)
+
+        ### output
+        issueOrder,issueUnique = [],[]
+        for issue in idictOrder:
+            issueOrder.append( issue )
+            unique = False
+            if issue in idict: unique = idict[issue][2]
+            issueUnique.append( unique )
+
+                
+        return issues,issueOrder,issueUnique
     def wordFrequency(self,Threads,threshold=5):
         '''
         frequency distribution of words in Subject of threads, ignoring case
@@ -308,16 +418,23 @@ class issues_keyphrases():
         matching ignores case
         '''
         subject = Subject.lower()
+        if self.debug > 2 : print 'issues_keyphrases.basicFind subject',subject
         for phrase in phrases:
             p = phrase.lower()
+            if self.debug > 2 : print 'issues_keyphrases.basicFind phrase.lower()',p
             if '*' in p:
                 i = p.index('*')
                 p1 = p[:i].strip()
                 p2 = p[i+1:].strip()
+                if self.debug > 2 : print 'issues_keyphrases.basicFind p1',p1,'p2',p2
                 if p1 in subject and p2 in subject:
-                    return subject.index(p1)<subject.index(p2)
+                    if self.debug > 2 : print 'issues_keyphrases.basicFind subject.index(p1)',subject.index(p1),'subject.index(p2)',subject.index(p2)
+                    if subject.index(p1)<subject.index(p2) : return True
             else:
-                if p in subject : return True
+                if p in subject :
+                    if self.debug > 2 : print 'issues_keyphrases.basicFind phrase found in subject'
+                    return True
+        if self.debug > 2 : print 'issues_keyphrases.basicFind phrase NOT found in subject'
         return False
 
     def readFileThreads(self):
@@ -338,7 +455,7 @@ class issues_keyphrases():
 if __name__ == '__main__' :
     ik = issues_keyphrases()
     Threads = ik.readFileThreads()
-    ik.classifyThreads(Threads)
+    issues,issueOrder,issueUnique = ik.classifyThreads(Threads)
     sys.exit('exit here cuz the rest is gibberish')
     
     fn = 'DATA/comp-users-forum_2020-02/22'
