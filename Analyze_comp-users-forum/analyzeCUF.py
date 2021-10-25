@@ -15,6 +15,7 @@ import numpy
 
 import extractMsg   # extracts the email message from a file
 import issues_keyphrases
+import mpl_interface # interface to mathplotlib
 
 import email
 #import operator
@@ -36,6 +37,7 @@ class analyzeCUF():
 
         self.extractMsg = extractMsg.extractMsg()
         self.issues_keyphrases = issues_keyphrases.issues_keyphrases()
+        self.mpl_interface = mpl_interface.mpl_interface()
 
         self.figDir = 'FIGURES'
 
@@ -419,27 +421,59 @@ class analyzeCUF():
 
 
         # issues by year
-        print '\nanalyzeCUF.analyzeThreads issues',issues
-        iByY = {} # {year: [N(issue0), N(issue1), ...}
-        for issue in issueOrder:
-            NperY = {}
-            NperY['AllYears'] = 0
+        # plot normed number of issues/year and issues/all years vs year 
+        # and number of issues/year vs year (normed and unnormed)
+        # and normed number of non-unique issues/year and issues/all years vs year
+        nonUniqueOrder = []
+        for I,issue in enumerate(issueOrder):
+            if not issueUnique[I] : nonUniqueOrder.append(issue)
+                
+        if self.debug > 2 :
+            print '\nanalyzeCUF.analyzeThreads issues',issues
+            print ' ',[str(issue)+' '+str(len(issues[issue])) for issue in issues]
+        years = []
+        for issue in issues:
             for archive in issues[issue]:
                 year = archive[:4]
-                if year not in NperY : NperY[year] = 0
-                NperY[year] += 1
-                NperY['AllYears'] += 1
-            for year in NperY:
-                if year not in iByY : iByY[year] = []
-                iByY[year].append( NperY[year] )
-        years = sorted(iByY)
-        print ' '.join(years),'Issue'
-        for I,issue in enumerate(issueOrder):
-            NperY = []
-            for year in years:
-                NperY.append( iByY[year][I] )
-            print ' '.join(str(x) for x in NperY),issue
+                if year not in years: years.append( year )
+        years.append('AllYears')
+        years = sorted(years)
+        if self.debug > 2 : print 'analyzeCUF;analyzeThreads years',years
+        iByY = {} # {year: [N(issue0), N(issue1), ...}
+        for year in years:
+            iByY[year] = [0 for issue in issueOrder]
 
+        for I,issue in enumerate(issueOrder):
+            for archive in issues[issue]:
+                year = archive[:4]
+                iByY[year][I] += 1
+                iByY['AllYears'][I] += 1
+
+        if self.debug > 2 : print 'analyzeCUF.analyzeThreads iByY',iByY
+
+        for words,order in zip(['All ','Non-unique '],[issueOrder, nonUniqueOrder]):
+            print '\nNumber of issues by year\n',' '.join(years),'Issue'
+            Y = []
+            Yy= []
+            for I,issue in enumerate(order):
+                NperY = []
+                NperYy= []
+                for year in years:
+                    NperY.append( iByY[year][I] )
+                    if year!='AllYears': NperYy.append( iByY[year][I] )
+                print ' '.join(str(x) for x in NperY),issue
+                Y.extend( NperY )
+                Yy.extend( NperYy )
+            X = numpy.array( years )
+            Y = numpy.array( Y )
+            Yy= numpy.array( Yy )
+            Y = numpy.reshape( Y, (len(order), len(years)) )
+            Yy= numpy.reshape( Yy, (len(order), len(years)-1) )
+            self.mpl_interface.stackedBarChart(Y,years,order,words+'Issues',norm=True)
+            self.mpl_interface.stackedBarChart(Yy,years[:-1],order,words+'Issues by year',norm=False)
+            self.mpl_interface.stackedBarChart(Yy,years[:-1],order,words+'Issues by year',norm=True)
+        
+        
         # analyze thread by reporter and responder by year
         # first 'From' is reporter, second 'From' is responder
         print '\nanalyzeCUF.analyzeThreads by reporter and responder'
