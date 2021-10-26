@@ -731,7 +731,36 @@ class analyzeCUF():
         for new in r:
             for old in r[new]:
                 if old in filename : filename = filename.replace(old,new)
-        return filename    
+        return filename
+    def tableMaker(self,headers,rows,rowlabels,integers=False):
+        '''
+        return table, suitable to print, given headers, rows and row labels
+        headers = list of header titles with length NH
+        rows = list of lists with each row of length NH
+        rowlabels = list of row labels with length = # of rows
+        
+        '''
+        fprec = '.1f'
+        if integers : fprec = 'd'
+        hfmt = ''
+        ffmt = ''
+        fm = '{:'+fprec+'}'
+        for i,h in enumerate(headers):
+            L = len(h)
+            for r in rows:
+                L = max(L,len(fm.format(r[i])))
+            hfmt += '{'+str(i)+':>'+str(L)+'} '
+            ffmt += '{'+str(i)+':>'+str(L)+fprec+'} '
+        i += 1
+        ffmt += ' {'+str(i)+'} '
+        table = hfmt.format(*headers)
+        table += '\n'
+        for ir,r in enumerate(rows):
+            Q = [x for x in r]
+            Q.append(rowlabels[ir])
+            table += ffmt.format(*Q) + '\n'
+
+        return table
     def main(self):
         '''
         main module for analysis
@@ -745,6 +774,16 @@ class analyzeCUF():
 
         self.analyzeThreads(Threads,issues,issueOrder,issueUnique)
 if __name__ == '__main__' :
+    testTableMaker = False
+    if testTableMaker :
+        headers = ['pigs', 'monkeys', 'sheep']
+        rows = [ [50427,88,219], [73, 102, 12], [129, 11, 512] ]
+        rowlabels = ['Fred`s farm','Mary`s house','At college']
+        aCUF = analyzeCUF()
+        table = aCUF.tableMaker(headers,rows,rowlabels,integers=True)
+        print table
+        sys.exit('done testing tableMaker')
+    
 
     debug = -1
     plotToFile = False
