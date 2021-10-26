@@ -469,9 +469,12 @@ class analyzeCUF():
             Yy= numpy.array( Yy )
             Y = numpy.reshape( Y, (len(order), len(years)) )
             Yy= numpy.reshape( Yy, (len(order), len(years)-1) )
-            self.mpl_interface.stackedBarChart(Y,years,order,words+'Issues',norm=True)
-            self.mpl_interface.stackedBarChart(Yy,years[:-1],order,words+'Issues by year',norm=False)
-            self.mpl_interface.stackedBarChart(Yy,years[:-1],order,words+'Issues by year',norm=True)
+            Title = self.mpl_interface.stackedBarChart(Y,years,order,words+'Issues',norm=True)
+            self.showOrPlot(Title)
+            Title = self.mpl_interface.stackedBarChart(Yy,years[:-1],order,words+'Issues by year',norm=False)
+            self.showOrPlot(Title)
+            Title = self.mpl_interface.stackedBarChart(Yy,years[:-1],order,words+'Issues by year',norm=True)
+            self.showOrPlot(Title)
         
         
         # analyze thread by reporter and responder by year

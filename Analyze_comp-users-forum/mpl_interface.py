@@ -16,16 +16,18 @@ import matplotlib.pyplot as plt
 
 
 class mpl_interface():
-    def __init__(self):
+    def __init__(self,internal=False):
         self.debug = 0
 
+        self.internal = internal
         print 'mpl_interface.__init__ completed'
         return
     def stackedBarChart(self,y,xlabels,ylabels,title,norm=False):
         '''
         create and fill a stacked bar chart
-        inputs
+        returns the title of the bar chart
 
+        inputs:
         y = 2d array, 1 dimensions corresponds to xlabels, other to content for different labels.
         title = global title
         norm = True = Normalize content of each bin to 100%.
@@ -75,13 +77,14 @@ class mpl_interface():
         Title = title
         if norm: Title += ' (Norm to unity)'
         plt.title(Title)
-
-        plt.show()
+        plt.grid()
+        if self.internal : plt.show()
         
-        return 
+        return Title
             
 if __name__ == '__main__' :
-    mpli = mpl_interface()
+    internal = True
+    mpli = mpl_interface(internal=internal)
 
     ntest = 1
     for itest in range(ntest):
