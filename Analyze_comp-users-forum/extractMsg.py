@@ -42,6 +42,84 @@ class extractMsg():
         
         print 'extractMsg.__init__ completed'
         return
+    def gridSites(self):
+        '''
+        let's see if the names of grid sites can be extracted from the text of email messages
+
+        grid site name cannot contain character in list ignore
+        grid site name is of the form 'first.middle.last'
+        require number of characters in last <= tooLong
+        last character in name cannot be '.'
+        if first or middle or last isdigit(), then name is not valid 
+        
+
+        '''
+        ignore = ['*',':','tar.gz','tar.bz2','stash.','http','@','/','.org','.log','www.','e.g.',
+                      '(',')','<','>','__','--','\xc2','\xa0','\xe2','\x80','\x98']
+        tooLong = 2
+        files = glob.glob(self.dirPrefix + '_20*/*')
+        #files = glob.glob(self.dirPrefix + '_2018-10/20')
+        sites = []
+        for i,fn in enumerate(files):
+            f = open(fn,'r')
+            #print 'extractMsg -------------- look for grid site names in message from fn',fn
+            msg = email.message_from_file(f)
+            f.close()
+            msg = self.msgFix(msg)
+            #print 'msg after msgFix\n',msg
+            lines = self.get_text(msg)
+            for word in lines.split():
+                if self.validSiteName(word,ignore,tooLong) :
+                    if word not in sites:
+                        print 'extractMsg.gridSites fn',fn,'word',word
+                        sites.append(word)
+
+        sites.sort(key=len)
+        print 'extract.gridSites sites before clean',sites
+        clean = []
+        delim = ['"',"'",'\"','\'']
+        comma = ','
+        for word in sites:
+            newword = word
+            for d in delim:
+                if word.count(d)==2:
+                    newword = word.split(d)[1]
+                    break
+                elif word.count(d)==1:
+                    newword = word.replace(d,'')
+                    break
+            if newword==word:
+                if comma in word:
+                    if word.index(comma)==len(word)-1 :
+                        newword = word.replace(comma,'')
+                    elif word.index(comma)<len(word)-1 :
+                        newword = word.split(comma)[1]
+                        
+            if self.validSiteName(newword,ignore,tooLong) : clean.append( newword )
+        sites = clean
+        sites.sort(key=len)
+        print 'extractMsg.gridSites sites',sites
+        return
+    def validSiteName(self,name,ignore,tooLong):
+        ''' 
+        return True if name is a valid grid site name 
+        '''
+        word = name
+
+        if len(word)<5 : return False
+        
+        if word.count('.')!=2: return False
+
+        if word[-1]=='.' : return False
+        if len(word.split('.')[-1])>tooLong : return False
+            
+        for crud in ignore:
+            if crud in word: return False
+                
+        for part in word.split('.'):
+            if part.isdigit() : return False
+        return True
+
     def bigTest(self):
         '''
         run some text extraction modules on a messages from a bunch of files
@@ -324,7 +402,11 @@ class extractMsg():
             html = None
             for part in msg.get_payload():
                 if part.get_content_charset() is None:
-                    charset = chardet.detect(str(part))['encoding']
+                    try:  ### added try/except
+                        charset = chardet.detect(str(part))['encoding']
+                    except NameError:
+                        return ""
+                    
                 else:
                     charset = part.get_content_charset()
                 if part.get_content_type() == 'text/plain':
@@ -406,7 +488,7 @@ if __name__ == '__main__' :
         lines = eM.getText(archive,input=input)
         print lines
 
-    betterGetText = True
+    betterGetText = False
     if betterGetText :
         for n in range(38,39):
 #            fn = 'DATA/comp-users-forum_2021-03/'+str(n)
@@ -418,3 +500,8 @@ if __name__ == '__main__' :
             msg = eM.msgFix(msg)
             lines = eM.get_text(msg)
             print lines
+
+
+    lookForGridSites = True
+    if lookForGridSites :
+        eM.gridSites()

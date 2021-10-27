@@ -449,6 +449,15 @@ class analyzeCUF():
                 iByY[year][I] += 1
                 iByY['AllYears'][I] += 1
 
+        rows = []
+        for I,issue in enumerate(issueOrder):
+            onerow = []
+            for year in years:
+                onerow.append( iByY[year][I] )
+            rows.append( onerow )
+        table = self.tableMaker(years,rows,issueOrder,integers=True,caption='Number of issues by year')
+        print table
+
         if self.debug > 2 : print 'analyzeCUF.analyzeThreads iByY',iByY
 
         for words,order in zip(['All ','Non-unique '],[issueOrder, nonUniqueOrder]):
@@ -732,11 +741,11 @@ class analyzeCUF():
             for old in r[new]:
                 if old in filename : filename = filename.replace(old,new)
         return filename
-    def tableMaker(self,headers,rows,rowlabels,integers=False):
+    def tableMaker(self,headers,rows,rowlabels,integers=False,caption=None):
         '''
         return table, suitable to print, given headers, rows and row labels
-        headers = list of header titles with length NH
-        rows = list of lists with each row of length NH
+        headers = list of header titles with length NH = [h1, h2, ..., hNH]
+        rows = list of lists with each row of length NH = [ [a1, a2, ..., aNH], ... [z1, z2, ..., zNH] ] 
         rowlabels = list of row labels with length = # of rows
         
         '''
@@ -753,7 +762,9 @@ class analyzeCUF():
             ffmt += '{'+str(i)+':>'+str(L)+fprec+'} '
         i += 1
         ffmt += ' {'+str(i)+'} '
-        table = hfmt.format(*headers)
+        table = ''
+        if caption is not None : table += caption + '\n'
+        table += hfmt.format(*headers)
         table += '\n'
         for ir,r in enumerate(rows):
             Q = [x for x in r]
@@ -780,7 +791,7 @@ if __name__ == '__main__' :
         rows = [ [50427,88,219], [73, 102, 12], [129, 11, 512] ]
         rowlabels = ['Fred`s farm','Mary`s house','At college']
         aCUF = analyzeCUF()
-        table = aCUF.tableMaker(headers,rows,rowlabels,integers=True)
+        table = aCUF.tableMaker(headers,rows,rowlabels,integers=True,caption='Here is a test table!!')
         print table
         sys.exit('done testing tableMaker')
     
