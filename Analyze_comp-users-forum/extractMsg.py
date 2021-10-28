@@ -200,7 +200,6 @@ class extractMsg():
         if input=='file', then INPUT is the filename
         if input=='archive', then INPUT is the archive identifier eg., 2021-03/32
 
-        DEPRECATED ?? if omitPreSalutation==True, then find salutation and remove the text prior to salutation, if salutation is found
         '''
         fn = None
         if input=='file': fn = INPUT

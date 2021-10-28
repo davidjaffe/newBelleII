@@ -15,6 +15,7 @@ import numpy
 import extractMsg   # extracts the email message from a file
 import issues_keyphrases  # classifies threads based on subject and message content
 import mpl_interface # interface to mathplotlib
+import Logger # direct stdout to file & terminal
 
 import email
 
@@ -30,17 +31,28 @@ class analyzeCUF():
         now = datetime.datetime.now()
         self.now = now.strftime('%Y%m%dT%H%M%S')
 
+        parentDir = 'JOBS/'+self.now
+        dirs = [parentDir]
+        self.figDir = parentDir  + '/FIGURES'
+        self.logDir = parentDir
+        dirs.append( self.figDir)
+        dirs.append( self.logDir)
+
+        for d in dirs:
+            if not os.path.exists(d):
+                os.makedirs(d)
+                print 'analyzeCUF.__init__ create directory',d
+
+        lf = self.logDir + '/logfile.log'
+        sys.stdout = Logger.Logger(fn=lf)
+        print 'analyzeCUF.__init__ Output directed to stdout and',lf
+
+
         print 'analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile,'now',self.now
 
         self.extractMsg = extractMsg.extractMsg(debug=debug)
         self.issues_keyphrases = issues_keyphrases.issues_keyphrases(debug=debug,now=self.now)
         self.mpl_interface = mpl_interface.mpl_interface()
-
-        ## flush to stdout after every printed line(?)
-        ## cribbed from https://stackoverflow.com/questions/12827256/python-standard-idiom-to-set-sys-stdout-buffer-to-zero-doesnt-work-with-unicode
-        sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 1)  # 1 : line buffered
-        
-        self.figDir = 'FIGURES'
 
         self.DATA_DIR = 'DATA/'
 
@@ -434,9 +446,11 @@ class analyzeCUF():
             IvI[i][i] += 1
             if len(iss)>=2:
                 j = issueOrder.index( iss[1] )
+                IvI[j][j] += 1
                 IvI[j][i] += 1
             if len(iss)==3:
                 k = issueOrder.index( iss[2] )
+                IvI[k][k] += 1
                 IvI[i][k] += 1
         x = y = numpy.arange(Ni+1)
         z = numpy.array(IvI)
@@ -808,9 +822,11 @@ class analyzeCUF():
         self.gridSiteNames = self.extractMsg.gridSites(files=files)
         if self.debug > 2 : print 'analyzeCUF.main self.msgOrder',self.msgOrder
         Threads = self.processFiles(files)
+        grid_issues = self.issues_keyphrases.gridIssues(Threads,self.gridSiteNames)
         issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads)
 
         self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues)
+        return
 if __name__ == '__main__' :
     testTableMaker = False
     if testTableMaker :

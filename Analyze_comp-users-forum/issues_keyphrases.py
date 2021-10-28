@@ -15,8 +15,9 @@ import itertools
 
 
 class issues_keyphrases():
-    def __init__(self,debug=0):
+    def __init__(self,debug=0,now='groundhogday'):
         self.debug = debug
+        self.now = now
 
         ## used by getWords
         ignoreThese = ['Belle']
@@ -25,6 +26,7 @@ class issues_keyphrases():
 
         self.extractMsg = extractMsg.extractMsg()
 
+        self.UNCLASSIFIED_LOG = 'UNCLASSIFIED/' + self.now + '.log'
         
         print 'issues_keyphrases.__init__ completed'
         return
@@ -260,6 +262,30 @@ class issues_keyphrases():
 
         
         return idict,idictOrder
+    def gridIssues(self,Threads,gridSiteNames):
+        '''
+        return grid_issues[site] = [archive0, archive1, ...]
+        where site is the name of a grid site and archiveI is a thread that mentions that site
+        check subject and message text
+        multiple sites can be mentioned in a single thread
+        '''
+        grid_issues = {}
+        sitenames = [x.lower() for x in gridSiteNames]
+        for site in sitenames: grid_issues[site] = []
+        for key in Threads:
+            Subject = Threads[key][0]
+            text = self.extractMsg.getText(key,input='archive')
+            Sandt = Subject.lower() + ' ' + text.lower()
+            for site in sitenames:
+                if site in Sandt:
+                    if key not in grid_issues[site]: grid_issues[site].append(key)
+        desort = sorted(grid_issues.items(), key=lambda x: len(x[1]), reverse=True)
+        descending = [q[0] for q in desort]
+        print '\nissues_keyphrase.grid_issues in descending order of threads/site'
+        for site in descending:
+            print site,len(grid_issues[site]),grid_issues[site]
+        return grid_issues
+        
     def classifyThreads(self,Threads):
         '''
         Classify threads by issue. 
@@ -290,6 +316,7 @@ class issues_keyphrases():
                     thread_issues[key].append(issue)
                     if key not in Classified : Classified.append( key )
                     if Unique : IgnoreThese.append( key )
+                
 
         print 'issues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified),'successfully classified by Subject'
         for issue in idictOrder:
@@ -340,18 +367,23 @@ class issues_keyphrases():
             print '\nissues_keyphrases.classifyThreads NO threads classified under >1 issue!'
         else:
             for LEN in range(2,maxClass+1):
-                print '\nissues_keyphrases.classifyThreads Threads classified under',LEN,'issues:'
+                nTot = sum( [len(thread_issues[key])==LEN for key in thread_issues] )
+                print '\nissues_keyphrases.classifyThreads There are',nTot,'threads classified under',LEN,'issues:'
                 for key in thread_issues:
                     if len(thread_issues[key])==LEN:
                         Subject = Threads[key][0]
                         print key,Subject+":",", ".join(thread_issues[key])
-            
-        print '\nissues_keyphrases.classifyThreads HERE ARE THE UNCLASSIFIED THREADS'
+                        
+        ### write messages from unclassified threads to a log file
+        ufn = open(self.UNCLASSIFIED_LOG,'w')
+        print '\nissues_keyphrases.classifyThreads Write messages from unclassified threads to',self.UNCLASSIFIED_LOG
+        ufn.write('\nissues_keyphrases.classifyThreads HERE ARE THE UNCLASSIFIED THREADS')
         for key in Threads:
             if key not in Classified:
-                print '\nUNCLASSIFIED THREAD:',key,Threads[key][0]
+                ufn.write('\nUNCLASSIFIED THREAD: '+ key + ' ' + Threads[key][0])
                 words = self.extractMsg.getText(key,input='archive')
-                print words
+                ufn.write(words)
+        ufn.close()
 
         # self.wordFrequency(Threads,threshold=5)
 
@@ -364,7 +396,7 @@ class issues_keyphrases():
             issueUnique.append( unique )
 
                 
-        return issues,issueOrder,issueUnique
+        return issues,issueOrder,issueUnique, thread_issues
     def wordFrequency(self,Threads,threshold=5):
         '''
         frequency distribution of words in Subject of threads, ignoring case
