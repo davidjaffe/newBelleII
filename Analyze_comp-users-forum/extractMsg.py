@@ -16,8 +16,8 @@ import numpy
 
 
 class extractMsg():
-    def __init__(self,prefix='DATA/comp-users-forum'):
-        self.debug = 0
+    def __init__(self,prefix='DATA/comp-users-forum',debug=0):
+        self.debug = debug
         self.badKeys = {}
         self.dirPrefix = prefix
 
@@ -42,24 +42,15 @@ class extractMsg():
         
         print 'extractMsg.__init__ completed'
         return
-    def gridSites(self):
+    def gridSites(self,files=None):
         '''
-        let's see if the names of grid sites can be extracted from the text of email messages
-
-        grid site name cannot contain character in list ignore
-        grid site name is of the form 'first.middle.last'
-        require number of characters in last <= tooLong
-        last character in name cannot be '.'
-        if first or middle or last isdigit(), then name is not valid 
-        
-
+        return list allSites containing names of all grid sites found in email
+        messages in input files
         '''
-        ignore = ['*',':','tar.gz','tar.bz2','stash.','http','@','/','.org','.log','www.','e.g.',
-                      '(',')','<','>','__','--','\xc2','\xa0','\xe2','\x80','\x98']
-        tooLong = 2
-        files = glob.glob(self.dirPrefix + '_20*/*')
-        #files = glob.glob(self.dirPrefix + '_2018-10/20')
-        sites = []
+        if files is None : files = glob.glob(self.dirPrefix + '_20*/*')
+        #files = glob.glob(self.dirPrefix + '_2018-10/20')  # problematic file for get_text
+
+        allSites = []
         for i,fn in enumerate(files):
             f = open(fn,'r')
             #print 'extractMsg -------------- look for grid site names in message from fn',fn
@@ -68,16 +59,41 @@ class extractMsg():
             msg = self.msgFix(msg)
             #print 'msg after msgFix\n',msg
             lines = self.get_text(msg)
-            for word in lines.split():
-                if self.validSiteName(word,ignore,tooLong) :
-                    if word not in sites:
-                        print 'extractMsg.gridSites fn',fn,'word',word
-                        sites.append(word)
+            sites = self.getGridSiteNames(lines)
+            for site in sites:
+                if site not in allSites:
+                    if self.debug > 1 : print 'extractMsg.gridSites fn',fn,'site',site
+                    allSites.append(site)
+        if self.debug > 2 : print 'extractMsg.gridSites allSites',allSites
+        return allSites
+
+    def getGridSiteNames(self,msg):
+        '''
+        let's see if the names of grid sites can be extracted from the text of email messages
+
+        grid site name cannot contain character in list ignore
+        grid site name is of the form 'first.middle.last'
+        require len(last) <= tooLong
+        last character in name cannot be '.'
+        if first or middle or last isdigit(), then name is not valid        
+
+        '''
+        ignore = ['*',':','tar.gz','tar.bz2','stash.','http','@','/','.org','.log','www.','e.g.',
+                      '(',')','<','>','__','--','\xc2','\xa0','\xe2','\x80','\x98','proc10.lfn.aa']
+        tooLong = 2
+
+        sites = []
+        lines = msg
+        for word in lines.split():
+            if self.validSiteName(word,ignore,tooLong) :
+                if word not in sites:
+                    if self.debug > 2 : print 'extractMsg.getGridSiteNames word',word
+                    sites.append(word)
 
         sites.sort(key=len)
-        print 'extract.gridSites sites before clean',sites
+        if self.debug > 2 : print 'extract.getGridSiteNames sites before clean',sites
         clean = []
-        delim = ['"',"'",'\"','\'']
+        delim = ['"',"'"]
         comma = ','
         for word in sites:
             newword = word
@@ -98,11 +114,13 @@ class extractMsg():
             if self.validSiteName(newword,ignore,tooLong) : clean.append( newword )
         sites = clean
         sites.sort(key=len)
-        print 'extractMsg.gridSites sites',sites
-        return
+        if self.debug > 2 : print 'extractMsg.getGridSiteNames sites',sites
+        return sites
     def validSiteName(self,name,ignore,tooLong):
         ''' 
         return True if name is a valid grid site name 
+        based on input list of bad strings 'ignore' and 
+        tooLong as maximum length of last part of name
         '''
         word = name
 
@@ -119,7 +137,6 @@ class extractMsg():
         for part in word.split('.'):
             if part.isdigit() : return False
         return True
-
     def bigTest(self):
         '''
         run some text extraction modules on a messages from a bunch of files
@@ -396,6 +413,7 @@ class extractMsg():
 
         I added idiot_html2text to do rudimentary html to text translation
         Added check on charset
+        Added try/except for chardet
         '''
         text = ""
         if msg.is_multipart():
@@ -406,7 +424,6 @@ class extractMsg():
                         charset = chardet.detect(str(part))['encoding']
                     except NameError:
                         return ""
-                    
                 else:
                     charset = part.get_content_charset()
                 if part.get_content_type() == 'text/plain':

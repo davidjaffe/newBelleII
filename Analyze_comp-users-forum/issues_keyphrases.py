@@ -15,8 +15,8 @@ import itertools
 
 
 class issues_keyphrases():
-    def __init__(self):
-        self.debug = 0
+    def __init__(self,debug=0):
+        self.debug = debug
 
         ## used by getWords
         ignoreThese = ['Belle']

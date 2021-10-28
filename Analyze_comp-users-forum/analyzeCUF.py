@@ -44,6 +44,8 @@ class analyzeCUF():
         self.DATA_DIR = 'DATA/'
 
         self.MLname = 'comp-users-forum'
+
+        self.gridSiteNames = None
         
         self.msgOrder= None    # messages in proper numerical order
 
@@ -779,6 +781,7 @@ class analyzeCUF():
         files,msgOrder = self.getArchive()
         self.msgOrder = msgOrder
         self.nFiles   = len(files)
+        self.gridSiteNames = self.extractMsg.gridSites(files=files)
         if self.debug > 2 : print 'analyzeCUF.main self.msgOrder',self.msgOrder
         Threads = self.processFiles(files)
         issues,issueOrder,issueUnique = self.issues_keyphrases.classifyThreads(Threads)
