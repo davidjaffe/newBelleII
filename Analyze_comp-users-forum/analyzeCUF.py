@@ -7,38 +7,39 @@ https://indico.belle2.org/event/4490/contributions/23141/attachments/11560/17627
 
 20210916
 '''
-#import math
 import sys,os
 import glob
 import matplotlib.pyplot as plt
 import numpy
 
 import extractMsg   # extracts the email message from a file
-import issues_keyphrases
+import issues_keyphrases  # classifies threads based on subject and message content
 import mpl_interface # interface to mathplotlib
 
 import email
-#import operator
-
-#import copy
-
-#from collections import Counter
 
 import datetime
 
 
 class analyzeCUF():
     def __init__(self,debug=0,plotToFile=False):
-
         
         self.debug = debug
         self.plotToFile = plotToFile
-        print 'analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile
 
-        self.extractMsg = extractMsg.extractMsg()
-        self.issues_keyphrases = issues_keyphrases.issues_keyphrases()
+        now = datetime.datetime.now()
+        self.now = now.strftime('%Y%m%dT%H%M%S')
+
+        print 'analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile,'now',self.now
+
+        self.extractMsg = extractMsg.extractMsg(debug=debug)
+        self.issues_keyphrases = issues_keyphrases.issues_keyphrases(debug=debug,now=self.now)
         self.mpl_interface = mpl_interface.mpl_interface()
 
+        ## flush to stdout after every printed line(?)
+        ## cribbed from https://stackoverflow.com/questions/12827256/python-standard-idiom-to-set-sys-stdout-buffer-to-zero-doesnt-work-with-unicode
+        sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 1)  # 1 : line buffered
+        
         self.figDir = 'FIGURES'
 
         self.DATA_DIR = 'DATA/'
@@ -387,7 +388,7 @@ class analyzeCUF():
         print 'analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread'
              
         return Threads
-    def analyzeThreads(self,Threads,issues,issueOrder,issueUnique):
+    def analyzeThreads(self,Threads,issues,issueOrder,issueUnique,thread_issues):
         '''
         analyze dict Threads
 
@@ -395,6 +396,8 @@ class analyzeCUF():
         issues = {}         # {issue: [archive0, archive1, ...] } = list of threads for this issue
         issueOrder = list with issue names in order of analysis
         issueUnique= list of booleans, entry is true if issue is `Unique`
+        thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
+
 
         Number of message per thread
         Span of messages in thread
@@ -421,11 +424,32 @@ class analyzeCUF():
             f.close()
             print '\nanalyzeCUF.analyzeThreads Wrote',nwrite,'thread subjects to file',fn
 
-
+        ### issue vs issue
+        Ni = len(issueOrder)
+        IvI = []
+        for i in range(Ni): IvI.append( [0. for j in range(Ni)] )
+        for archive in thread_issues:
+            iss = thread_issues[archive]
+            i = issueOrder.index( iss[0] )
+            IvI[i][i] += 1
+            if len(iss)>=2:
+                j = issueOrder.index( iss[1] )
+                IvI[j][i] += 1
+            if len(iss)==3:
+                k = issueOrder.index( iss[2] )
+                IvI[i][k] += 1
+        x = y = numpy.arange(Ni+1)
+        z = numpy.array(IvI)
+        xlabels = ylabels = issueOrder
+        title = 'Issue vs issue. Diagonal=all, above=doubles, below=triples'
+        Title = self.mpl_interface.plot2d(x,y,z,xlabels=xlabels,ylabels=ylabels,title=title,colorbar=True)
+        self.showOrPlot(Title)
+            
         # issues by year
         # plot normed number of issues/year and issues/all years vs year 
         # and number of issues/year vs year (normed and unnormed)
         # and normed number of non-unique issues/year and issues/all years vs year
+        # also report # issues/year in a table
         nonUniqueOrder = []
         for I,issue in enumerate(issueOrder):
             if not issueUnique[I] : nonUniqueOrder.append(issue)
@@ -463,7 +487,7 @@ class analyzeCUF():
         if self.debug > 2 : print 'analyzeCUF.analyzeThreads iByY',iByY
 
         for words,order in zip(['All ','Non-unique '],[issueOrder, nonUniqueOrder]):
-            print '\nNumber of issues by year\n',' '.join(years),'Issue'
+            if self.debug > 1 : print '\nNumber of issues by year\n',' '.join(years),'Issue'
             Y = []
             Yy= []
             for I,issue in enumerate(order):
@@ -472,7 +496,7 @@ class analyzeCUF():
                 for year in years:
                     NperY.append( iByY[year][I] )
                     if year!='AllYears': NperYy.append( iByY[year][I] )
-                print ' '.join(str(x) for x in NperY),issue
+                if self.debug > 1 : print ' '.join(str(x) for x in NperY),issue
                 Y.extend( NperY )
                 Yy.extend( NperYy )
             X = numpy.array( years )
@@ -784,9 +808,9 @@ class analyzeCUF():
         self.gridSiteNames = self.extractMsg.gridSites(files=files)
         if self.debug > 2 : print 'analyzeCUF.main self.msgOrder',self.msgOrder
         Threads = self.processFiles(files)
-        issues,issueOrder,issueUnique = self.issues_keyphrases.classifyThreads(Threads)
+        issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads)
 
-        self.analyzeThreads(Threads,issues,issueOrder,issueUnique)
+        self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues)
 if __name__ == '__main__' :
     testTableMaker = False
     if testTableMaker :

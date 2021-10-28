@@ -22,6 +22,23 @@ class mpl_interface():
         self.internal = internal
         print 'mpl_interface.__init__ completed'
         return
+    def plot2d(self,x,y,z,xlabels=None,ylabels=None,title=None,colorbar=True):
+        '''
+        create and fill a 2d plot 
+        optionally add a color bar
+        z = z(ny,nx) with shape (Nrows,Ncolumns) = bin contents
+        x = shape (Ncolums+1) = bin edges
+        y = shape (Nrows+1) = bin edges
+        '''
+
+        plt.pcolor(x,y,z)
+        if xlabels is not None : plt.xticks( (x[1:]+x[:-1])/2., xlabels, rotation=45,ha='right')
+        if ylabels is not None : plt.yticks( (y[1:]+y[:-1])/2., ylabels)
+        if title is not None   : plt.title(title)
+        if colorbar : plt.colorbar()
+        plt.tight_layout()
+        if self.internal : plt.show()
+        return title
     def stackedBarChart(self,y,xlabels,ylabels,title,norm=False):
         '''
         create and fill a stacked bar chart
@@ -81,12 +98,34 @@ class mpl_interface():
         if self.internal : plt.show()
         
         return Title
-            
+           
 if __name__ == '__main__' :
     internal = True
     mpli = mpl_interface(internal=internal)
 
-    ntest = 1
+    testPlot2d = True
+    if testPlot2d :
+        nr = 5+3
+        nc = nr
+        x = numpy.arange(nc+1)
+        y = numpy.arange(nr+1)
+        z = []
+        for ir in range(nr):
+            for ic in range(nc):
+                if ic==ir :
+                    z.append( numpy.random.random()*100. )
+                else:
+                    z.append( numpy.random.random()*10. )
+        Z = numpy.reshape(numpy.array(z),(nc,nr))
+        xlabels = ['this is a '+q for q in  ['cow','horse','goat','pig','cat','dog','rat','awk']]
+        ylabels = xlabels
+
+        #print 'x,y,Z',x,y,z
+        
+        mpli.plot2d(x,y,Z,xlabels=xlabels,ylabels=ylabels,title='Down at the farm')
+        sys.exit('end testPlot2d')
+    
+    ntest = 0 
     for itest in range(ntest):
         ylabels = ['pony','chicken','dog','duck','goose','penguin','hippo','cat','turkey','kangaroo','wolverine']
         N = len(ylabels)
