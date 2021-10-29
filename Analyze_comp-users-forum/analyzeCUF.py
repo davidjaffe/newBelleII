@@ -57,8 +57,6 @@ class analyzeCUF():
         self.DATA_DIR = 'DATA/'
 
         self.MLname = 'comp-users-forum'
-
-        self.gridSiteNames = None
         
         self.msgOrder= None    # messages in proper numerical order
 
@@ -440,24 +438,29 @@ class analyzeCUF():
         Ni = len(issueOrder)
         IvI = []
         for i in range(Ni): IvI.append( [0. for j in range(Ni)] )
+        tot, above, below = 0,0,0
         for archive in thread_issues:
             iss = thread_issues[archive]
             i = issueOrder.index( iss[0] )
             IvI[i][i] += 1
+            tot += 1
             if len(iss)>=2:
                 j = issueOrder.index( iss[1] )
                 IvI[j][j] += 1
                 IvI[j][i] += 1
+                above += 1
             if len(iss)==3:
                 k = issueOrder.index( iss[2] )
                 IvI[k][k] += 1
                 IvI[i][k] += 1
+                below += 1
         x = y = numpy.arange(Ni+1)
         z = numpy.array(IvI)
         xlabels = ylabels = issueOrder
         title = 'Issue vs issue. Diagonal=all, above=doubles, below=triples'
         Title = self.mpl_interface.plot2d(x,y,z,xlabels=xlabels,ylabels=ylabels,title=title,colorbar=True)
         self.showOrPlot(Title)
+        print '\nanalyzeCUF.analyzeThreads',Title,'all,above,below',tot,above, below
             
         # issues by year
         # plot normed number of issues/year and issues/all years vs year 
@@ -630,11 +633,95 @@ class analyzeCUF():
         
                 
         return
-    def fixFrom(self,Addresses):
+    def analyzeGridIssues(self,grid_issues,archiveDates):
         '''
-        return 'fixed' list of email addresses
+        analyze dict grid_issues[site] = [archive0, archive1, ... archiveN]
+        using dict archiveDates[archive] = date as datetime object
+
+        plot site vs date for grid_issues
+        plot country vs date for grid_issues
+        plot date distribution of grid_issues
         '''
-        newAddressess = []
+        
+        colors = ['red','green','blue']
+        markers= ['o','s','x']
+
+        title = 'Grid issues  Site vs Date'
+        fig,ax = plt.subplots(1)
+        fig.autofmt_xdate(rotation=45,ha='right')
+        desort = sorted(grid_issues.items(), key=lambda x: len(x[1]), reverse=True)
+        descending = [q[0] for q in desort]
+        #print 'descending',descending
+        for iy,site in enumerate(descending):
+            if len(grid_issues[site])>0 : 
+                x,y = [],[]
+                for archive in grid_issues[site]:
+                    x.append( archiveDates[archive] )
+                    y.append( float(iy) )
+                plt.plot(x,y,color=colors[iy%3],marker=markers[iy%3])
+
+        plt.ylim(-1.,len(descending)+1)
+        yt = [float(q)+0.5 for q in range(len(descending))]
+        plt.yticks(yt, descending)
+        plt.xlim(datetime.datetime(2017,1,1),datetime.datetime(2022,1,1))
+        plt.title(title)
+##        plt.gca().set_aspect(5) ### tall narrow plot
+
+        plt.grid()
+        self.showOrPlot(title)
+
+
+        title = 'Grid issues Country vs Date'
+        fig,ax = plt.subplots(1)
+        fig.autofmt_xdate(rotation=45,ha='right')
+        byCountry = {}
+        countries = sorted(list(set([q[-2:] for q in descending])))
+        for c in countries: byCountry[c] = []
+        for site in grid_issues:
+            c = site[-2:]
+            byCountry[c].extend( grid_issues[site] )
+        for iy,country in enumerate(countries):
+            if len(byCountry[country])>0 :
+                x,y = [],[]
+                for archive in byCountry[country]:
+                    x.append( archiveDates[archive] )
+                    y.append( float(iy) )
+                plt.plot(x,y,color=colors[iy%3],marker=markers[iy%3])
+        plt.ylim(0.,len(countries)+1)
+        yt = [float(q)+0.5 for q in range(len(countries))]
+        plt.yticks(yt, countries)
+        plt.xlim(datetime.datetime(2017,1,1),datetime.datetime(2022,1,1))
+        plt.title(title)
+
+        plt.grid()
+        self.showOrPlot(title)
+
+        title = 'Grid issues vs Date (by month)'
+        fig,ax = plt.subplots(1)
+        fig.autofmt_xdate(rotation=45,ha='right')
+        iByM = {}
+        for site in grid_issues:
+            for archive in grid_issues[site]:
+                ym = self.getMonth(archive)
+                if ym not in iByM: iByM[ym] = 0
+                iByM[ym] += 1
+                
+        x,y = [],[]
+        for ym in sorted(iByM):
+            y.append( iByM[ym] )
+            dt = datetime.datetime.strptime(ym,'%Y-%m') # YYYY-MM
+            x.append( dt )
+
+        dtlims = [datetime.datetime(2017,1,1),datetime.datetime(2022,1,1)]
+        ax = plt.subplot(111)
+        ax.bar(x,y)
+        ax.set_xlim(dtlims)
+
+        ax.xaxis_date()
+        ax.set_title(title)
+        ax.figure.autofmt_xdate(rotation=80)
+        plt.grid()
+        self.showOrPlot(title)
 
         return
     def mergeInterleaved(self,Threads):
@@ -751,7 +838,20 @@ class analyzeCUF():
                 print 'analyzeCUF.locateRef matchedKeys',matchedKeys
             key = matchedKeys[0]
         return key
-
+    def writeMsgs(self,archiveList,output='msgs_to_study.log'):
+        '''
+        get email messages for a list of archive and write them to output
+        '''
+        
+        logFile = self.logDir + '/' + output
+        ufn = open(logFile,'w')
+        print '\nanalyzeCUF.writeMsgs Write messages to',logFile
+        for archive in archiveList:
+            text = self.extractMsg.getText(archive,input='archive')
+            ufn.write('\n\n ===========> Message from '+archive+'\n')
+            ufn.write(text)
+        ufn.close()
+        return
     def showOrPlot(self,words):
         '''
         show plot interactively or put it in a file
@@ -812,6 +912,16 @@ class analyzeCUF():
             table += ffmt.format(*Q) + '\n'
 
         return table
+    def writeGridIssues(self,grid_issues):
+        '''
+        write grid issue messages to a file for human analysis
+        '''
+        A = []
+        for site in grid_issues:
+            A.extend(grid_issues[site])
+        A = list(set(A))
+        self.writeMsgs(A,output='grid_issues.log')
+        return
     def main(self):
         '''
         main module for analysis
@@ -819,13 +929,19 @@ class analyzeCUF():
         files,msgOrder = self.getArchive()
         self.msgOrder = msgOrder
         self.nFiles   = len(files)
-        self.gridSiteNames = self.extractMsg.gridSites(files=files)
+        gridSiteNames = self.extractMsg.gridSites(files=files)
+        archiveDates  = self.extractMsg.getArchiveDates(files)
         if self.debug > 2 : print 'analyzeCUF.main self.msgOrder',self.msgOrder
+            
         Threads = self.processFiles(files)
-        grid_issues = self.issues_keyphrases.gridIssues(Threads,self.gridSiteNames)
+        
+        grid_issues = self.issues_keyphrases.gridIssues(Threads,gridSiteNames)
+        self.writeGridIssues(grid_issues)
+        self.analyzeGridIssues(grid_issues,archiveDates)
+        
         issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads)
-
         self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues)
+
         return
 if __name__ == '__main__' :
     testTableMaker = False

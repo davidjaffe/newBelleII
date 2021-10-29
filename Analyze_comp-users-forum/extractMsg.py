@@ -13,6 +13,7 @@ import sys,os
 import glob
 import email, base64
 import numpy
+import datetime
 
 
 class extractMsg():
@@ -21,25 +22,6 @@ class extractMsg():
         self.badKeys = {}
         self.dirPrefix = prefix
 
-        ## salutation phrases used in getText
-        S1 = ['Dear','Hello','Hi','HI','Hello again','Good morning']
-        S2 = [
-            'experts','Experts','Belle 2 computing experts', 
-            'gbasf2','colleagues', 
-            'comp-users-forum','Comp users forum','team',
-            'All','all','everyone','everybody',
-            'computing experts','computer experts',
-            'grid-experts','GRID experts','grid experts','Grid experts']
-        Salutations = []
-        for s1 in S1:
-            for s2 in S2:
-                s = s1 + ' ' + s2
-                Salutations.append( s )
-        FirstColumn = S1
-        self.Salutations = Salutations
-        self.FirstColumn = FirstColumn
-
-        
         print 'extractMsg.__init__ completed'
         return
     def gridSites(self,files=None):
@@ -192,6 +174,66 @@ class extractMsg():
                 print 'extractMsg.finalTest fn',key,'length',Ldict[key],'msg\n',Msgs[key]
             
         return
+    def getArchiveDates(self,files):
+        '''
+        return dict archiveDates[archive] = date as datetime object
+        '''
+        archiveDates = {}
+        for fn in files:
+            archive = fn.split('_')[1]
+            dt_object = self.getDate(fn,mode='filename')
+            archiveDates[archive] = dt_object
+        if self.debug > 2 : print 'extractMsg.getArchiveDates archiveDates',archiveDates
+        return archiveDates
+    def getDate(self,FN,mode='filename'):
+        '''
+        Return date as datetime object given filename FN (mode='filename') 
+        For mode='archive', construct filename assuming FN = archive. 
+        If no date is available in message in filename, then take date from filename.
+        The latter always gives a first of the month date
+        '''
+        mfmt = '%a, %d %b %Y %X'
+        afmt = '%Y-%m'
+        fn = FN
+        if mode=='archive': fn = self.dirPrefix + '_' + FN
+            
+        f = open(fn,'r')
+        msg = email.message_from_file(f)
+        f.close()
+        dt = msg['Date']
+        if dt is None:
+            archive = fn.split('_')[1][:7]
+            dt_object = datetime.datetime.strptime(archive,afmt)
+        else:
+            dts = ' '.join([x for x in dt.split(' ')[:5]])
+            dt_object = datetime.datetime.strptime(dts,mfmt)
+        return dt_object
+    def dateTest(self):
+        '''
+        test getting date from email messages using recommendation of 
+        https://stackoverflow.com/questions/50187007/python-get-datetime-of-mails-gmail
+
+        For 2017-02 to 2021-08 messages, 43 of 2165 had no date. 
+        2122 had same year in message and filename, 2111 had same year and month in message and filename. 
+        The 11 with year+month mismatch were near the beginning or end of month. 
+        '''
+        fmt = '%a, %d %b %Y %X'
+        files = glob.glob('DATA/comp-users-forum_20*/*')
+        noDate = 0
+        yearOK, YMOK = 0,0
+        for fn in files:
+            archive = fn.split('_')[1][:7]
+            dts_object = dt_object = self.getDate(fn)
+            dta_object = datetime.datetime.strptime(archive[:7],'%Y-%m')
+            cmpY = cmp(dts_object.year,dta_object.year)
+            cmpM = cmp(dts_object.month,dta_object.month)
+            if cmpY==0: yearOK += 1
+            OK = cmpY==0 and cmpM==0
+            if OK : YMOK += 1
+            if not OK : print archive,dts_object.strftime(fmt),'cmpY,cmpM',cmpY,cmpM
+        print 'extractMsg.dateTest',noDate,'out of',len(files),'had no Date.',yearOK,'files had year agreement',YMOK,'had year+month agreement'
+        return
+        
     def getText(self,INPUT,input='file'):
         '''
         return string with best guess at email message text
@@ -217,78 +259,6 @@ class extractMsg():
         s = self.get_text(msg)
         
         if self.debug > dthres : print 'extractMsg.getText before exit len(s),s',len(s),s
-        return s
-    def OLDgetText(self,INPUT,input='file',omitPreSalutation=True):
-        '''
-        return string with best guess at email message text
-        use msgFix to pick the best part of the original message
-
-        if input=='file', then INPUT is the filename
-        if input=='archive', then INPUT is the archive identifier eg., 2021-03/32
-
-        if omitPreSalutation==True, then find salutation and remove the text prior to salutation, if salutation is found
-        '''
-        fn = None
-        if input=='file': fn = INPUT
-        if input=='archive' : fn = self.dirPrefix + '_' + INPUT
-        if fn is None : sys.exit('extractMsg.OLDgetText ERROR Invalid input='+input)
-            
-        dthres = 1
-        f = open(fn,'r')
-        if self.debug > 0 : print 'extractMsg.OLDgetText fn',fn
-        originalMsg = msg = email.message_from_file(f)
-        f.close()
-
-        msg = self.msgFix(msg)
-        
-        keys = msg.keys()
-        if self.debug > dthres : print 'extractMsg.OLDgetText initially len(msg)',len(msg),'len(keys)',len(keys)
-        if self.debug > dthres : print 'extractMsg.OLDgetText keys',keys
-        if self.debug > dthres : print 'extractMsg.OLDgetText original msg\n',msg
-
-
-        ### Remove all key,value pairs except the last one to leave
-        ### the most likely part of email to be the message.
-        ### This procedure was determined empirically.
-        s1 = ''
-        for key in keys:
-            s1 = msg.as_string()
-            if self.debug > dthres : print 'extractMsg.OLDgetText pre-delitem key',key,'type(msg)',type(msg),'len(msg)',len(msg),'len(s1)',len(s1)
-            msg.__delitem__(key)
-            try:
-                s2 = msg.as_string()
-            except:
-                if key in self.badKeys:
-                    self.badKeys[key] += 1
-                else:
-                    self.badKeys[key] = 1
-                if self.debug > dthres : print 'extractMsg.OLDgetText Exception after removing',key,'now break'
-                break
-        s = s1
-
-        ### Try to find the salutation and remove all text prior to the salutation
-        if omitPreSalutation :
-            idx = -1
-            for salut in self.Salutations:
-                if salut in s :
-                    idx = s.index(salut)
-                    break
-            if idx < 0 :
-                for salut in self.FirstColumn:
-                    offset = 0
-                    for line in s.split('\n'):
-                        offset += len(line) + len('\n')
-                        if salut in line:
-                            if line.index(salut)==0 :
-                                idx = offset + line.index(salut)
-                                break
-            if idx > 0 :
-                s = s[idx:]
-            else:
-                print 'extractMsg.OLDgetText COULD NOT FIND SALUTATION'
-                print 'extractMsg.OLDgetText here is the originalMsg\n',originalMsg
-
-        if self.debug > dthres : print 'extractMsg.OLDgetText before exit len(s),s',len(s),s
         return s
     def listParts(self,fn):
         '''
@@ -457,6 +427,12 @@ if __name__ == '__main__' :
     eM = extractMsg()
     fn = 'DATA/comp-users-forum_2020-02/22'
 
+
+    testDate = True
+    if testDate :
+        eM.dateTest()
+        sys.exit('extractMsg testDate done')
+    
     listParts = False
     if listParts:
         fn = 'DATA/comp-users-forum_2021-01/107'

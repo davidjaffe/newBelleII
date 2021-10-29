@@ -281,9 +281,10 @@ class issues_keyphrases():
                     if key not in grid_issues[site]: grid_issues[site].append(key)
         desort = sorted(grid_issues.items(), key=lambda x: len(x[1]), reverse=True)
         descending = [q[0] for q in desort]
-        print '\nissues_keyphrase.grid_issues in descending order of threads/site'
-        for site in descending:
-            print site,len(grid_issues[site]),grid_issues[site]
+        if self.debug > 0:
+            print '\nissues_keyphrase.grid_issues in descending order of threads/site'
+            for site in descending:
+                print site,len(grid_issues[site]),grid_issues[site]
         return grid_issues
         
     def classifyThreads(self,Threads):
