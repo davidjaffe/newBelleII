@@ -724,6 +724,33 @@ class analyzeCUF():
         self.showOrPlot(title)
 
         return
+    def correlateGrid(self,grid_issues, issues, issueOrder):
+        '''
+        correlate grid_issues with classification of all issues
+        Inputs:
+        grid_issues[site] = [archive0, archive1, ... archiveN]
+        issues = {}         # {issue: [archive0, archive1, ...] } = list of threads for this issue
+        issueOrder = list with issue names in order of analysis
+
+        SI[archive] = [site, [issue0, issue1, ...] ]
+        '''
+
+        SI = {}
+        for site in grid_issues:
+            for gar in grid_issues[site]:
+                for issue in issues:
+                    if gar in issues[issue] :
+                        if gar not in site: SI[gar] = [site, []]
+                        SI[gar][1].append( issue )
+        print '\nanalyzeCUF.correlateGrid'
+        for issue in issueOrder:
+            for archive in SI:
+                site,LIST = SI[archive]
+                if issue in LIST:
+                    print archive, site, ', '.join(LIST)
+                        
+        return                    
+ 
     def mergeInterleaved(self,Threads):
         '''
         return dict newThreads with interleaved threads with identical subjects merged
@@ -941,6 +968,8 @@ class analyzeCUF():
         
         issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads)
         self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues)
+
+        self.correlateGrid(grid_issues, issues, issueOrder)
 
         return
 if __name__ == '__main__' :
