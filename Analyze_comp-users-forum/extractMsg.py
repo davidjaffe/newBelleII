@@ -67,7 +67,7 @@ class extractMsg():
         sites = []
         lines = msg
         for word in lines.split():
-            if self.validSiteName(word,ignore,tooLong) :
+            if self.validSiteName(word,ignore=ignore,tooLong=tooLong) :
                 if word not in sites:
                     if self.debug > 2 : print 'extractMsg.getGridSiteNames word',word
                     sites.append(word)
@@ -93,12 +93,12 @@ class extractMsg():
                     elif word.index(comma)<len(word)-1 :
                         newword = word.split(comma)[1]
                         
-            if self.validSiteName(newword,ignore,tooLong) : clean.append( newword )
+            if self.validSiteName(newword,ignore=ignore,tooLong=tooLong) : clean.append( newword )
         sites = clean
         sites.sort(key=len)
         if self.debug > 2 : print 'extractMsg.getGridSiteNames sites',sites
         return sites
-    def validSiteName(self,name,ignore,tooLong):
+    def validSiteName(self,name,ignore=[],tooLong=2):
         ''' 
         return True if name is a valid grid site name 
         based on input list of bad strings 'ignore' and 
@@ -428,7 +428,7 @@ if __name__ == '__main__' :
     fn = 'DATA/comp-users-forum_2020-02/22'
 
 
-    testDate = True
+    testDate = False
     if testDate :
         eM.dateTest()
         sys.exit('extractMsg testDate done')
@@ -485,6 +485,7 @@ if __name__ == '__main__' :
         for n in range(38,39):
 #            fn = 'DATA/comp-users-forum_2021-03/'+str(n)
             fn = 'DATA/comp-users-forum_2021-02/'+str(n)
+            fn = 'DATA/comp-users-forum_2017-06/1'
             f = open(fn,'r')
             print '\n\nextractMsg -------------------------------- test get_text for fn',fn
             msg = email.message_from_file(f)
@@ -494,6 +495,6 @@ if __name__ == '__main__' :
             print lines
 
 
-    lookForGridSites = True
+    lookForGridSites = False
     if lookForGridSites :
         eM.gridSites()

@@ -724,13 +724,18 @@ class analyzeCUF():
         self.showOrPlot(title)
 
         return
-    def correlateGrid(self,grid_issues, issues, issueOrder):
+    def correlateGrid(self,grid_issues, issues, issueOrder, issueUnique):
         '''
         correlate grid_issues with classification of all issues
+
+        Output:
+         grid_issues[site] = [archive0, ...] after removing sites correlated with unique issues
+
         Inputs:
         grid_issues[site] = [archive0, archive1, ... archiveN]
         issues = {}         # {issue: [archive0, archive1, ...] } = list of threads for this issue
         issueOrder = list with issue names in order of analysis
+        issueUnique = list same order as issueOrder with True if thread can only be assigned to this issue
 
         SI[archive] = [site, [issue0, issue1, ...] ]
         '''
@@ -743,13 +748,18 @@ class analyzeCUF():
                         if gar not in site: SI[gar] = [site, []]
                         SI[gar][1].append( issue )
         print '\nanalyzeCUF.correlateGrid'
-        for issue in issueOrder:
-            for archive in SI:
-                site,LIST = SI[archive]
-                if issue in LIST:
-                    print archive, site, ', '.join(LIST)
+        output_grid_issues = {}
+        for issue,unique in zip(issueOrder,issueUnique):
+            if self.debug > 2 : print 'analyzeCUF.correlateGrid issue,unique',issue,unique
+            if not unique:
+                for archive in SI:
+                    site,LIST = SI[archive]
+                    if issue in LIST:
+                        if site not in output_grid_issues: output_grid_issues[site] = []
+                        output_grid_issues[site].append( archive )
+                        print archive, site, ', '.join(LIST)
                         
-        return                    
+        return output_grid_issues
  
     def mergeInterleaved(self,Threads):
         '''
@@ -952,6 +962,17 @@ class analyzeCUF():
     def main(self):
         '''
         main module for analysis
+        
+        get gridSiteNames = list of all grid sites found in all messages
+        get archiveDates  = dict[archive] = date of message
+
+        get Threads = recreate threads from list of files with messages
+
+        classify Threads into issues
+        analyze the Threads
+
+        get all grid sites with issues from threads
+        analyze the grid sites issues
         '''
         files,msgOrder = self.getArchive()
         self.msgOrder = msgOrder
@@ -962,14 +983,14 @@ class analyzeCUF():
             
         Threads = self.processFiles(files)
         
-        grid_issues = self.issues_keyphrases.gridIssues(Threads,gridSiteNames)
-        self.writeGridIssues(grid_issues)
-        self.analyzeGridIssues(grid_issues,archiveDates)
         
         issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads)
         self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues)
 
-        self.correlateGrid(grid_issues, issues, issueOrder)
+        grid_issues = self.issues_keyphrases.gridIssues(Threads,gridSiteNames)
+        grid_issues = self.correlateGrid(grid_issues, issues, issueOrder, issueUnique)
+        self.writeGridIssues(grid_issues)
+        self.analyzeGridIssues(grid_issues,archiveDates)
 
         return
 if __name__ == '__main__' :

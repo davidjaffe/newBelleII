@@ -5,7 +5,7 @@ define issues and key words and phrases for analysis of comp-users-forum threads
 20210924
 '''
 #import math
-import sys,os
+import sys,os,re
 import glob
 import email, base64
 import numpy
@@ -109,11 +109,12 @@ class issues_keyphrases():
         systems = ['VOMS', 'proxy', 'Certificate','PEM']
         actions= ['Error', 'fail', 'unable', '_init','not register', 'expired']
         phrase1 = ['gb2_proxy_init * Error: Operation not permitted']
-        UNIQUE = False
+        UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
         name = 'Downloading files'
+        UNIQUE = False
         systems = ['Download','Cannot get files','files stuck']
         actions = ['fail',"can't",'cannot','error','unable','problem','slow','grid','files','issues','jobs','from LCG','stuck at']
         phrase1 = ['trying to download * error','unable to retrieve * output','gb2_ds_get * crash',
@@ -125,6 +126,7 @@ class issues_keyphrases():
         idictOrder.append(name)        
 
         name = 'Failed jobs'
+        UNIQUE = False
         systems = ['Jobs','Job failing','Grid Job','project failure']
         actions= ['fail', 'error','crash','Exited']
         phrase1 = ['job * failed','job * failing',
@@ -133,6 +135,7 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Jobs in waiting/stuck'
+        UNIQUE = False
         systems = ['Jobs']
         actions = ['waiting','stall','too long','stuck in Completed status']
         phrase1 = ['stuck * Pilot Agent', 'running on the grid * more than','jobs * stalled',
@@ -144,6 +147,7 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Input data unavailable'
+        UNIQUE = False
         systems = ['Input data', 'datasets']
         actions= ['not available', 'error on']
         phrase1 = ['Input data not available' , 'fail * Input data resolution','job * Input data resolution' ]
@@ -151,6 +155,7 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Submitting jobs'
+        UNIQUE = False
         systems = ['submit', 'submission']
         actions= ['cannot','troubles','problem','Resubmit','not show','environment','How to','fail']
         phrase1 = ['trouble submitting jobs','issue submitting jobs','difficult * submitting jobs',
@@ -161,6 +166,7 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Installing gbasf2'
+        UNIQUE = False
         systems = ['gbasf2','light-2106-rhea']
         actions= [
             'install','Problems updating','setting up','issue','help',
@@ -171,6 +177,7 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Deleting files'
+        UNIQUE = False
         systems = ['delete','deleting']
         actions= ['file']
         phrase1 = ['not able * remove director']
@@ -186,6 +193,7 @@ class issues_keyphrases():
 
 
         name = 'Bug report'
+        UNIQUE = False
         systems = ['belle2.org','MC generation','TypeError','gb2_',
                        'Wildcard','BelleDIRAC job monitor','Production','verification failed']
         actions = ['system error','wrong mass',' --','crash', 'broken',
@@ -265,9 +273,12 @@ class issues_keyphrases():
     def gridIssues(self,Threads,gridSiteNames):
         '''
         return grid_issues[site] = [archive0, archive1, ...]
-        where site is the name of a grid site and archiveI is a thread that mentions that site
-        check subject and message text
-        multiple sites can be mentioned in a single thread
+        where site is the lower case name of a grid site  and archiveI is a thread that mentions that site.
+
+        First check if message can be parsed to extract names of failed grid sites, 
+        if that returns a null list, then check subject text.
+
+        Multiple sites can be mentioned in a single thread
         '''
         grid_issues = {}
         sitenames = [x.lower() for x in gridSiteNames]
@@ -275,10 +286,15 @@ class issues_keyphrases():
         for key in Threads:
             Subject = Threads[key][0]
             text = self.extractMsg.getText(key,input='archive')
-            Sandt = Subject.lower() + ' ' + text.lower()
-            for site in sitenames:
-                if site in Sandt:
+            badSites = self.parseGridMsg(text,sitenames)
+            if len(badSites)>0:
+                for site in badSites :
                     if key not in grid_issues[site]: grid_issues[site].append(key)
+            else:
+                Sandt = Subject.lower() 
+                for site in sitenames:
+                    if site in Sandt:
+                        if key not in grid_issues[site]: grid_issues[site].append(key)
         desort = sorted(grid_issues.items(), key=lambda x: len(x[1]), reverse=True)
         descending = [q[0] for q in desort]
         if self.debug > 0:
@@ -286,7 +302,63 @@ class issues_keyphrases():
             for site in descending:
                 print site,len(grid_issues[site]),grid_issues[site]
         return grid_issues
-        
+    def parseGridMsg(self,msg,sitenames):
+        '''
+        return BadSites = list of lower case names of sites identified with failures in input msg.
+
+        Treat the case of gb2_project_analysis explicitly
+
+        For example below, BadSites = ['LGC.CNAF.it']
+Done (74)
+   Execution Complete (74)
+     Done (74)
+        ARC.SIGNET.si  :   6
+        LCG.CESNET.cz  :   7
+        LCG.DESY.de    :  18
+        LCG.KEK2.jp    :   2
+        LCG.KIT.de     :  17
+        LCG.Napoli.it  :   7
+        OSG.BNL.us     :  17
+Failed (15)
+   Application Finished With Errors (15)
+     RuntimeError("basf2helper.py Exited With Status 254",) (15)
+        LCG.CNAF.it    :  15
+
+        '''
+        badSites = []
+        cr = [q.start() for q in re.finditer('\n',msg)]
+
+        ### identify relevant section by 'nFailed' with subsequent lines that start with blanks
+        sF = 'Failed'
+        tbl= '   '
+        for I,i in enumerate(cr):
+            if msg[i+1:i+1+len(sF)]==sF:
+                if self.debug > 2 : print 'issues_keyphrases.parseGridMsg i',i,'msg[i:i+10]',msg[i:i+10]
+                if self.debug > 2 : print 'issues_keyphrases.parseGridMsg cr[I+1:len(cr)-2]',cr[I+1:len(cr)-2]
+                J = I+1
+                while J<len(cr)-2:
+                    j = cr[J]
+                    if self.debug > 2 : print 'issues_keyphrase.parseGridMsg j',j,'msg[j+1:j+10]',msg[j+1:j+10]
+                    if msg[j+1:j+1+len(tbl)]==tbl:
+                        k = cr[J+1]
+                        name = msg[j:k].strip().split()[0]
+                        if self.extractMsg.validSiteName(name):
+                            if name not in badSites: badSites.append( name )
+                    if msg[j+1]!=' ':
+                        break
+                    J += 1
+                    
+        ### search line-by-line for line containing grid site name but not string 'banned'
+        if len(badSites)==0:
+            for i1,i2 in zip(cr[:-1],cr[1:]):
+                line = msg[i1:i2].lower()
+                for site in sitenames:
+                    if site in line and 'banned' not in line and site not in badSites:
+                        badSites.append( site )
+                
+                
+        badSites = [w.lower() for w in badSites]      
+        return badSites
     def classifyThreads(self,Threads):
         '''
         Classify threads by issue. 
@@ -395,6 +467,7 @@ class issues_keyphrases():
             unique = False
             if issue in idict: unique = idict[issue][2]
             issueUnique.append( unique )
+            if self.debug > 2 : print 'issues_keyphrases.classifyThreads issue,unique',issue,unique
 
                 
         return issues,issueOrder,issueUnique, thread_issues
@@ -487,15 +560,18 @@ class issues_keyphrases():
         return Threads
 if __name__ == '__main__' :
     ik = issues_keyphrases()
+
+    testGridParse = False
+    if testGridParse :
+        
+        for fn in ['DATA/comp-users-forum_2021-06/61','DATA/comp-users-forum_2020-09/79','DATA/comp-users-forum_2020-01/17']:
+            text = ik.extractMsg.getText(fn)
+            badSites = ik.parseGridMsg(text)
+            print fn,'badSites',badSites
+        sys.exit('issues_keyphrases testGridParse')
+
     Threads = ik.readFileThreads()
     issues,issueOrder,issueUnique = ik.classifyThreads(Threads)
     sys.exit('exit here cuz the rest is gibberish')
     
     fn = 'DATA/comp-users-forum_2020-02/22'
-
-    listParts = False
-    if listParts:
-        fn = 'DATA/comp-users-forum_2021-01/107'
-        if len(sys.argv)>1 : fn = sys.argv[1]
-        eM.listParts(fn)
-        sys.exit('extractMsg listParts ' + fn)
