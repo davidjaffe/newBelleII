@@ -241,6 +241,116 @@ class analyzeCUF():
             print key,self.ADB[key]
         print '\n'
         return
+    def threadIdentifiers(self,fn):
+        '''
+        return dict threadIds from email filename fn
+
+        According to Thread identification: https://www.mhonarc.org/MHonArc/doc/faq/threads.html,
+         The References field is normally utilized by news software, 
+         while In-Reply-To is normally utilized be e-mail software.
+        '''
+        IRT = 'In-Reply-To'
+        REF = 'References'
+        blank = ''
+        identifiers = ['Subject',IRT,'Message-id',REF,'From']
+        threadIds = {}
+        f = open(fn,'r')
+        msg = email.message_from_file(f)
+        f.close()
+        for key in identifiers:
+            threadIds[key] = blank
+            if key in msg:
+                words = msg[key]
+                if key=='Subject': words = self.cleanSubject(msg[key])
+                threadIds[key] = words
+        threadHead = (threadIds[IRT] is blank) and (threadIds[REF] is blank)
+        return threadIds,threadHead
+    def buildThreads(self,files):
+        '''
+        do a better job of building threads from ordered list of files
+
+        Define start of thread as a message that has no In-Reply-To or References field.
+
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+        '''
+        
+
+        Threads = {}
+        
+
+        for fn in files:
+            fileIds,threadStart = self.threadIdentifiers(fn)
+            archive = self.getMessageN(fn) # = yyyy-mm/msg#
+            Subject = fileIds['Subject']
+            msgid   = fileIds['Message-id']
+            irt     = fileIds['In-Reply-To']
+            whoFrom = fileIds['From']
+            whoFrom = self.fillADB(whoFrom) 
+            ref     = fileIds['References']
+            if  threadStart :
+                Threads[archive] = [fileIds['Subject'], [(archive,msgid,irt,whoFrom)]]
+            else:
+                key = self.findParent(archive,fileIds, Threads)
+                if key is None:
+                    self.debug = 1
+                    key = self.locateRef(Threads, irt,ref,archive,Subject)
+                    self.debug = 0
+
+                if key is None :
+                    Threads[archive] = [Subject, [ (archive,msgid,irt,whoFrom) ] ]
+                elif key not in Threads:
+                    sys.exit('analyzeCUF:buildThreads ERROR arch0 '+arch0+' not in Threads')
+                else:
+                    Threads[key][1].append( (archive,msgid,irt,whoFrom) )
+
+        
+        return
+    def findParent(self,archive,fileIds, Threads):
+        '''
+        Return key of Threads that is parent of archive,fileIds;
+        else return NOne
+
+        Assign msg identified by archive and fileIds to thread in Threads
+
+        if parent Message-id is in (daughter In-Reply-To list or daughter References list) and 
+        parent Subject is in daughter subject, then assign daughter to parent
+
+        '''
+        dautSubject = fileIds['Subject']
+        dautIRT     = fileIds['In-Reply-To']
+        dautREF     = fileIds['References']
+        dautFrom    = fileIds['From']
+        dautMsgid   = fileIds['Message-id']
+        daughter = (archive, dautMsgid, dautIRT, dautFrom )
+        
+        for key in Threads:
+            parentSubject = Threads[key][0]
+            parentMsgid   = Threads[key][1][0][1] # = [(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...]
+            if parentMsgid in dautIRT or parentMsgid in dautREF:
+                if self.matchSubjects(parentSubject,dautSubject):
+                    Threads[key][1].append( daughter )
+                    status = 0
+                    return key 
+                
+        return None
+        
+    def matchSubjects(self,parentSubject,dautSubject):
+        '''
+        return True if parentSubject and dautSubject match
+
+        match = parentSubject in dautSubject
+        OR
+        match = partial match of pS and dS when bogus string in both pS and dS
+        '''
+        if parentSubject in dautSubject : return True
+            
+        bogus = '?='
+        if bogus in parentSubject and bogus in dautSubject:
+            jp,jd = parentSubject.index(bogus), dautSubject.index(bogus)
+            if jp>=len(parentSubject)/2 and jd>=len(dautSubject)/2 :
+                if parentSubject[:jp] in dautSubject[:jd]: return True
+                    
+        return False
     def processFiles(self,files):
         '''
         process files. Each file is one entry in the archive.
@@ -398,7 +508,17 @@ class analyzeCUF():
         print 'analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread'
              
         return Threads
-    def analyzeThreads(self,Threads,issues,issueOrder,issueUnique,thread_issues):
+    def getArchiveList(self,archive,Threads):
+        '''
+        return archiveList = list of archives in Threads[archive]
+        '''
+        archiveList = None
+        if archive in Threads:
+            archiveList = [x[0] for x in Threads[archive][1]]
+        else:
+            print 'analyzeCUF.getArchiveList WARNING archive',archive,'is not a Thread key'
+        return archiveList
+    def analyzeThreads(self,Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates):
         '''
         analyze dict Threads
 
@@ -407,6 +527,7 @@ class analyzeCUF():
         issueOrder = list with issue names in order of analysis
         issueUnique= list of booleans, entry is true if issue is `Unique`
         thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
+        archiveDates[archive] = date as datetime object 
 
 
         Number of message per thread
@@ -578,25 +699,50 @@ class analyzeCUF():
                 for k,v in sorted(dictResponders[year].items(), key=lambda x:x[1], reverse=True): print k,v
         
         
-        msgPerT = [] # number of messages per thread
-        spanPerT= [] # span of messages in thread
+        msgPerT    = [] # number of messages per thread
+        spanPerT   = [] # span of messages in thread
+        deltaTPerT = [] # time difference between earliest and latest message in thread
+        aPerT      = [] # archive associated with previous lists
         tPerM   = {} # threads per month
         
         for archive in self.msgOrder:
             if archive in Threads:
                 ym = self.getMonth(archive)
                 if ym not in tPerM : tPerM[ym] = 0
-                tPerM[ym] += 1
-                msgIds = [x[0] for x in Threads[archive][1]]
+                tPerM[ym] += 1 
+                msgIds = [x[0] for x in Threads[archive][1]] # msgIds aka archive
+                msgTime= [archiveDates[q] for q in msgIds]
+                deltaT = (max(msgTime) - min(msgTime)).total_seconds()/60./60./24.# time difference in days
+                deltaTPerT.append( deltaT ) 
                 msgPerT.append( len(msgIds) )
                 span = self.getSpan( msgIds[0],msgIds[-1] )
                 spanPerT.append( span )
+                aPerT.append( archive )
+
+        # print archive, deltaT for N largest deltaT
+        N = 5
+        dtLabel = 'Days between earliest and latest message in thread'
+        print '\nanalyzeCUF.analyzeThreads Threads with the',N,'largest deltaT=',dtLabel
+        for dt in sorted(deltaTPerT)[-N:]:
+            i = deltaTPerT.index(dt)
+            archive = aPerT[i]
+            span    = spanPerT[i]
+            nmsg    = msgPerT[i]
+            fdt = '{:.2f}'.format(dt)
+            print 'analyzeCUF.analyzeThreads archive,deltaT(days),span,nmsg',archive,fdt,span,nmsg
+            archiveList = self.getArchiveList(archive,Threads)
+            self.writeMsgs(archiveList,output='Thread_'+archive.replace('/','_')+'deltaT_'+fdt)
+        print ''
 
         # histograms
-        for A,label in zip([msgPerT,spanPerT], ['Messages per thread', 'Span of messages in threads']):
+        for A,label in zip([msgPerT,spanPerT,deltaTPerT], ['Messages per thread', 'Span of messages in threads',dtLabel]):
             x1 = 0.5
             nbin = max(A)+1
             x2 = float(nbin) + x1
+            if 'Days' in label :
+                x1 = 0.
+                nbin = 100.
+                x2 = max(A)+10.
             Y = numpy.array(A)
             plt.hist(Y,nbin, range=[x1,x2] )
             plt.xlabel(label)
@@ -607,6 +753,7 @@ class analyzeCUF():
 
             plt.grid()
             self.showOrPlot(label)
+            
 
         # plots
         title = 'Threads per month'
@@ -864,7 +1011,7 @@ class analyzeCUF():
                         
         L = len(matchedKeys)
         if L==0:
-            if self.debug > 0 : print 'analyzeCUF.locateRef NO MATCH archive,irt,ref',archive,irt,ref
+            if self.debug > 0 : print 'analyzeCUF.locateRef NO MATCH archive,subj,irt,ref,subj',archive,subj,irt,ref
             key = None
         elif L==1:
             key = matchedKeys[0]
@@ -891,7 +1038,7 @@ class analyzeCUF():
         return
     def showOrPlot(self,words):
         '''
-        show plot interactively or put it in a file
+        show plot interactively or put it in a pdf and png file
 
         and clear plot after showing or drawing
         '''
@@ -899,8 +1046,10 @@ class analyzeCUF():
         if self.plotToFile:
             filename = self.titleAsFilename(words)
             pdf = self.figDir + '/' + filename + '.pdf'
+            png = pdf.replace('.pdf','.png')
             plt.savefig(pdf)
-            print 'analyzeCUF.showOrPlot Wrote',pdf
+            plt.savefig(png)
+            print 'analyzeCUF.showOrPlot Wrote',pdf,png
             plt.close() # avoid runtime warning?
         else:
             plt.show()
@@ -985,7 +1134,7 @@ class analyzeCUF():
         
         
         issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads)
-        self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues)
+        self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates)
 
         grid_issues = self.issues_keyphrases.gridIssues(Threads,gridSiteNames)
         grid_issues = self.correlateGrid(grid_issues, issues, issueOrder, issueUnique)
@@ -994,6 +1143,14 @@ class analyzeCUF():
 
         return
 if __name__ == '__main__' :
+    testBuildThreads = True
+    if testBuildThreads :
+        aCUF = analyzeCUF()
+        files, aCUF.msgOrder = aCUF.getArchive()
+        aCUF.buildThreads(files)
+        sys.exit('done testing buildThreads')
+
+    
     testTableMaker = False
     if testTableMaker :
         headers = ['pigs', 'monkeys', 'sheep']
