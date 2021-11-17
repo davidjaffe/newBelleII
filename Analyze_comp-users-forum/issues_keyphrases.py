@@ -62,7 +62,7 @@ class issues_keyphrases():
         idict = {}
         idictOrder = []
 
-        name = 'Announcements'
+        self.announcementsName = name = 'Announcements'
         systems = ['Distributed Computing', 'BelleDIRAC', 'DIRAC', 'KEKCC', 'network',
                        'VOMS membership','Please use gbasf2','Call for volunteer',
                        'Integration of BelleDIRAC','gbasf2 tutorial','Coming gbasf2','Release',

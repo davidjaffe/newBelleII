@@ -587,10 +587,12 @@ class analyzeCUF():
         # plot normed number of issues/year and issues/all years vs year 
         # and number of issues/year vs year (normed and unnormed)
         # and normed number of non-unique issues/year and issues/all years vs year
+        # and normed, un-normed non-Annoucement issues/year, etc.
         # also report # issues/year in a table
-        nonUniqueOrder = []
+        nonUniqueOrder,issueOrderNoAnnouncement = [],[]
         for I,issue in enumerate(issueOrder):
             if not issueUnique[I] : nonUniqueOrder.append(issue)
+            if issue!=self.issues_keyphrases.announcementsName : issueOrderNoAnnouncement.append(issue)
                 
         if self.debug > 2 :
             print '\nanalyzeCUF.analyzeThreads issues',issues
@@ -624,7 +626,7 @@ class analyzeCUF():
 
         if self.debug > 2 : print 'analyzeCUF.analyzeThreads iByY',iByY
 
-        for words,order in zip(['All ','Non-unique '],[issueOrder, nonUniqueOrder]):
+        for words,order in zip(['All ','Non-unique ','All but Announcements'],[issueOrder, nonUniqueOrder,issueOrderNoAnnouncement]):
             if self.debug > 1 : print '\nNumber of issues by year\n',' '.join(years),'Issue'
             Y = []
             Yy= []
@@ -673,6 +675,7 @@ class analyzeCUF():
 
         ## create pie charts of reporters and responders per year
         ## reporters, responders identified by name in name@address
+        ## allow 'None' as a possible reporter or responder
         dictReporters, dictResponders = {},{}
         for year in Reporters:
             dictReporters[year] = {i:Reporters[year].count(i) for i in Reporters[year]}
@@ -686,6 +689,9 @@ class analyzeCUF():
                         label = k
                         if '@' in k: label = k.split('@')[0]
                         labels.append(label)
+                        counts.append(v)
+                    else:
+                        labels.append( 'None' )
                         counts.append(v)
                 plt.pie(counts,labels=labels)
                 plt.axis('equal')
@@ -702,8 +708,12 @@ class analyzeCUF():
         msgPerT    = [] # number of messages per thread
         spanPerT   = [] # span of messages in thread
         deltaTPerT = [] # time difference between earliest and latest message in thread
+        dTPerT     = {x:[] for x in issueOrder} # dTPerT[issue] = [time difference between earliest, lastest msg in thread by issue, multiple issues/thread allowed
+        niName = 'no issue'
+        dTPerT[niName] = []
         aPerT      = [] # archive associated with previous lists
         tPerM   = {} # threads per month
+
         
         for archive in self.msgOrder:
             if archive in Threads:
@@ -713,7 +723,13 @@ class analyzeCUF():
                 msgIds = [x[0] for x in Threads[archive][1]] # msgIds aka archive
                 msgTime= [archiveDates[q] for q in msgIds]
                 deltaT = (max(msgTime) - min(msgTime)).total_seconds()/60./60./24.# time difference in days
-                deltaTPerT.append( deltaT ) 
+                deltaTPerT.append( deltaT )
+                if archive not in thread_issues: # how does this happen
+                    print 'analyzeCUF.analyzeThreads WARNING archive',archive,'not in thread_issues for Thread subject',Threads[archive][0]
+                    dTPerT[niName].append( deltaT )
+                else:
+                    for issue in thread_issues[archive]:
+                        dTPerT[issue].append( deltaT )
                 msgPerT.append( len(msgIds) )
                 span = self.getSpan( msgIds[0],msgIds[-1] )
                 spanPerT.append( span )
@@ -735,6 +751,7 @@ class analyzeCUF():
         print ''
 
         # histograms
+        dtMax = None
         for A,label in zip([msgPerT,spanPerT,deltaTPerT], ['Messages per thread', 'Span of messages in threads',dtLabel]):
             x1 = 0.5
             nbin = max(A)+1
@@ -743,17 +760,28 @@ class analyzeCUF():
                 x1 = 0.
                 nbin = 100.
                 x2 = max(A)+10.
+                if label==dtLabel : dtMax = x2
             Y = numpy.array(A)
-            plt.hist(Y,nbin, range=[x1,x2] )
-            plt.xlabel(label)
             median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
             title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
-            plt.title(title)
+            Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True)
             print 'analyzeCUF.analyzeThreads',label,title
-
-            plt.grid()
             self.showOrPlot(label)
             
+        # histograms for each issue
+        for issue in dTPerT:
+            A = dTPerT[issue]
+            if len(A)>0:
+                label = 'Days btwn earliest,latest msg in thread for '+issue
+                x1 = 0.
+                nbin = 100.
+                x2 = dtMax
+                Y = numpy.array(A)
+                median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
+                title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
+                Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True)
+                print 'analyzeCUF.analyzeThreads',label,title
+                self.showOrPlot(label)
 
         # plots
         title = 'Threads per month'
@@ -1143,7 +1171,7 @@ class analyzeCUF():
 
         return
 if __name__ == '__main__' :
-    testBuildThreads = True
+    testBuildThreads = False
     if testBuildThreads :
         aCUF = analyzeCUF()
         files, aCUF.msgOrder = aCUF.getArchive()
