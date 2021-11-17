@@ -22,6 +22,27 @@ class mpl_interface():
         self.internal = internal
         print 'mpl_interface.__init__ completed'
         return
+    def histo(self,Y,xlo,xhi,nbin=None,dx=None,xlabel=None,ylabel=None,title=None,grid=False):
+        '''
+        create and fill a histogram with range xlo,xhi and plotted xlo,xhi
+        if dx is None, then hist has nbin bins
+        if nbin is None, then hist has nbin = (xhi-xlo)/dx bins
+        '''
+        if nbin is None:
+            if dx is None: dx = 1.
+            nbin = int((xhi-xlo)/dx)
+        hist,edges = numpy.histogram(Y,bins=nbin,range=(xlo,xhi))
+        w = edges[1]-edges[0]
+        plt.bar(edges[:-1],hist,width=w)
+        ylo,yhi = 0.,max(hist)*1.05
+        plt.xlim(xlo,xhi)
+        plt.ylim(ylo,yhi)
+        if grid : plt.grid()
+        if xlabel is not None: plt.xlabel(xlabel)
+        if ylabel is not None: plt.ylabel(ylabel)
+        if title is not None: plt.title(title)
+        if self.internal : plt.show()
+        return title
     def plot2d(self,x,y,z,xlabels=None,ylabels=None,title=None,colorbar=True):
         '''
         create and fill a 2d plot 
@@ -103,7 +124,23 @@ if __name__ == '__main__' :
     internal = True
     mpli = mpl_interface(internal=internal)
 
-    testPlot2d = True
+    testHisto = True
+    if testHisto :
+        y = range(2,33)
+        y.extend(range(1,3))
+        for x in range(15,24):
+            y.extend(range(7,x))
+        for x in range(8,15):
+            y.extend(range(3,x))
+        Y = numpy.array(y)
+        xlo,xhi = 0.,50.
+        dx = 1.0
+        nbin = int((xhi-xlo)/dx)
+        mpli.histo(Y,xlo,xhi,nbin=25,title='25 bins',grid=True)
+        for dx in [1.0, 0.5]:
+            mpli.histo(Y,xlo,xhi,dx=dx,title='bin size is '+str(dx))
+
+    testPlot2d = False
     if testPlot2d :
         nr = 5+3
         nc = nr
