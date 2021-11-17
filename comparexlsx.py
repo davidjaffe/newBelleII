@@ -14,18 +14,20 @@ import datetime
 
 
 class comparexlsx():
-    def __init__(self,debug=0):
+    def __init__(self,debug=0,file1='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB dj.xlsx',file2='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB.xlsx'):
 
-        self.file1 = '/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB dj.xlsx'
-        self.file2 = '/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB.xlsx'
+        self.file1 = file1
+        self.file2 = file2
 
         self.debug = debug
         
         return
     def main(self):
         rb1 = xlrd.open_workbook(self.file1)
+        sn1 = rb1.sheet_names()
         rb2 = xlrd.open_workbook(self.file2)
-        print 'comparexlsx Compare files\n',self.file1,'\nand\n',self.file2
+        sn2 = rb2.sheet_names()
+        print 'comparexlsx Compare files\n',self.file1,'\nand\n',self.file2,'\n'
 
         foundOne = False
         s1,s2 = rb1.nsheets,rb2.nsheets
@@ -36,6 +38,9 @@ class comparexlsx():
             sheet1 = rb1.sheet_by_index(isheet)
             sheet2 = rb2.sheet_by_index(isheet)
 
+            name1  = sn1[isheet]
+            name2  = sn2[isheet]
+            
             differ = False
             words  = ''
             n1,n2 = sheet1.nrows, sheet2.nrows
@@ -56,11 +61,17 @@ class comparexlsx():
             if not differ:
                 if self.debug > 0 : print 'comparexlsx.main Sheet',isheet,' identical'
             else:
-                print 'comparexlsx.main SHEET',isheet,'NOT IDENTICAL',words
+                print 'comparexlsx.main SHEET',isheet,'name1:',name1,'name2:',name2,'NOT IDENTICAL',words
         if foundOne : print 'comparexlsx.main FOUND DIFFERENCES BETWEEN INPUT FILES'
         return
+
 if __name__ == '__main__':
     debug = 0
+    file1='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB dj.xlsx'
+    file2='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB.xlsx'
     if len(sys.argv)>1 : debug = int(sys.argv[1])
-    t = comparexlsx(debug=debug)
+    if len(sys.argv)>2 :
+        file1 = sys.argv[2]
+        file2 = sys.argv[3]
+    t = comparexlsx(debug=debug,file1=file1,file2=file2)
     t.main()
