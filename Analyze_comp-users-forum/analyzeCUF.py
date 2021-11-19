@@ -626,7 +626,7 @@ class analyzeCUF():
 
         if self.debug > 2 : print 'analyzeCUF.analyzeThreads iByY',iByY
 
-        for words,order in zip(['All ','Non-unique ','All but Announcements'],[issueOrder, nonUniqueOrder,issueOrderNoAnnouncement]):
+        for words,order in zip(['All ','Non-unique ','All but Announcements '],[issueOrder, nonUniqueOrder,issueOrderNoAnnouncement]):
             if self.debug > 1 : print '\nNumber of issues by year\n',' '.join(years),'Issue'
             Y = []
             Yy= []
@@ -654,55 +654,64 @@ class analyzeCUF():
         
         # analyze thread by reporter and responder by year
         # first 'From' is reporter, second 'From' is responder
-        print '\nanalyzeCUF.analyzeThreads by reporter and responder'
-        Reporters, Responders = {}, {}
-        for archive in self.msgOrder:
-            if archive in Threads:
-                year = archive[:4]
-                whoFrom = []
-                for tupl in Threads[archive][1]:
-                    whoFrom.append(tupl[3])
-                rep,res = None,None
-                if len(whoFrom)>0: rep = whoFrom[0]
-                if len(whoFrom)>1: res = whoFrom[1]
-                if year not in Reporters: Reporters[year], Responders[year]= [],[]
-                Reporters[year].append(rep)
-                Responders[year].append(res)
-                if self.debug > 1 : print 'analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom
-                if self.debug > 1 : print 'analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res
-        if self.debug > 1 : print 'analyzeCUF.analyzeThreads Reporters',Reporters
-        if self.debug > 1 : print 'analyzeCUF.analyzeThreads Responders',Responders
+        # perform analysis twice. Once with no excluded issues, second time with excluded issues
+        for excludedIssues in [ [], [self.issues_keyphrases.announcementsName] ] :
+            exclWords = ' all issues'
+            if len(excludedIssues)>0 : exclWords += ' except ' + ', '.join(excludedIssues)
 
-        ## create pie charts of reporters and responders per year
-        ## reporters, responders identified by name in name@address
-        ## allow 'None' as a possible reporter or responder
-        dictReporters, dictResponders = {},{}
-        for year in Reporters:
-            dictReporters[year] = {i:Reporters[year].count(i) for i in Reporters[year]}
-            dictResponders[year]= {i:Responders[year].count(i) for i in Responders[year]}
-        for year in sorted(dictReporters):
-            for name,DICT in zip(['Reporters','Responders'], [dictReporters,dictResponders] ):
-                title = '{} {}'.format(name,year)
-                counts,labels = [],[]
-                for k,v in sorted(DICT[year].items(), key=lambda x:x[1]):
-                    if k is not None:
-                        label = k
-                        if '@' in k: label = k.split('@')[0]
-                        labels.append(label)
-                        counts.append(v)
-                    else:
-                        labels.append( 'None' )
-                        counts.append(v)
-                plt.pie(counts,labels=labels)
-                plt.axis('equal')
-                plt.title(title,loc='left')
-                self.showOrPlot(title)
-            
-            if self.debug > 1 :
-                print 'analyzeCUF.analyzeThreads year',year,'dictReporters[year]',sorted(dictReporters[year].items(), key=lambda x:x[1], reverse=True)
-                for k,v in sorted(dictReporters[year].items(), key=lambda x:x[1], reverse=True): print k,v
-                print 'analyzeCUF.analyzeThreads year',year,'dictResponders[year]',sorted(dictResponders[year].items(), key=lambda x:x[1], reverse=True)
-                for k,v in sorted(dictResponders[year].items(), key=lambda x:x[1], reverse=True): print k,v
+
+            print '\nanalyzeCUF.analyzeThreads by reporter and responder.',exclWords
+            Reporters, Responders = {}, {}
+            for archive in self.msgOrder:
+                if archive in Threads:
+                    OK = True
+                    if archive in thread_issues :
+                        for issue in thread_issues[archive] :
+                            if issue in excludedIssues : OK = False
+                    if OK : 
+                        year = archive[:4]
+                        whoFrom = []
+                        for tupl in Threads[archive][1]:
+                            whoFrom.append(tupl[3])
+                        rep,res = None,None
+                        if len(whoFrom)>0: rep = whoFrom[0]
+                        if len(whoFrom)>1: res = whoFrom[1]
+                        if year not in Reporters: Reporters[year], Responders[year]= [],[]
+                        Reporters[year].append(rep)
+                        Responders[year].append(res)
+                        if self.debug > 1 : print 'analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom
+                        if self.debug > 1 : print 'analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res
+                if self.debug > 1 : print 'analyzeCUF.analyzeThreads Reporters',Reporters
+            if self.debug > 1 : print 'analyzeCUF.analyzeThreads Responders',Responders
+
+            ## create pie charts of reporters and responders per year
+            ## reporters, responders identified by name in name@address
+            ## allow 'None' as a possible reporter or responder
+            dictReporters, dictResponders = {},{}
+            for year in Reporters:
+                dictReporters[year] = {i:Reporters[year].count(i) for i in Reporters[year]}
+                dictResponders[year]= {i:Responders[year].count(i) for i in Responders[year]}
+            for year in sorted(dictReporters):
+                for name,DICT in zip(['Reporters','Responders'], [dictReporters,dictResponders] ):
+                    title = '{} {} {}'.format(name,year,exclWords)
+                    counts,labels = [],[]
+                    for k,v in sorted(DICT[year].items(), key=lambda x:x[1]):
+                        if k is not None:
+                            label = k
+                            if '@' in k: label = k.split('@')[0]
+                            labels.append(label)
+                            counts.append(v)
+                        else:
+                            labels.append( 'None' )
+                            counts.append(v)
+                    self.mpl_interface.pie(counts,labels=labels,title=title)
+                    self.showOrPlot(title)
+
+                if self.debug > 1 :
+                    print 'analyzeCUF.analyzeThreads year',year,'dictReporters[year]',sorted(dictReporters[year].items(), key=lambda x:x[1], reverse=True)
+                    for k,v in sorted(dictReporters[year].items(), key=lambda x:x[1], reverse=True): print k,v
+                    print 'analyzeCUF.analyzeThreads year',year,'dictResponders[year]',sorted(dictResponders[year].items(), key=lambda x:x[1], reverse=True)
+                    for k,v in sorted(dictResponders[year].items(), key=lambda x:x[1], reverse=True): print k,v
         
         
         msgPerT    = [] # number of messages per thread

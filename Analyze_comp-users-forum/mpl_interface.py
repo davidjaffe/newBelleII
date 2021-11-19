@@ -13,6 +13,7 @@ import email, base64
 import numpy
 import matplotlib
 import matplotlib.pyplot as plt
+import random
 
 
 class mpl_interface():
@@ -20,6 +21,13 @@ class mpl_interface():
         self.debug = 0
 
         self.internal = internal
+
+        Nc = 25
+        self.rcolors = []
+        CM = matplotlib.cm
+        for cmap in [CM.Accent, CM.Dark2, CM.Paired, CM.Pastel1]:
+            self.rcolors.extend( [cmap(k) for k in numpy.linspace(0,1,Nc+1)] )
+
         print 'mpl_interface.__init__ completed'
         return
     def histo(self,Y,xlo,xhi,nbin=None,dx=None,xlabel=None,ylabel=None,title=None,grid=False):
@@ -33,6 +41,7 @@ class mpl_interface():
             nbin = int((xhi-xlo)/dx)
         hist,edges = numpy.histogram(Y,bins=nbin,range=(xlo,xhi))
         w = edges[1]-edges[0]
+
         plt.bar(edges[:-1],hist,width=w)
         ylo,yhi = 0.,max(hist)*1.05
         plt.xlim(xlo,xhi)
@@ -119,12 +128,48 @@ class mpl_interface():
         if self.internal : plt.show()
         
         return Title
+    def nicePallet(self,n):
+        '''
+        return distinctive list of colors of length n
+        '''
+        colors = []
+        N = len(self.rcolors)
+        for i,A in enumerate(self.rcolors):
+            if i%(N/n)==0 and len(colors)<n : colors.append( A )
+        for i in range(1):
+            c1,c2 = colors[:n/2],colors[n/2:]
+            colors = [val for pair in zip(c1,c2) for val in pair]
+        return colors
+    def pie(self,x,labels,title=None):
+        '''
+        plot pie chart
+        with title positioned to avoid wedge labels
+        and distinctive wedge colors
+        '''
+        Nc = len(x)
+        colors = self.nicePallet(Nc)
+        plt.pie(x,labels=labels,colors=colors,labeldistance=1.05)
+        if title is not None : plt.title( title, loc='left', bbox={'pad':5, 'facecolor':'none'} )
+        if self.internal : plt.show()
+        return title
+        
+
            
 if __name__ == '__main__' :
     internal = True
     mpli = mpl_interface(internal=internal)
 
-    testHisto = True
+    testPie = True
+    if testPie :
+        for N in [25, 35, 45, 55, 101]:
+
+            k = [random.randint(1,30) for x in range(N)]
+            l =  [str(x) for x in k]
+            x,labels = k,l
+            title = 'this is the title. it is a very long title. \nand it cannot be used on this experiment because it extends too far'
+            TT = mpli.pie(x,labels,title=title)
+    
+    testHisto = False
     if testHisto :
         y = range(2,33)
         y.extend(range(1,3))
