@@ -40,6 +40,8 @@ class comparexlsx():
 
             name1  = sn1[isheet]
             name2  = sn2[isheet]
+            namewords = 'name:'+name1
+            if name1!=name2 : namewords = 'name1:'+name1+' name2:'+name2
             
             differ = False
             words  = ''
@@ -47,7 +49,7 @@ class comparexlsx():
             if n1!=n2 :
                 differ = True
                 words = 'Different # of rows {} {}'.format(n1,n2)
-            if self.debug > 0 : print 'comparexlsx.main Sheet#',isheet,'compare # rows',n1,n2
+            if self.debug > 0 : print 'comparexlsx.main Sheet#',isheet,namewords,'compare # rows',n1,n2
             for rownum in range(min(n1,n2)):
                 r1 = sheet1.row_values(rownum)
                 r2 = sheet2.row_values(rownum)
@@ -55,15 +57,29 @@ class comparexlsx():
                 for colnum, (c1,c2) in enumerate(zip(r1,r2)):
                     if c1 != c2:
                         differ = True
-                        if self.debug > 0 : print 'Row {} Col {} : {} != {}'.format(rownum+1,colnum+1, c1, c2)
+                        if self.debug > 0 :
+                            colname = self.num_to_excel_col(colnum+1)
+                            print '{}{} : {} != {}'.format(colname,rownum+1, c1, c2)
 
             if differ : foundOne = True
             if not differ:
                 if self.debug > 0 : print 'comparexlsx.main Sheet',isheet,' identical'
             else:
-                print 'comparexlsx.main SHEET',isheet,'name1:',name1,'name2:',name2,'NOT IDENTICAL',words
+                print 'comparexlsx.main SHEET',isheet,namewords,'NOT IDENTICAL',words
         if foundOne : print 'comparexlsx.main FOUND DIFFERENCES BETWEEN INPUT FILES'
         return
+    def num_to_excel_col(self,n):
+        ''' https://stackoverflow.com/questions/42176498/repeating-letters-like-excel-columns '''
+        if n < 1:
+            raise ValueError("Number must be positive")
+        result = ""
+        while True:
+            if n > 26:
+                n, r = divmod(n - 1, 26)
+                result = chr(r + ord('A')) + result
+            else:
+                return chr(n + ord('A') - 1) + result
+
 
 if __name__ == '__main__':
     debug = 0
