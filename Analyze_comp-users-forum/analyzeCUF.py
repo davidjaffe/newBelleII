@@ -813,9 +813,57 @@ class analyzeCUF():
         plt.grid()
         
         self.showOrPlot(title)
-        
-        
                 
+        return
+    def identifyOpenThreads(self, Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates):
+        '''
+        identify open threads as
+        1) threads with a single entry that are not announcements
+        2) and something else?
+
+        plot unanswered threads by sender and by issue
+
+        inputs:
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+        issues = {}         # {issue: [archive0, archive1, ...] } = list of threads for this issue
+        issueOrder = list with issue names in order of analysis
+        issueUnique= list of booleans, entry is true if issue is `Unique`
+        thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
+        archiveDates[archive] = date as datetime object 
+        '''
+        annName = self.issues_keyphrases.announcementsName
+
+        openThread = {} # {archive: [Subject, fromWho, datetime, [issues] ] }
+        openWho = []
+        openIssue = []
+        
+        for archive in self.msgOrder:
+            if archive in Threads:
+                L = Threads[archive][1]
+                issues = thread_issues[archive]
+                if len(L)==1 and annName not in issues:
+                    Subject = Threads[archive][0]
+                    whoFrom = L[0][3]
+                    when = archiveDates[archive]
+                    openThread[archive] = [ Subject, whoFrom, when, issues ]
+                    whoSent = whoFrom
+                    if '@' in whoFrom : whoSent = whoFrom.split('@')[0]
+                    openWho.append( whoSent )
+                    for issue in issues: openIssue.append( issue )
+                    cWhen = datetime.datetime.strftime(when,"%Y-%m-%d %H:%M")
+                    print 'analyzeCUF.indentifyOpenThreads archive,whoFrom,Subject,when,issues',archive,whoFrom,Subject,cWhen,', '.join(issues)
+
+        sWho = set(openWho)
+        fWho = [openWho.count(i) for i in sWho]
+        title = self.mpl_interface.pie(fWho,sWho,title='Open issues by sender')
+        self.showOrPlot(title)
+
+        sIssue = set(openIssue)
+        fIssue = [openIssue.count(i) for i in sIssue]
+        title = self.mpl_interface.pie(fIssue,sIssue,title='Open issues by issue')
+        self.showOrPlot(title)
+        
+                    
         return
     def analyzeGridIssues(self,grid_issues,archiveDates):
         '''
@@ -1172,6 +1220,8 @@ class analyzeCUF():
         
         issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads)
         self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates)
+
+        self.identifyOpenThreads(Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates)
 
         grid_issues = self.issues_keyphrases.gridIssues(Threads,gridSiteNames)
         grid_issues = self.correlateGrid(grid_issues, issues, issueOrder, issueUnique)

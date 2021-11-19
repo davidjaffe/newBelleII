@@ -75,6 +75,7 @@ class issues_keyphrases():
                        'access GPFS']
         phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone',
                        'Dear gbasf2 users', 'Dear colleagues','Dear all * gbasf2',
+                       'Dear all * required','Dear all * workaround',
                        'CNAF outage * over', 'issue * Rucio server']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
@@ -426,6 +427,7 @@ Failed (15)
         for key in Threads:
             if key not in Classified:
                 issues[name].append(key)
+                thread_issues[key] = [name]
 
                         
         print '\nissues_keyphrases.classifyThreads',len(Threads),'total threads with', \
