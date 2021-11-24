@@ -24,20 +24,39 @@ class extractMsg():
 
         print('extractMsg.__init__ completed')
         return
+    def getMessageFromFile(self,fn):
+        '''
+        return message from email file named fn
+
+        try,except needed with python3 since some messages can only be retrieved when 
+        the file is opened as binary
+        20211124
+        '''
+        f = open(fn,'r')
+        try:
+            msg = email.message_from_file(f)
+        except UnicodeDecodeError:                  
+            f.close()                               
+            f = open(fn,'rb')                       
+            msg = email.message_from_binary_file(f) 
+        f.close()
+        return msg            
     def gridSites(self,files=None):
         '''
         return list allSites containing names of all grid sites found in email
         messages in input files
+
+        20211124 python3 mod, add try,except because of inability to decode message
         '''
         if files is None : files = glob.glob(self.dirPrefix + '_20*/*')
         #files = glob.glob(self.dirPrefix + '_2018-10/20')  # problematic file for get_text
 
         allSites = []
         for i,fn in enumerate(files):
-            f = open(fn,'r')
-            #print 'extractMsg -------------- look for grid site names in message from fn',fn
-            msg = email.message_from_file(f)
-            f.close()
+
+            ##print('extractMsg -------------- look for grid site names in message from fn',fn)
+            msg = self.getMessageFromFile(fn)
+
             msg = self.msgFix(msg)
             #print 'msg after msgFix\n',msg
             lines = self.get_text(msg)
@@ -79,6 +98,7 @@ class extractMsg():
         comma = ','
         for word in sites:
             newword = word
+            if self.debug > 2 : print('extractMsg.getGridSiteNames word',word)
             for d in delim:
                 if word.count(d)==2:
                     newword = word.split(d)[1]
@@ -105,9 +125,10 @@ class extractMsg():
         tooLong as maximum length of last part of name
         '''
         word = name
+        if type(word) is bytes : word = name.decode('utf-8') ## python3
 
         if len(word)<5 : return False
-        
+        if self.debug > 2 : print('extractMsg.validSiteName word',word)
         if word.count('.')!=2: return False
 
         if word[-1]=='.' : return False
@@ -196,10 +217,9 @@ class extractMsg():
         afmt = '%Y-%m'
         fn = FN
         if mode=='archive': fn = self.dirPrefix + '_' + FN
-            
-        f = open(fn,'r')
-        msg = email.message_from_file(f)
-        f.close()
+
+        msg = self.getMessageFromFile(fn)
+
         dt = msg['Date']
         if dt is None:
             archive = fn.split('_')[1][:7]
@@ -249,10 +269,9 @@ class extractMsg():
         if fn is None : sys.exit('extractMsg.getText ERROR Invalid input='+input)
             
         dthres = 1
-        f = open(fn,'r')
+
         if self.debug > 0 : print('extractMsg.getText fn',fn)
-        originalMsg = msg = email.message_from_file(f)
-        f.close()
+        msg = self.getMessageFromFile(fn)
 
         msg = self.msgFix(msg)
 
@@ -266,10 +285,9 @@ class extractMsg():
 
         diagnostic use only
         '''
-        f = open(fn,'r')
+
         if self.debug > 0 : print('extractMsg.listParts fn',fn)
-        msg = email.message_from_file(f)
-        f.close()
+        msg = self.getMessageFromFile(fn)
         i = 0
         if msg.is_multipart():
             for part in msg.walk():
@@ -288,11 +306,9 @@ class extractMsg():
         '''
         dthres = 1 # overall debug threshold in this module
         
-        f = open(fn,'r')
-        if self.debug > 0 : print('extractMsg.decodeText fn',fn)
-        msg = email.message_from_file(f)
-        f.close()
 
+        if self.debug > 0 : print('extractMsg.decodeText fn',fn)
+        msg = self.getMessageFromFile(fn)
         msg = self.msgFix(msg)
                     
         if self.debug > dthres : print('extractMsg.decodeText fixed msg',msg)
@@ -347,8 +363,8 @@ class extractMsg():
                 for item in list(part.items()):
                     for key in fav:
                         if key==item[0]:
-                            if fav[key] in item[1]: return part
-                                
+                            if fav[key] in item[1]:
+                                return part
         return msg
     def msgReducer(self,msg,QUOLEV=1):
         '''
@@ -383,6 +399,8 @@ class extractMsg():
         I added idiot_html2text to do rudimentary html to text translation
         Added check on charset
         Added try/except for chardet
+
+        20211124 python3 modification. return text as string
         '''
         text = ""
         if msg.is_multipart():
@@ -400,15 +418,15 @@ class extractMsg():
                 if part.get_content_type() == 'text/html':
                     html = str(part.get_payload(decode=True),str(charset),"ignore").encode('utf8','replace')
             if html is None:
-                return text.strip()
+                return str(text.strip()) ## python3
             else:
                 html = self.idiot_html2text(html) ## added
-                return html.strip()
+                return str(html.strip()) ## python3
         else:
             cs = msg.get_content_charset()   ## added
             if cs is None : cs = 'us-ascii'  ## added
             text = str(msg.get_payload(decode=True),cs,'ignore').encode('utf8','replace') ## altered
-            return text.strip()
+            return str(text.strip()) ## python3
     def idiot_html2text(self,html):
         '''
         return text given html using knucklehead's method
@@ -486,10 +504,8 @@ if __name__ == '__main__' :
 #            fn = 'DATA/comp-users-forum_2021-03/'+str(n)
             fn = 'DATA/comp-users-forum_2021-02/'+str(n)
             fn = 'DATA/comp-users-forum_2017-06/1'
-            f = open(fn,'r')
             print('\n\nextractMsg -------------------------------- test get_text for fn',fn)
-            msg = email.message_from_file(f)
-            f.close()
+            msg = eM.getMessageFromFile(fn)
             msg = eM.msgFix(msg)
             lines = eM.get_text(msg)
             print(lines)

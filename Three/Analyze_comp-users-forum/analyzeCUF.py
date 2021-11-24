@@ -254,9 +254,7 @@ class analyzeCUF():
         blank = ''
         identifiers = ['Subject',IRT,'Message-id',REF,'From']
         threadIds = {}
-        f = open(fn,'r')
-        msg = email.message_from_file(f)
-        f.close()
+        msg = self.extractMsg.getMessageFromFile(fn)
         for key in identifiers:
             threadIds[key] = blank
             if key in msg:
@@ -388,9 +386,7 @@ class analyzeCUF():
         for fn in files:
             archive = self.getMessageN(fn) # = yyyy-mm/msg#
             if self.debug > 0 : print('analyzeCUF.processFiles archive',archive)
-            f = open(fn,'r')
-            msg = email.message_from_file(f)
-            f.close()
+            msg = self.extractMsg.getMessageFromFile(fn)
 
             if self.debug > 1 : print('analyzerCUF.processFiles archive',archive,'msg.keys()',list(msg.keys()))
 

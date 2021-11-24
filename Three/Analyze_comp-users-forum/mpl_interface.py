@@ -22,10 +22,10 @@ class mpl_interface():
 
         self.internal = internal
 
-        Nc = 25
+        Nc = 17
         self.rcolors = []
         CM = matplotlib.cm
-        for cmap in [CM.Accent, CM.Dark2, CM.Paired, CM.Pastel1]:
+        for cmap in [CM.Accent, CM.Dark2, CM.Paired, CM.Pastel1, CM.Set1, CM.Set2, CM.Set3]:
             self.rcolors.extend( [cmap(k) for k in numpy.linspace(0,1,Nc+1)] )
 
         print('mpl_interface.__init__ completed')
@@ -131,13 +131,15 @@ class mpl_interface():
     def nicePallet(self,n):
         '''
         return distinctive list of colors of length n
+
+        20211124 python3 integer division modification
         '''
         colors = []
         N = len(self.rcolors)
         for i,A in enumerate(self.rcolors):
-            if i%(N/n)==0 and len(colors)<n : colors.append( A )
+            if i%(N//n)==0 and len(colors)<n : colors.append( A )
         for i in range(1):
-            c1,c2 = colors[:n/2],colors[n/2:]
+            c1,c2 = colors[:n//2],colors[n//2:]
             colors = [val for pair in zip(c1,c2) for val in pair]
         return colors
     def pie(self,x,labels,title=None):
@@ -166,7 +168,7 @@ if __name__ == '__main__' :
             k = [random.randint(1,30) for x in range(N)]
             l =  [str(x) for x in k]
             x,labels = k,l
-            title = 'this is the title. it is a very long title. \nand it cannot be used on this experiment because it extends too far'
+            title = str(N) + 'wedges. this is the title. it is a very long title. \nand it cannot be used on this experiment because it extends too far'
             TT = mpli.pie(x,labels,title=title)
     
     testHisto = False
