@@ -94,7 +94,9 @@ class mpl_interface():
 
         #cmap = matplotlib.cm.spectral #2 - 2d most distinct palette
         cmap = matplotlib.cm.Accent  # 1 - this provides the most distinct palette (tested to Nc=11)
-        colors = [cmap(k) for k in numpy.linspace(0,1,Nc+1)] 
+        cmap = matplotlib.cm.tab20  # python3 - most distinctive palette (tested to Nc=12)
+        colors = [cmap(k) for k in numpy.linspace(0,1,Nc+1)]
+
 
         denom = numpy.ones(N)
         if norm:
@@ -161,7 +163,7 @@ if __name__ == '__main__' :
     internal = True
     mpli = mpl_interface(internal=internal)
 
-    testPie = True
+    testPie = False
     if testPie :
         for N in [25, 35, 45, 55, 101]:
 
@@ -209,9 +211,9 @@ if __name__ == '__main__' :
         mpli.plot2d(x,y,Z,xlabels=xlabels,ylabels=ylabels,title='Down at the farm')
         sys.exit('end testPlot2d')
     
-    ntest = 0 
+    ntest = 1 
     for itest in range(ntest):
-        ylabels = ['pony','chicken','dog','duck','goose','penguin','hippo','cat','turkey','kangaroo','wolverine']
+        ylabels = ['pony','chicken','dog','duck','goose','penguin','hippo','cat','turkey','kangaroo','wolverine','stegasaurus']
         N = len(ylabels)
         ylabels = ['this is a '+q for q in ylabels]
         x = [10., 20., 30., 40., 50.]
