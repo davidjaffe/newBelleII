@@ -26,7 +26,9 @@ class issues_keyphrases():
 
         self.extractMsg = extractMsg.extractMsg()
 
-        self.UNCLASSIFIED_LOG = 'UNCLASSIFIED/' + self.now + '.log'
+        Udir = 'UNCLASSIFIED/'
+        if not os.path.exists(Udir) : os.makedirs(Udir) 
+        self.UNCLASSIFIED_LOG = Udir + self.now + '.log'
         
         print('issues_keyphrases.__init__ completed')
         return
