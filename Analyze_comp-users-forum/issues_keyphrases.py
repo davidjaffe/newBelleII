@@ -5,6 +5,8 @@ define issues and key words and phrases for analysis of comp-users-forum threads
 20210924
 '''
 #import math
+from __future__ import absolute_import
+from __future__ import print_function
 import sys,os,re
 import glob
 import email, base64
@@ -12,6 +14,8 @@ import numpy
 import matplotlib.pyplot as plt
 import extractMsg
 import itertools
+from six.moves import range
+from six.moves import zip
 
 
 class issues_keyphrases():
@@ -28,7 +32,7 @@ class issues_keyphrases():
 
         self.UNCLASSIFIED_LOG = 'UNCLASSIFIED/' + self.now + '.log'
         
-        print 'issues_keyphrases.__init__ completed'
+        print('issues_keyphrases.__init__ completed')
         return
     def define(self,report=True):
         '''
@@ -214,37 +218,37 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         ### check for overlap between classification schemes
-        print '\nissues_keyphrases.define Check for overlap between classification schemes'
+        print('\nissues_keyphrases.define Check for overlap between classification schemes')
         originalDebug = self.debug
         #self.debug = 3
         nOverlaps = 0
         for i1, name1 in enumerate(idictOrder):
             sys1,act1 = idict[name1][0]
             for Subject in [a + ' ' + b for a,b in itertools.product(sys1,act1)]:
-                if self.debug > 2 : print 'i1,name1,Subject',i1,name1,Subject
+                if self.debug > 2 : print('i1,name1,Subject',i1,name1,Subject)
                 for i2 in range(i1+1,len(idictOrder)):
                     name2 = idictOrder[i2]
                     Reqmts = idict[name2][0]
                     if self.findN(Subject,Reqmts):
-                        print 'Subject overlap: issue#',i1,name1,'Subject','`'+Subject+'`','overlaps issue#',i2,name2
+                        print('Subject overlap: issue#',i1,name1,'Subject','`'+Subject+'`','overlaps issue#',i2,name2)
                         nOverlaps += 1
                 
             phr1      = idict[name1][1][0]
             if type(phr1) is not list: sys.exit('ERROR phr1 is '+str(type(phr1)))
-            if self.debug > 2 : print 'phr1',phr1
+            if self.debug > 2 : print('phr1',phr1)
             for p1 in phr1:
                 for i2 in range(i1+1,len(idictOrder)):
                     name2 = idictOrder[i2]
                     phr2 = idict[name2][1]
                     if type(phr2) is not list: sys.exit('ERROR phr2 is '+str(type(phr2)))                    
-                    if self.debug > 2 : print 'i1,name1,p1',i1,name1,p1,'i2,name2,phr2',i2,name2,phr2
+                    if self.debug > 2 : print('i1,name1,p1',i1,name1,p1,'i2,name2,phr2',i2,name2,phr2)
                     if self.findN(p1,phr2):
-                        print 'Message overlap: issue#',i1,name1,'p1','`'+p1+'`','overlaps issue#',i2,name2
+                        print('Message overlap: issue#',i1,name1,'p1','`'+p1+'`','overlaps issue#',i2,name2)
                         nOverlaps += 1
         if nOverlaps==0:
-            print 'issues_keyphrases.define NO OVERLAPS FOUND'
+            print('issues_keyphrases.define NO OVERLAPS FOUND')
         else:
-            print 'issues_keyphrases.define Found',nOverlaps,'overlaps'
+            print('issues_keyphrases.define Found',nOverlaps,'overlaps')
         self.debug = originalDebug
 
         
@@ -252,20 +256,20 @@ class issues_keyphrases():
         for iname, name in enumerate(idictOrder):
             Unique = idict[name][2]
             if Unique :
-                print 'issues_keyphrases.define Classification of issue#',iname,name,'is UNIQUE.', \
-                'It supersedes subsequent issues.'
+                print('issues_keyphrases.define Classification of issue#',iname,name,'is UNIQUE.', \
+                'It supersedes subsequent issues.')
         if report:
-            print '\n issues_keyphrases.define Issue definitions.\n Email subject classification uses `systems` and `actions`.\n Email text classification uses `phrases`.'
+            print('\n issues_keyphrases.define Issue definitions.\n Email subject classification uses `systems` and `actions`.\n Email text classification uses `phrases`.')
             for iname, name in enumerate(idictOrder):
                 u = 'not unique'
                 if idict[name][2] : u = 'UNIQUE'
-                print '\nDefinition of issue#',iname,name,'is',u
+                print('\nDefinition of issue#',iname,name,'is',u)
                 systems,actions = idict[name][0]
-                print 'systems: `'+'` `'.join(systems)+'`'
-                print 'actions: `'+'` `'.join(actions)+'`'
+                print('systems: `'+'` `'.join(systems)+'`')
+                print('actions: `'+'` `'.join(actions)+'`')
                 phrases = idict[name][1][0]
-                print 'phrases: `'+'` `'.join(phrases)+'`'
-            print ''
+                print('phrases: `'+'` `'.join(phrases)+'`')
+            print('')
 
             
 
@@ -296,12 +300,12 @@ class issues_keyphrases():
                 for site in sitenames:
                     if site in Sandt:
                         if key not in grid_issues[site]: grid_issues[site].append(key)
-        desort = sorted(grid_issues.items(), key=lambda x: len(x[1]), reverse=True)
+        desort = sorted(list(grid_issues.items()), key=lambda x: len(x[1]), reverse=True)
         descending = [q[0] for q in desort]
         if self.debug > 0:
-            print '\nissues_keyphrase.grid_issues in descending order of threads/site'
+            print('\nissues_keyphrase.grid_issues in descending order of threads/site')
             for site in descending:
-                print site,len(grid_issues[site]),grid_issues[site]
+                print(site,len(grid_issues[site]),grid_issues[site])
         return grid_issues
     def parseGridMsg(self,msg,sitenames):
         '''
@@ -334,12 +338,12 @@ Failed (15)
         tbl= '   '
         for I,i in enumerate(cr):
             if msg[i+1:i+1+len(sF)]==sF:
-                if self.debug > 2 : print 'issues_keyphrases.parseGridMsg i',i,'msg[i:i+10]',msg[i:i+10]
-                if self.debug > 2 : print 'issues_keyphrases.parseGridMsg cr[I+1:len(cr)-2]',cr[I+1:len(cr)-2]
+                if self.debug > 2 : print('issues_keyphrases.parseGridMsg i',i,'msg[i:i+10]',msg[i:i+10])
+                if self.debug > 2 : print('issues_keyphrases.parseGridMsg cr[I+1:len(cr)-2]',cr[I+1:len(cr)-2])
                 J = I+1
                 while J<len(cr)-2:
                     j = cr[J]
-                    if self.debug > 2 : print 'issues_keyphrase.parseGridMsg j',j,'msg[j+1:j+10]',msg[j+1:j+10]
+                    if self.debug > 2 : print('issues_keyphrase.parseGridMsg j',j,'msg[j+1:j+10]',msg[j+1:j+10])
                     if msg[j+1:j+1+len(tbl)]==tbl:
                         k = cr[J+1]
                         name = msg[j:k].strip().split()[0]
@@ -392,9 +396,9 @@ Failed (15)
                     if Unique : IgnoreThese.append( key )
                 
 
-        print 'issues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified),'successfully classified by Subject'
+        print('issues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified),'successfully classified by Subject')
         for issue in idictOrder:
-            print 'issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times'
+            print('issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times')
 
 
         ### next, for unassigned threads, assign thread to issue using email text
@@ -405,14 +409,14 @@ Failed (15)
         for issue in idictOrder:
             Reqmts = idict[issue][1]
             Unique = idict[issue][2]
-            if self.debug > 2 : print 'issues_keyphrases.classifyThreads by email text, issue',issue,'Reqmts',Reqmts
+            if self.debug > 2 : print('issues_keyphrases.classifyThreads by email text, issue',issue,'Reqmts',Reqmts)
             for key in [x for x in unClassified if x not in IgnoreThese]:
                 ##### SPECIAL FOR DEBUG
                 ##self.debug = originalDebug 
                 ##if key=='2019-12/31' : self.debug = 3
                 ##### SPECIAL FOR DEBUG
                 text = self.extractMsg.getText(key,input='archive')
-                if self.debug > 2 : print 'issues_keyphrases.classifyThreads by email text, key',key
+                if self.debug > 2 : print('issues_keyphrases.classifyThreads by email text, key',key)
                 if self.findN(text,Reqmts) :
                     issues[issue].append( key )
                     if key not in thread_issues: thread_issues[key] = []
@@ -430,28 +434,28 @@ Failed (15)
                 thread_issues[key] = [name]
 
                         
-        print '\nissues_keyphrases.classifyThreads',len(Threads),'total threads with', \
-          len(Classified),'successfully classified by email message text'
+        print('\nissues_keyphrases.classifyThreads',len(Threads),'total threads with', \
+          len(Classified),'successfully classified by email message text')
         for issue in idictOrder:
-            print 'issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times'
+            print('issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times')
             
         ### list of threads that are classified under >1 issue
         maxClass = -1
         for key in thread_issues: maxClass = max(maxClass, len(thread_issues[key]))
         if maxClass==1 :
-            print '\nissues_keyphrases.classifyThreads NO threads classified under >1 issue!'
+            print('\nissues_keyphrases.classifyThreads NO threads classified under >1 issue!')
         else:
             for LEN in range(2,maxClass+1):
                 nTot = sum( [len(thread_issues[key])==LEN for key in thread_issues] )
-                print '\nissues_keyphrases.classifyThreads There are',nTot,'threads classified under',LEN,'issues:'
+                print('\nissues_keyphrases.classifyThreads There are',nTot,'threads classified under',LEN,'issues:')
                 for key in thread_issues:
                     if len(thread_issues[key])==LEN:
                         Subject = Threads[key][0]
-                        print key,Subject+":",", ".join(thread_issues[key])
+                        print(key,Subject+":",", ".join(thread_issues[key]))
                         
         ### write messages from unclassified threads to a log file
         ufn = open(self.UNCLASSIFIED_LOG,'w')
-        print '\nissues_keyphrases.classifyThreads Write messages from unclassified threads to',self.UNCLASSIFIED_LOG
+        print('\nissues_keyphrases.classifyThreads Write messages from unclassified threads to',self.UNCLASSIFIED_LOG)
         ufn.write('\nissues_keyphrases.classifyThreads HERE ARE THE UNCLASSIFIED THREADS')
         for key in Threads:
             if key not in Classified:
@@ -469,7 +473,7 @@ Failed (15)
             unique = False
             if issue in idict: unique = idict[issue][2]
             issueUnique.append( unique )
-            if self.debug > 2 : print 'issues_keyphrases.classifyThreads issue,unique',issue,unique
+            if self.debug > 2 : print('issues_keyphrases.classifyThreads issue,unique',issue,unique)
 
                 
         return issues,issueOrder,issueUnique, thread_issues
@@ -486,10 +490,10 @@ Failed (15)
             allWords.extend( words )
 
         freq = {x:allWords.count(x) for x in allWords}
-        print '\nissues_keyphrases.wordFrequency Frequency of words in Threads. Minimum frequency is',threshold
+        print('\nissues_keyphrases.wordFrequency Frequency of words in Threads. Minimum frequency is',threshold)
         for word in sorted( freq, key=freq.get, reverse=True):
             f = freq[word]
-            if f>threshold: print word,f
+            if f>threshold: print(word,f)
         return
     def getWords(self,sentence,lmin=4):
         '''
@@ -526,23 +530,23 @@ Failed (15)
         matching ignores case
         '''
         subject = Subject.lower()
-        if self.debug > 2 : print 'issues_keyphrases.basicFind subject',subject
+        if self.debug > 2 : print('issues_keyphrases.basicFind subject',subject)
         for phrase in phrases:
             p = phrase.lower()
-            if self.debug > 2 : print 'issues_keyphrases.basicFind phrase.lower()',p
+            if self.debug > 2 : print('issues_keyphrases.basicFind phrase.lower()',p)
             if '*' in p:
                 i = p.index('*')
                 p1 = p[:i].strip()
                 p2 = p[i+1:].strip()
-                if self.debug > 2 : print 'issues_keyphrases.basicFind p1',p1,'p2',p2
+                if self.debug > 2 : print('issues_keyphrases.basicFind p1',p1,'p2',p2)
                 if p1 in subject and p2 in subject:
-                    if self.debug > 2 : print 'issues_keyphrases.basicFind subject.index(p1)',subject.index(p1),'subject.index(p2)',subject.index(p2)
+                    if self.debug > 2 : print('issues_keyphrases.basicFind subject.index(p1)',subject.index(p1),'subject.index(p2)',subject.index(p2))
                     if subject.index(p1)<subject.index(p2) : return True
             else:
                 if p in subject :
-                    if self.debug > 2 : print 'issues_keyphrases.basicFind phrase found in subject'
+                    if self.debug > 2 : print('issues_keyphrases.basicFind phrase found in subject')
                     return True
-        if self.debug > 2 : print 'issues_keyphrases.basicFind phrase NOT found in subject'
+        if self.debug > 2 : print('issues_keyphrases.basicFind phrase NOT found in subject')
         return False
 
     def readFileThreads(self):
@@ -569,7 +573,7 @@ if __name__ == '__main__' :
         for fn in ['DATA/comp-users-forum_2021-06/61','DATA/comp-users-forum_2020-09/79','DATA/comp-users-forum_2020-01/17']:
             text = ik.extractMsg.getText(fn)
             badSites = ik.parseGridMsg(text)
-            print fn,'badSites',badSites
+            print(fn,'badSites',badSites)
         sys.exit('issues_keyphrases testGridParse')
 
     Threads = ik.readFileThreads()

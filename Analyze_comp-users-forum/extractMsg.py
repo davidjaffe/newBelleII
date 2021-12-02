@@ -9,11 +9,15 @@ the comp-users-forum archive
 20210922
 '''
 #import math
+from __future__ import absolute_import
+from __future__ import print_function
 import sys,os
 import glob
 import email, base64
 import numpy
 import datetime
+import six
+from six.moves import range
 
 
 class extractMsg():
@@ -22,7 +26,7 @@ class extractMsg():
         self.badKeys = {}
         self.dirPrefix = prefix
 
-        print 'extractMsg.__init__ completed'
+        print('extractMsg.__init__ completed')
         return
     def gridSites(self,files=None):
         '''
@@ -44,9 +48,9 @@ class extractMsg():
             sites = self.getGridSiteNames(lines)
             for site in sites:
                 if site not in allSites:
-                    if self.debug > 1 : print 'extractMsg.gridSites fn',fn,'site',site
+                    if self.debug > 1 : print('extractMsg.gridSites fn',fn,'site',site)
                     allSites.append(site)
-        if self.debug > 2 : print 'extractMsg.gridSites allSites',allSites
+        if self.debug > 2 : print('extractMsg.gridSites allSites',allSites)
         return allSites
 
     def getGridSiteNames(self,msg):
@@ -69,11 +73,11 @@ class extractMsg():
         for word in lines.split():
             if self.validSiteName(word,ignore=ignore,tooLong=tooLong) :
                 if word not in sites:
-                    if self.debug > 2 : print 'extractMsg.getGridSiteNames word',word
+                    if self.debug > 2 : print('extractMsg.getGridSiteNames word',word)
                     sites.append(word)
 
         sites.sort(key=len)
-        if self.debug > 2 : print 'extract.getGridSiteNames sites before clean',sites
+        if self.debug > 2 : print('extract.getGridSiteNames sites before clean',sites)
         clean = []
         delim = ['"',"'"]
         comma = ','
@@ -96,7 +100,7 @@ class extractMsg():
             if self.validSiteName(newword,ignore=ignore,tooLong=tooLong) : clean.append( newword )
         sites = clean
         sites.sort(key=len)
-        if self.debug > 2 : print 'extractMsg.getGridSiteNames sites',sites
+        if self.debug > 2 : print('extractMsg.getGridSiteNames sites',sites)
         return sites
     def validSiteName(self,name,ignore=[],tooLong=2):
         ''' 
@@ -136,8 +140,8 @@ class extractMsg():
             if len(emsg)==0:
                 E += 1
                 #print fn,'zero-length message'
-            if i%100==0: print 'extractMsg.bigTest processing file#',i,'text/message length',len(lines),'/',len(emsg),'fn',fn,'self.badKeys',self.badKeys
-        print 'extractMsg.bigTest failed to extract text/message in',L,'/',E,'files out of a total of',len(files)
+            if i%100==0: print('extractMsg.bigTest processing file#',i,'text/message length',len(lines),'/',len(emsg),'fn',fn,'self.badKeys',self.badKeys)
+        print('extractMsg.bigTest failed to extract text/message in',L,'/',E,'files out of a total of',len(files))
         return
     def finalTest(self):
         '''
@@ -145,7 +149,7 @@ class extractMsg():
         compile/report stats on lengths extracted for all files
         '''
         files = glob.glob('DATA/comp-users-forum_20*/*')
-        print 'extractMsg.finalTest will process',len(files),'files'
+        print('extractMsg.finalTest will process',len(files),'files')
         L = 0
         lengths = []
         Ldict = {}
@@ -157,21 +161,21 @@ class extractMsg():
             Msgs[fn]  = lines
             if len(lines)==0:
                 L += 1
-                print fn,'zero-length text'
+                print(fn,'zero-length text')
 
-            if i%100==0: print 'extractMsg.finalTest processing file#',i,'text length',len(lines),'fn',fn
-        print 'extractMsg.finalTest failed to extract email message in',L,'files out of a total of',len(files)
+            if i%100==0: print('extractMsg.finalTest processing file#',i,'text length',len(lines),'fn',fn)
+        print('extractMsg.finalTest failed to extract email message in',L,'files out of a total of',len(files))
         A = numpy.array(lengths)
         mean,median,std,mx = numpy.mean(A), numpy.median(A), numpy.std(A), numpy.max(A)
-        print 'extractMsg.finalTest message length stats: mean {:.2f} median {:.2f} stddev {:.2f} max {:.2f}'.format(mean,median,std,mx)
+        print('extractMsg.finalTest message length stats: mean {:.2f} median {:.2f} stddev {:.2f} max {:.2f}'.format(mean,median,std,mx))
         nSig = 5.
         fiveSigma = mean + nSig*std
-        print 'extractMsg.finalTest Look at messages with length',nSig,'sigma above mean, or >',fiveSigma
+        print('extractMsg.finalTest Look at messages with length',nSig,'sigma above mean, or >',fiveSigma)
         for key in sorted(Ldict, key=Ldict.get):
             #print key,Ldict[key]
 
             if Ldict[key] > fiveSigma:
-                print 'extractMsg.finalTest fn',key,'length',Ldict[key],'msg\n',Msgs[key]
+                print('extractMsg.finalTest fn',key,'length',Ldict[key],'msg\n',Msgs[key])
             
         return
     def getArchiveDates(self,files):
@@ -183,7 +187,7 @@ class extractMsg():
             archive = fn.split('_')[1]
             dt_object = self.getDate(fn,mode='filename')
             archiveDates[archive] = dt_object
-        if self.debug > 2 : print 'extractMsg.getArchiveDates archiveDates',archiveDates
+        if self.debug > 2 : print('extractMsg.getArchiveDates archiveDates',archiveDates)
         return archiveDates
     def getDate(self,FN,mode='filename'):
         '''
@@ -230,8 +234,8 @@ class extractMsg():
             if cmpY==0: yearOK += 1
             OK = cmpY==0 and cmpM==0
             if OK : YMOK += 1
-            if not OK : print archive,dts_object.strftime(fmt),'cmpY,cmpM',cmpY,cmpM
-        print 'extractMsg.dateTest',noDate,'out of',len(files),'had no Date.',yearOK,'files had year agreement',YMOK,'had year+month agreement'
+            if not OK : print(archive,dts_object.strftime(fmt),'cmpY,cmpM',cmpY,cmpM)
+        print('extractMsg.dateTest',noDate,'out of',len(files),'had no Date.',yearOK,'files had year agreement',YMOK,'had year+month agreement')
         return
         
     def getText(self,INPUT,input='file'):
@@ -250,7 +254,7 @@ class extractMsg():
             
         dthres = 1
         f = open(fn,'r')
-        if self.debug > 0 : print 'extractMsg.getText fn',fn
+        if self.debug > 0 : print('extractMsg.getText fn',fn)
         originalMsg = msg = email.message_from_file(f)
         f.close()
 
@@ -258,7 +262,7 @@ class extractMsg():
 
         s = self.get_text(msg)
         
-        if self.debug > dthres : print 'extractMsg.getText before exit len(s),s',len(s),s
+        if self.debug > dthres : print('extractMsg.getText before exit len(s),s',len(s),s)
         return s
     def listParts(self,fn):
         '''
@@ -267,16 +271,16 @@ class extractMsg():
         diagnostic use only
         '''
         f = open(fn,'r')
-        if self.debug > 0 : print 'extractMsg.listParts fn',fn
+        if self.debug > 0 : print('extractMsg.listParts fn',fn)
         msg = email.message_from_file(f)
         f.close()
         i = 0
         if msg.is_multipart():
             for part in msg.walk():
-                print 'part',i,'items',part.items()
+                print('part',i,'items',list(part.items()))
                 i += 1
         else:
-            print 'not multipart'
+            print('not multipart')
         return
     def decodeText(self,fn):
         '''
@@ -289,14 +293,14 @@ class extractMsg():
         dthres = 1 # overall debug threshold in this module
         
         f = open(fn,'r')
-        if self.debug > 0 : print 'extractMsg.decodeText fn',fn
+        if self.debug > 0 : print('extractMsg.decodeText fn',fn)
         msg = email.message_from_file(f)
         f.close()
 
         msg = self.msgFix(msg)
                     
-        if self.debug > dthres : print 'extractMsg.decodeText fixed msg',msg
-        if self.debug > dthres : print 'extractMsg.decodeText msg.items()',msg.items()
+        if self.debug > dthres : print('extractMsg.decodeText fixed msg',msg)
+        if self.debug > dthres : print('extractMsg.decodeText msg.items()',list(msg.items()))
 
         plaintext, charset = False, None
         for item in msg.items():
@@ -304,14 +308,14 @@ class extractMsg():
                 if 'text/plain' in item[1] : plaintext = True
             if 'Content-Transfer-Encoding' in item[0] : charset = item[1]
 
-        if self.debug > dthres : print 'extractMsg.decodeText plaintext,charset',plaintext,charset
+        if self.debug > dthres : print('extractMsg.decodeText plaintext,charset',plaintext,charset)
         s = ''
         if plaintext and charset=='base64':
             s = msg.as_string()
-            if self.debug > dthres : print 'extractMsg.decodeText initial s\n',s
+            if self.debug > dthres : print('extractMsg.decodeText initial s\n',s)
             while charset in s:
                 k = s.index(charset) + len(charset)
-                if self.debug > dthres : print 'extractMsg.decodeText charset k',k
+                if self.debug > dthres : print('extractMsg.decodeText charset k',k)
                 s = s[k:]
             extraClean = True  # try to remove header and extraneous text before base64 decoding
             if extraClean:
@@ -326,16 +330,16 @@ class extractMsg():
                     else:
                         s = s[k:]
                     
-            if self.debug > dthres : print 'extractMsg.decodeText final s\n',s
+            if self.debug > dthres : print('extractMsg.decodeText final s\n',s)
             
             try:
                 s = base64.b64decode(s)
             except:
                 s = ''
 
-            if s=='' and self.debug > dthres : print 'extractMsg.decodeText base64 decode Exception'
+            if s=='' and self.debug > dthres : print('extractMsg.decodeText base64 decode Exception')
                 
-        if self.debug > dthres : print 'extractMsg.decodeText after base64 decoding, s\n',s
+        if self.debug > dthres : print('extractMsg.decodeText after base64 decoding, s\n',s)
         return s
     def msgFix(self,msg):
         '''
@@ -396,9 +400,9 @@ class extractMsg():
                 else:
                     charset = part.get_content_charset()
                 if part.get_content_type() == 'text/plain':
-                    text = unicode(part.get_payload(decode=True),str(charset),"ignore").encode('utf8','replace')
+                    text = six.text_type(part.get_payload(decode=True),str(charset),"ignore").encode('utf8','replace')
                 if part.get_content_type() == 'text/html':
-                    html = unicode(part.get_payload(decode=True),str(charset),"ignore").encode('utf8','replace')
+                    html = six.text_type(part.get_payload(decode=True),str(charset),"ignore").encode('utf8','replace')
             if html is None:
                 return text.strip()
             else:
@@ -407,7 +411,7 @@ class extractMsg():
         else:
             cs = msg.get_content_charset()   ## added
             if cs is None : cs = 'us-ascii'  ## added
-            text = unicode(msg.get_payload(decode=True),cs,'ignore').encode('utf8','replace') ## altered
+            text = six.text_type(msg.get_payload(decode=True),cs,'ignore').encode('utf8','replace') ## altered
             return text.strip()
     def idiot_html2text(self,html):
         '''
@@ -447,7 +451,7 @@ if __name__ == '__main__' :
         fn = 'DATA/comp-users-forum_2021-05/41'
         fn = 'DATA/comp-users-forum_2018-03/22'
         msg = eM.getEmailMsg(fn)
-        print 'message from',fn,'\n',msg
+        print('message from',fn,'\n',msg)
         sys.exit('extractMsg '+fn)
 
     finalTest = False
@@ -466,8 +470,8 @@ if __name__ == '__main__' :
         fn = 'DATA/comp-users-forum_2020-02/5'
         if len(sys.argv)>1 : fn = sys.argv[1]
         s = eM.decodeText(fn)
-        print 'len(s)',len(s)
-        print 's\n',s
+        print('len(s)',len(s))
+        print('s\n',s)
         sys.exit('extractMsg.decodeText '+fn)
 
     getArchiveText = False
@@ -478,7 +482,7 @@ if __name__ == '__main__' :
         archive = '2021-05/32'
         if len(sys.argv)>1 : archive = sys.argv[1]
         lines = eM.getText(archive,input=input)
-        print lines
+        print(lines)
 
     betterGetText = False
     if betterGetText :
@@ -487,12 +491,12 @@ if __name__ == '__main__' :
             fn = 'DATA/comp-users-forum_2021-02/'+str(n)
             fn = 'DATA/comp-users-forum_2017-06/1'
             f = open(fn,'r')
-            print '\n\nextractMsg -------------------------------- test get_text for fn',fn
+            print('\n\nextractMsg -------------------------------- test get_text for fn',fn)
             msg = email.message_from_file(f)
             f.close()
             msg = eM.msgFix(msg)
             lines = eM.get_text(msg)
-            print lines
+            print(lines)
 
 
     lookForGridSites = False

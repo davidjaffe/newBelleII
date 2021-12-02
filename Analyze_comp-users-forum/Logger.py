@@ -6,13 +6,15 @@ http://stackoverflow.com/questions/14906764/how-to-redirect-stdout-to-file-and-c
 to use
 sys.stdout = Logger()
 '''
+from __future__ import absolute_import
+from __future__ import print_function
 import sys
 
 class Logger(object):
     def __init__(self,fn='logfile.log'):
         self.terminal = sys.stdout
         self.log = open(fn, "w",1)  # 20170120 changed "a" = append to "w" = write. added 3d argument: buffering by line
-        print 'Logger directing to',fn
+        print('Logger directing to',fn)
 
     def write(self, message):
         self.terminal.write(message)

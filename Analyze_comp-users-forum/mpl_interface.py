@@ -7,6 +7,8 @@ make stacked bar charts
 20211025
 '''
 #import math
+from __future__ import absolute_import
+from __future__ import print_function
 import sys,os
 import glob
 import email, base64
@@ -14,6 +16,8 @@ import numpy
 import matplotlib
 import matplotlib.pyplot as plt
 import random
+from six.moves import range
+from six.moves import zip
 
 
 class mpl_interface():
@@ -28,7 +32,7 @@ class mpl_interface():
         for cmap in [CM.Accent, CM.Dark2, CM.Paired, CM.Pastel1]:
             self.rcolors.extend( [cmap(k) for k in numpy.linspace(0,1,Nc+1)] )
 
-        print 'mpl_interface.__init__ completed'
+        print('mpl_interface.__init__ completed')
         return
     def histo(self,Y,xlo,xhi,nbin=None,dx=None,xlabel=None,ylabel=None,title=None,grid=False):
         '''
@@ -85,7 +89,7 @@ class mpl_interface():
 
         N = len(xlabels)
         if y.shape[1]!=N :
-            print 'mpl_interface.stackedBarChart ERROR len(xlabels)',N,'inconsistent with y.shape[1]',y.shape[1],'title',title
+            print('mpl_interface.stackedBarChart ERROR len(xlabels)',N,'inconsistent with y.shape[1]',y.shape[1],'title',title)
             sys.exit('mpl_interface.stackedBarChart ERROR Input array length mismatch')
         ind = numpy.arange(N)
         width = 0.35
@@ -171,12 +175,12 @@ if __name__ == '__main__' :
     
     testHisto = False
     if testHisto :
-        y = range(2,33)
-        y.extend(range(1,3))
+        y = list(range(2,33))
+        y.extend(list(range(1,3)))
         for x in range(15,24):
-            y.extend(range(7,x))
+            y.extend(list(range(7,x)))
         for x in range(8,15):
-            y.extend(range(3,x))
+            y.extend(list(range(3,x)))
         Y = numpy.array(y)
         xlo,xhi = 0.,50.
         dx = 1.0

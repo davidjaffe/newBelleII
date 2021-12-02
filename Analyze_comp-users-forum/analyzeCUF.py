@@ -7,6 +7,8 @@ https://indico.belle2.org/event/4490/contributions/23141/attachments/11560/17627
 
 20210916
 '''
+from __future__ import absolute_import
+from __future__ import print_function
 import sys,os
 import glob
 import matplotlib.pyplot as plt
@@ -20,6 +22,8 @@ import Logger # direct stdout to file & terminal
 import email
 
 import datetime
+from six.moves import range
+from six.moves import zip
 
 
 class analyzeCUF():
@@ -41,14 +45,14 @@ class analyzeCUF():
         for d in dirs:
             if not os.path.exists(d):
                 os.makedirs(d)
-                print 'analyzeCUF.__init__ create directory',d
+                print('analyzeCUF.__init__ create directory',d)
 
         lf = self.logDir + '/logfile.log'
         sys.stdout = Logger.Logger(fn=lf)
-        print 'analyzeCUF.__init__ Output directed to stdout and',lf
+        print('analyzeCUF.__init__ Output directed to stdout and',lf)
 
 
-        print 'analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile,'now',self.now
+        print('analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile,'now',self.now)
 
         self.extractMsg = extractMsg.extractMsg(debug=debug)
         self.issues_keyphrases = issues_keyphrases.issues_keyphrases(debug=debug,now=self.now)
@@ -145,7 +149,7 @@ class analyzeCUF():
         if i2>i1 : s = s[:max(i1-1,0)] + s[i2+1:]
             
         s = " ".join(s.split())
-        if self.debug > 2 : print 'analyzeCUF.cleanSubject Original subject',subject,'Final subject',s
+        if self.debug > 2 : print('analyzeCUF.cleanSubject Original subject',subject,'Final subject',s)
         return s
     def getSpan(self,a1,a2):
         '''
@@ -165,7 +169,7 @@ class analyzeCUF():
         else:
             words += ' {} is not a valid message key.'.format(a2)
         if len(words)>0 :
-            print hdr,words
+            print(hdr,words)
             return -1
 
         return abs(i1-i2)
@@ -201,7 +205,7 @@ class analyzeCUF():
         adOut = None # should get assigned below
         ad,name = self.getAddr(whoFrom)
         adB = ad.split('@')[0]
-        if self.debug > 2 : print 'analyzeCUF.fillADB input whoFrom,ad,name,adB',whoFrom,ad,name,adB,'len(self.ADB)',len(self.ADB)
+        if self.debug > 2 : print('analyzeCUF.fillADB input whoFrom,ad,name,adB',whoFrom,ad,name,adB,'len(self.ADB)',len(self.ADB))
         if ad in self.ADB:
             adOut = ad
             found = False
@@ -228,18 +232,18 @@ class analyzeCUF():
                 adOut = ad
                 if ad not in self.ADB : self.ADB[ad] = [ [ad,name] ]
         if adOut is None:
-            print 'analyzeCUF.fillADB ERROR adOut',adOut,'whoFrom',whoFrom,'ad,name',ad,name,'self.ADB follows\n',self.ADB
+            print('analyzeCUF.fillADB ERROR adOut',adOut,'whoFrom',whoFrom,'ad,name',ad,name,'self.ADB follows\n',self.ADB)
             sys.exit('analyzeCUF.fillADB ERROR adOut in None')
-        if self.debug > 2 : print 'analyzeCUF.fillADB output whoFrom,adOut',whoFrom,adOut,'len(self.ADB)',len(self.ADB)
+        if self.debug > 2 : print('analyzeCUF.fillADB output whoFrom,adOut',whoFrom,adOut,'len(self.ADB)',len(self.ADB))
         return adOut
     def reportADB(self):
         '''
         write contents of ADB to terminal
         '''
-        print '\nanalyzeCUF.reportADB Contents of Address DataBase'
+        print('\nanalyzeCUF.reportADB Contents of Address DataBase')
         for key in sorted(self.ADB):
-            print key,self.ADB[key]
-        print '\n'
+            print(key,self.ADB[key])
+        print('\n')
         return
     def threadIdentifiers(self,fn):
         '''
@@ -387,12 +391,12 @@ class analyzeCUF():
         
         for fn in files:
             archive = self.getMessageN(fn) # = yyyy-mm/msg#
-            if self.debug > 0 : print 'analyzeCUF.processFiles archive',archive
+            if self.debug > 0 : print('analyzeCUF.processFiles archive',archive)
             f = open(fn,'r')
             msg = email.message_from_file(f)
             f.close()
 
-            if self.debug > 1 : print 'analyzerCUF.processFiles archive',archive,'msg.keys()',msg.keys()
+            if self.debug > 1 : print('analyzerCUF.processFiles archive',archive,'msg.keys()',list(msg.keys()))
 
             for key in favorites:
                 favLow = key.lower()
@@ -409,9 +413,9 @@ class analyzeCUF():
             
             if archive in favInFile:
                 if self.debug > 2 :
-                    print 'analyzeCUF.processFiles archive,favInFile[archive]',archive,favInFile[archive]
+                    print('analyzeCUF.processFiles archive,favInFile[archive]',archive,favInFile[archive])
             else:
-                print 'analyzeCUF.processFiles WARNING archive',archive,'No favorites found'
+                print('analyzeCUF.processFiles WARNING archive',archive,'No favorites found')
 
         # establish threads.
         # first step is to use metadata (Message-id, References and In-Reply-To) to create threads.
@@ -425,7 +429,7 @@ class analyzeCUF():
             whoFrom = wF0 = favInFile[archive][jref['From']]['From']
             whoFrom = wF1 = self.fillADB(whoFrom)
             if self.debug>2 and wF0!=wF1 :
-                print 'analyzeCUF.processFiles initial whoFrom',wF0,'final whoFrom',wF1
+                print('analyzeCUF.processFiles initial whoFrom',wF0,'final whoFrom',wF1)
 
         ## 'clean' the subject line, this removes superfluous information in the subject.
         ## Note that cleaning can yield a zero-length string for the subject
@@ -448,8 +452,8 @@ class analyzeCUF():
         Threads = self.mergeInterleaved(Threads)
                 
         ### report on threads
-        print '\nanalyzeCUF.processFiles   REPORT ON THREADS +++++++++++++++++++++++++++++++++++++++'
-        print 'Total files',len(files),'Total threads',len(Threads)
+        print('\nanalyzeCUF.processFiles   REPORT ON THREADS +++++++++++++++++++++++++++++++++++++++')
+        print('Total files',len(files),'Total threads',len(Threads))
         threadOrder = []
         ThreadSubjects = {}
         for archive in self.msgOrder:
@@ -459,19 +463,19 @@ class analyzeCUF():
                 ThreadSubjects[archive] = subject
 
                 if subject=='' or subject==' ':
-                    print archive,'Subject',Threads[archive][0],'has weird clean subject',subject
+                    print(archive,'Subject',Threads[archive][0],'has weird clean subject',subject)
                 
                 alist = [a[0] for a in Threads[archive][1] ]   # list of message in archive
                 span  =self.getSpan(alist[0],alist[-1])  # #messages between last,first message in thread
                 tlen = len(alist)  # total length of thread
                 
-                if self.debug >-1 : print 'Thread',archive,'subject',subject,'length',tlen,'span',span,'entries',alist
-                if self.debug > 0 : print 'Thread',archive,'Contents',Threads[archive]
+                if self.debug >-1 : print('Thread',archive,'subject',subject,'length',tlen,'span',span,'entries',alist)
+                if self.debug > 0 : print('Thread',archive,'Contents',Threads[archive])
 
         ### look for threads with identical 'clean' subjects
-        print '\nanalyzeCUF.processFiles Check threads for identical',
-        if self.debug>1: print 'or similar',
-        print 'subjects. Span is the number of messages between the first message of two threads.'
+        print('\nanalyzeCUF.processFiles Check threads for identical', end=' ')
+        if self.debug>1: print('or similar', end=' ')
+        print('subjects. Span is the number of messages between the first message of two threads.')
         dupThreads = []
         dupIsNextThread = []
         for i,archive in enumerate(threadOrder):
@@ -503,9 +507,9 @@ class analyzeCUF():
                         words += 'and {0} similar threads:' + fmt.format(*sims)
                         fmt  = ("{:>"+str(max([len(q) for q in ssims])+1)+"}")*len(ssims)
                         words += fmt.format(*ssims)
-                    print words
+                    print(words)
                     #print archive,s1,'has',len(dups),'identical threads:',dups,sdups,'and',len(sims),'similar threads',sims,ssims
-        print 'analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread'
+        print('analyzeCUF.processFiles Found',len(dupThreads),'duplicates among',len(threadOrder),'threads.',len(dupIsNextThread),'of these duplicates are the NEXT thread')
              
         return Threads
     def getArchiveList(self,archive,Threads):
@@ -516,7 +520,7 @@ class analyzeCUF():
         if archive in Threads:
             archiveList = [x[0] for x in Threads[archive][1]]
         else:
-            print 'analyzeCUF.getArchiveList WARNING archive',archive,'is not a Thread key'
+            print('analyzeCUF.getArchiveList WARNING archive',archive,'is not a Thread key')
         return archiveList
     def analyzeThreads(self,Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates):
         '''
@@ -536,24 +540,24 @@ class analyzeCUF():
         '''
         nFiles = self.nFiles # total number of messages in archive
         nThreads = len(Threads) # total number of threads among messages
-        print '\nanalyzeCUF.analyzeThreads',nFiles,'total messages in archive with',nThreads,'threads identified'
+        print('\nanalyzeCUF.analyzeThreads',nFiles,'total messages in archive with',nThreads,'threads identified')
 
         listThreads = False
         if listThreads : 
             # list threads by subject, alphabetically
-            print '\nanalyzeCUF.analyzeThreads list of threads by subject, alphabetically'
+            print('\nanalyzeCUF.analyzeThreads list of threads by subject, alphabetically')
             fn = 'threads'
             nwrite = 0
             f = open(fn,'w')
-            for aT in sorted(Threads.items(), key=lambda v: v[1][0]):
+            for aT in sorted(list(Threads.items()), key=lambda v: v[1][0]):
                 key = aT[0]
                 Subject = Threads[key][0]
                 words = '{} {}'.format(key,Subject)
-                print words
+                print(words)
                 f.write(words+'\n')
                 nwrite += 1
             f.close()
-            print '\nanalyzeCUF.analyzeThreads Wrote',nwrite,'thread subjects to file',fn
+            print('\nanalyzeCUF.analyzeThreads Wrote',nwrite,'thread subjects to file',fn)
 
         ### issue vs issue
         Ni = len(issueOrder)
@@ -581,7 +585,7 @@ class analyzeCUF():
         title = 'Issue vs issue. Diagonal=all, above=doubles, below=triples'
         Title = self.mpl_interface.plot2d(x,y,z,xlabels=xlabels,ylabels=ylabels,title=title,colorbar=True)
         self.showOrPlot(Title)
-        print '\nanalyzeCUF.analyzeThreads',Title,'all,above,below',tot,above, below
+        print('\nanalyzeCUF.analyzeThreads',Title,'all,above,below',tot,above, below)
             
         # issues by year
         # plot normed number of issues/year and issues/all years vs year 
@@ -595,8 +599,8 @@ class analyzeCUF():
             if issue!=self.issues_keyphrases.announcementsName : issueOrderNoAnnouncement.append(issue)
                 
         if self.debug > 2 :
-            print '\nanalyzeCUF.analyzeThreads issues',issues
-            print ' ',[str(issue)+' '+str(len(issues[issue])) for issue in issues]
+            print('\nanalyzeCUF.analyzeThreads issues',issues)
+            print(' ',[str(issue)+' '+str(len(issues[issue])) for issue in issues])
         years = []
         for issue in issues:
             for archive in issues[issue]:
@@ -604,7 +608,7 @@ class analyzeCUF():
                 if year not in years: years.append( year )
         years.append('AllYears')
         years = sorted(years)
-        if self.debug > 2 : print 'analyzeCUF;analyzeThreads years',years
+        if self.debug > 2 : print('analyzeCUF;analyzeThreads years',years)
         iByY = {} # {year: [N(issue0), N(issue1), ...}
         for year in years:
             iByY[year] = [0 for issue in issueOrder]
@@ -622,12 +626,12 @@ class analyzeCUF():
                 onerow.append( iByY[year][I] )
             rows.append( onerow )
         table = self.tableMaker(years,rows,issueOrder,integers=True,caption='Number of issues by year')
-        print table
+        print(table)
 
-        if self.debug > 2 : print 'analyzeCUF.analyzeThreads iByY',iByY
+        if self.debug > 2 : print('analyzeCUF.analyzeThreads iByY',iByY)
 
         for words,order in zip(['All ','Non-unique ','All but Announcements '],[issueOrder, nonUniqueOrder,issueOrderNoAnnouncement]):
-            if self.debug > 1 : print '\nNumber of issues by year\n',' '.join(years),'Issue'
+            if self.debug > 1 : print('\nNumber of issues by year\n',' '.join(years),'Issue')
             Y = []
             Yy= []
             for I,issue in enumerate(order):
@@ -636,7 +640,7 @@ class analyzeCUF():
                 for year in years:
                     NperY.append( iByY[year][I] )
                     if year!='AllYears': NperYy.append( iByY[year][I] )
-                if self.debug > 1 : print ' '.join(str(x) for x in NperY),issue
+                if self.debug > 1 : print(' '.join(str(x) for x in NperY),issue)
                 Y.extend( NperY )
                 Yy.extend( NperYy )
             X = numpy.array( years )
@@ -660,7 +664,7 @@ class analyzeCUF():
             if len(excludedIssues)>0 : exclWords += ' except ' + ', '.join(excludedIssues)
 
 
-            print '\nanalyzeCUF.analyzeThreads by reporter and responder.',exclWords
+            print('\nanalyzeCUF.analyzeThreads by reporter and responder.',exclWords)
             Reporters, Responders = {}, {}
             for archive in self.msgOrder:
                 if archive in Threads:
@@ -679,10 +683,10 @@ class analyzeCUF():
                         if year not in Reporters: Reporters[year], Responders[year]= [],[]
                         Reporters[year].append(rep)
                         Responders[year].append(res)
-                        if self.debug > 1 : print 'analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom
-                        if self.debug > 1 : print 'analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res
-                if self.debug > 1 : print 'analyzeCUF.analyzeThreads Reporters',Reporters
-            if self.debug > 1 : print 'analyzeCUF.analyzeThreads Responders',Responders
+                        if self.debug > 1 : print('analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom)
+                        if self.debug > 1 : print('analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res)
+                if self.debug > 1 : print('analyzeCUF.analyzeThreads Reporters',Reporters)
+            if self.debug > 1 : print('analyzeCUF.analyzeThreads Responders',Responders)
 
             ## create pie charts of reporters and responders per year
             ## reporters, responders identified by name in name@address
@@ -695,7 +699,7 @@ class analyzeCUF():
                 for name,DICT in zip(['Reporters','Responders'], [dictReporters,dictResponders] ):
                     title = '{} {} {}'.format(name,year,exclWords)
                     counts,labels = [],[]
-                    for k,v in sorted(DICT[year].items(), key=lambda x:x[1]):
+                    for k,v in sorted(list(DICT[year].items()), key=lambda x:x[1]):
                         if k is not None:
                             label = k
                             if '@' in k: label = k.split('@')[0]
@@ -708,10 +712,10 @@ class analyzeCUF():
                     self.showOrPlot(title)
 
                 if self.debug > 1 :
-                    print 'analyzeCUF.analyzeThreads year',year,'dictReporters[year]',sorted(dictReporters[year].items(), key=lambda x:x[1], reverse=True)
-                    for k,v in sorted(dictReporters[year].items(), key=lambda x:x[1], reverse=True): print k,v
-                    print 'analyzeCUF.analyzeThreads year',year,'dictResponders[year]',sorted(dictResponders[year].items(), key=lambda x:x[1], reverse=True)
-                    for k,v in sorted(dictResponders[year].items(), key=lambda x:x[1], reverse=True): print k,v
+                    print('analyzeCUF.analyzeThreads year',year,'dictReporters[year]',sorted(list(dictReporters[year].items()), key=lambda x:x[1], reverse=True))
+                    for k,v in sorted(list(dictReporters[year].items()), key=lambda x:x[1], reverse=True): print(k,v)
+                    print('analyzeCUF.analyzeThreads year',year,'dictResponders[year]',sorted(list(dictResponders[year].items()), key=lambda x:x[1], reverse=True))
+                    for k,v in sorted(list(dictResponders[year].items()), key=lambda x:x[1], reverse=True): print(k,v)
         
         
         msgPerT    = [] # number of messages per thread
@@ -734,7 +738,7 @@ class analyzeCUF():
                 deltaT = (max(msgTime) - min(msgTime)).total_seconds()/60./60./24.# time difference in days
                 deltaTPerT.append( deltaT )
                 if archive not in thread_issues: # how does this happen
-                    print 'analyzeCUF.analyzeThreads WARNING archive',archive,'not in thread_issues for Thread subject',Threads[archive][0]
+                    print('analyzeCUF.analyzeThreads WARNING archive',archive,'not in thread_issues for Thread subject',Threads[archive][0])
                     dTPerT[niName].append( deltaT )
                 else:
                     for issue in thread_issues[archive]:
@@ -747,17 +751,17 @@ class analyzeCUF():
         # print archive, deltaT for N largest deltaT
         N = 5
         dtLabel = 'Days between earliest and latest message in thread'
-        print '\nanalyzeCUF.analyzeThreads Threads with the',N,'largest deltaT=',dtLabel
+        print('\nanalyzeCUF.analyzeThreads Threads with the',N,'largest deltaT=',dtLabel)
         for dt in sorted(deltaTPerT)[-N:]:
             i = deltaTPerT.index(dt)
             archive = aPerT[i]
             span    = spanPerT[i]
             nmsg    = msgPerT[i]
             fdt = '{:.2f}'.format(dt)
-            print 'analyzeCUF.analyzeThreads archive,deltaT(days),span,nmsg',archive,fdt,span,nmsg
+            print('analyzeCUF.analyzeThreads archive,deltaT(days),span,nmsg',archive,fdt,span,nmsg)
             archiveList = self.getArchiveList(archive,Threads)
             self.writeMsgs(archiveList,output='Thread_'+archive.replace('/','_')+'deltaT_'+fdt)
-        print ''
+        print('')
 
         # histograms
         dtMax = None
@@ -774,7 +778,7 @@ class analyzeCUF():
             median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
             title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
             Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True)
-            print 'analyzeCUF.analyzeThreads',label,title
+            print('analyzeCUF.analyzeThreads',label,title)
             self.showOrPlot(label)
             
         # histograms for each issue
@@ -789,7 +793,7 @@ class analyzeCUF():
                 median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
                 title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
                 Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True)
-                print 'analyzeCUF.analyzeThreads',label,title
+                print('analyzeCUF.analyzeThreads',label,title)
                 self.showOrPlot(label)
 
         # plots
@@ -851,7 +855,7 @@ class analyzeCUF():
                     openWho.append( whoSent )
                     for issue in issues: openIssue.append( issue )
                     cWhen = datetime.datetime.strftime(when,"%Y-%m-%d %H:%M")
-                    print 'analyzeCUF.indentifyOpenThreads archive,whoFrom,Subject,when,issues',archive,whoFrom,Subject,cWhen,', '.join(issues)
+                    print('analyzeCUF.indentifyOpenThreads archive,whoFrom,Subject,when,issues',archive,whoFrom,Subject,cWhen,', '.join(issues))
 
         sWho = set(openWho)
         fWho = [openWho.count(i) for i in sWho]
@@ -881,7 +885,7 @@ class analyzeCUF():
         title = 'Grid issues  Site vs Date'
         fig,ax = plt.subplots(1)
         fig.autofmt_xdate(rotation=45,ha='right')
-        desort = sorted(grid_issues.items(), key=lambda x: len(x[1]), reverse=True)
+        desort = sorted(list(grid_issues.items()), key=lambda x: len(x[1]), reverse=True)
         descending = [q[0] for q in desort]
         #print 'descending',descending
         for iy,site in enumerate(descending):
@@ -979,17 +983,17 @@ class analyzeCUF():
                     if gar in issues[issue] :
                         if gar not in site: SI[gar] = [site, []]
                         SI[gar][1].append( issue )
-        print '\nanalyzeCUF.correlateGrid'
+        print('\nanalyzeCUF.correlateGrid')
         output_grid_issues = {}
         for issue,unique in zip(issueOrder,issueUnique):
-            if self.debug > 2 : print 'analyzeCUF.correlateGrid issue,unique',issue,unique
+            if self.debug > 2 : print('analyzeCUF.correlateGrid issue,unique',issue,unique)
             if not unique:
                 for archive in SI:
                     site,LIST = SI[archive]
                     if issue in LIST:
                         if site not in output_grid_issues: output_grid_issues[site] = []
                         output_grid_issues[site].append( archive )
-                        print archive, site, ', '.join(LIST)
+                        print(archive, site, ', '.join(LIST))
                         
         return output_grid_issues
  
@@ -1017,7 +1021,7 @@ class analyzeCUF():
                     if A in self.msgOrder:
                         jx = self.msgOrder.index(A)
                     else:
-                        print 'analyzeCUF.mergeInterleaved ERROR j,A',j,A,'not in self.msgOrder for a1,Threads[a1]',a1,Threads[a1]
+                        print('analyzeCUF.mergeInterleaved ERROR j,A',j,A,'not in self.msgOrder for a1,Threads[a1]',a1,Threads[a1])
                         jx = 0
                     limits.append(jx)
                 for a2 in self.msgOrder[i+1:]:
@@ -1027,16 +1031,16 @@ class analyzeCUF():
                             jx = self.msgOrder.index(a2)
                             A0 = Threads[a1][1][0][0]   # archive for first entry in thread
                             An = Threads[a1][1][-1][0]  # archive for last entry in thread
-                            if self.debug > 2 : print 'analyzeCUF.mergeInterleaved a1,S1,limits,A0,An,a2,jx',a1,S1,limits,A0,An,a2,jx,'Interleaved=',limits[0]<jx<limits[1]
+                            if self.debug > 2 : print('analyzeCUF.mergeInterleaved a1,S1,limits,A0,An,a2,jx',a1,S1,limits,A0,An,a2,jx,'Interleaved=',limits[0]<jx<limits[1])
                             if limits[0]<jx<limits[1]:
-                                if a1 in newThreads: print 'analyzeCUF.mergeInterleaved ERROR Overwriting newThreads for key',a1
+                                if a1 in newThreads: print('analyzeCUF.mergeInterleaved ERROR Overwriting newThreads for key',a1)
                                 newThreads[a1] = Threads[a1]
                                 newThreads[a1][1].extend( Threads[a2][1] )
                                 badThreads.append( a2 )
-        if self.debug > 2 : print 'analyzeCUF.mergeInterleaved badThreads',badThreads,'keys in newThreads',[key for key in sorted(newThreads)]
+        if self.debug > 2 : print('analyzeCUF.mergeInterleaved badThreads',badThreads,'keys in newThreads',[key for key in sorted(newThreads)])
         for a1 in Threads:
             if a1 not in badThreads and a1 not in newThreads: newThreads[a1] = Threads[a1]
-        print 'analyzeCUF.mergeInterleaved',len(Threads),'input Threads,',len(newThreads),'output Threads, so',len(badThreads),'were merged.'
+        print('analyzeCUF.mergeInterleaved',len(Threads),'input Threads,',len(newThreads),'output Threads, so',len(badThreads),'were merged.')
         return newThreads
     def mergeNeighbors(self,Threads):
         '''
@@ -1048,7 +1052,7 @@ class analyzeCUF():
         lastA,lastSubject = None,None
         for archive in self.msgOrder:
             if archive in Threads:
-                if self.debug > 2 : print 'ananlyzeCUF.mergeNeighbors archive,lastA',archive,lastA
+                if self.debug > 2 : print('ananlyzeCUF.mergeNeighbors archive,lastA',archive,lastA)
                 Subject = Threads[archive][0]
                 if lastA is None:
                     newThreads[archive] = Threads[archive]
@@ -1059,7 +1063,7 @@ class analyzeCUF():
                         newThreads[archive] = Threads[archive]
                 lastA = archive
                 lastSubject = Subject
-        print 'analyzeCUF.mergeNeighbors',len(Threads),'initial threads and',len(newThreads),'after merge. So',len(Threads)-len(newThreads),'were merged.'
+        print('analyzeCUF.mergeNeighbors',len(Threads),'initial threads and',len(newThreads),'after merge. So',len(Threads)-len(newThreads),'were merged.')
         return newThreads                        
     def locateRef(self,Threads,irt,ref,archive,subj):
         '''
@@ -1072,7 +1076,7 @@ class analyzeCUF():
         Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
 
         '''
-        if self.debug > 1 : print 'analyzeCUF.locateRef: inputs archive, subj, irt, ref',archive, subj, irt, ref
+        if self.debug > 1 : print('analyzeCUF.locateRef: inputs archive, subj, irt, ref',archive, subj, irt, ref)
 
         irtMatchedKeys = []
         refMatchedKeys = []
@@ -1086,7 +1090,7 @@ class analyzeCUF():
                         if key not in irtMatchedKeys: irtMatchedKeys.append(key)
                     if msgidN in ref:
                         if key not in refMatchedKeys: refMatchedKeys.append(key)
-        if self.debug > 2 : print 'analyzeCUF.locateRef: keysInSearch',keysInSearch
+        if self.debug > 2 : print('analyzeCUF.locateRef: keysInSearch',keysInSearch)
         
         matchedKeys = irtMatchedKeys
         matchby = ('irt',irt)
@@ -1096,15 +1100,15 @@ class analyzeCUF():
                         
         L = len(matchedKeys)
         if L==0:
-            if self.debug > 0 : print 'analyzeCUF.locateRef NO MATCH archive,subj,irt,ref,subj',archive,subj,irt,ref
+            if self.debug > 0 : print('analyzeCUF.locateRef NO MATCH archive,subj,irt,ref,subj',archive,subj,irt,ref)
             key = None
         elif L==1:
             key = matchedKeys[0]
         else:
             w,x = matchby
             if self.debug > 0 : 
-                print 'analyzeCUF.locateRef',L,'matches for archive,subj,',w,',(key,msgid) pairs',archive,subj,x,'matching keys follow:'
-                print 'analyzeCUF.locateRef matchedKeys',matchedKeys
+                print('analyzeCUF.locateRef',L,'matches for archive,subj,',w,',(key,msgid) pairs',archive,subj,x,'matching keys follow:')
+                print('analyzeCUF.locateRef matchedKeys',matchedKeys)
             key = matchedKeys[0]
         return key
     def writeMsgs(self,archiveList,output='msgs_to_study.log'):
@@ -1114,7 +1118,7 @@ class analyzeCUF():
         
         logFile = self.logDir + '/' + output
         ufn = open(logFile,'w')
-        print '\nanalyzeCUF.writeMsgs Write messages to',logFile
+        print('\nanalyzeCUF.writeMsgs Write messages to',logFile)
         for archive in archiveList:
             text = self.extractMsg.getText(archive,input='archive')
             ufn.write('\n\n ===========> Message from '+archive+'\n')
@@ -1134,7 +1138,7 @@ class analyzeCUF():
             png = pdf.replace('.pdf','.png')
             plt.savefig(pdf)
             plt.savefig(png)
-            print 'analyzeCUF.showOrPlot Wrote',pdf,png
+            print('analyzeCUF.showOrPlot Wrote',pdf,png)
             plt.close() # avoid runtime warning?
         else:
             plt.show()
@@ -1213,7 +1217,7 @@ class analyzeCUF():
         self.nFiles   = len(files)
         gridSiteNames = self.extractMsg.gridSites(files=files)
         archiveDates  = self.extractMsg.getArchiveDates(files)
-        if self.debug > 2 : print 'analyzeCUF.main self.msgOrder',self.msgOrder
+        if self.debug > 2 : print('analyzeCUF.main self.msgOrder',self.msgOrder)
             
         Threads = self.processFiles(files)
         
@@ -1245,7 +1249,7 @@ if __name__ == '__main__' :
         rowlabels = ['Fred`s farm','Mary`s house','At college']
         aCUF = analyzeCUF()
         table = aCUF.tableMaker(headers,rows,rowlabels,integers=True,caption='Here is a test table!!')
-        print table
+        print(table)
         sys.exit('done testing tableMaker')
     
 
@@ -1255,8 +1259,8 @@ if __name__ == '__main__' :
     if len(sys.argv)>1 :
         w = sys.argv[1]
         if 'help' in w.lower():
-            print 'USAGE:    python analyzeCUF.py [debug] [plotToFile] '
-            print 'DEFAULTS: python analyzeCUF.py',debug,plotToFile
+            print('USAGE:    python analyzeCUF.py [debug] [plotToFile] ')
+            print('DEFAULTS: python analyzeCUF.py',debug,plotToFile)
             sys.exit('help was provided. use it')
     if len(sys.argv)>1 : debug = int(sys.argv[1])
     if len(sys.argv)>2 : plotToFile = bool(sys.argv[2])
