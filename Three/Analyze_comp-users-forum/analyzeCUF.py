@@ -86,7 +86,8 @@ class analyzeCUF():
             ['kato@hepl.phys.nagoya-u.ac.jp', 'Yuji kato'],
             ['katouyuuji@gmail.com', '=?UTF-8?B?5Yqg6Jek5oKg5Y+4?=']]
 
-        
+        self.matchBy = {} # used by buildThreads. filled in findParent, locateRef
+
         return
     def getArchive(self):
         '''
@@ -270,11 +271,14 @@ class analyzeCUF():
         Define start of thread as a message that has no In-Reply-To or References field.
 
         Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+
+        spanT[archive0] = [span, archiveN]
+        span of Thread = spanT[archive0] = span between messages archive0 and archiveN. 
+        Of all the messages in a thread, the largest span is between archive0 and archiveN. 
         '''
-        
 
         Threads = {}
-        
+        spanT   = {}
 
         for fn in files:
             fileIds,threadStart = self.threadIdentifiers(fn)
@@ -300,8 +304,30 @@ class analyzeCUF():
                     sys.exit('analyzeCUF:buildThreads ERROR arch0 '+arch0+' not in Threads')
                 else:
                     Threads[key][1].append( (archive,msgid,irt,whoFrom) )
-
-        
+                    span = self.getSpan(key,archive)
+                    if key not in spanT:
+                        spanT[key] = [span,archive]
+                    else:
+                        oldSpan = spanT[key][0]
+                        if span>oldSpan: spanT[key] = [span,archive]
+                        
+        # sort threads in descending order of span
+        spanT_desc = sorted(spanT, key=spanT.get, reverse=True)
+        nLarge = 25
+        # for nLarge largest spans,
+        # how is largest span identified, by msgid and/or irt?
+        for key in spanT_desc[:nLarge]:
+            span,archiveN = spanT[key]
+            for daughter in Threads[key][1]:
+                if daughter[0]==archiveN:
+                    matchby = -1
+                    if archiveN in self.matchBy : matchby = self.matchBy[archiveN]
+                    msgid,irt = daughter[1],daughter[2]
+                    break
+            print('analyzeCUF.buildThreads archive',key,'span',span,'archiveN',archiveN,'matchby',matchby)#,'msgid',msgid,'irt',irt)
+        freq = {x:[y for y in self.matchBy.values()].count(x) for x in self.matchBy.values()}
+        for j in sorted(freq):
+            print('analyzeCUF.buildThreads matchBy',j,'frequency',freq[j])
         return
     def findParent(self,archive,fileIds, Threads):
         '''
@@ -327,6 +353,10 @@ class analyzeCUF():
             if parentMsgid in dautIRT or parentMsgid in dautREF:
                 if self.matchSubjects(parentSubject,dautSubject):
                     Threads[key][1].append( daughter )
+                    cMatch = 0
+                    if parentMsgid in dautIRT : cMatch += 1
+                    if parentMsgid in dautREF : cMatch += 2
+                    self.matchBy[archive] = cMatch
                     status = 0
                     return key 
                 
@@ -1102,6 +1132,9 @@ class analyzeCUF():
                 print('analyzeCUF.locateRef',L,'matches for archive,subj,',w,',(key,msgid) pairs',archive,subj,x,'matching keys follow:')
                 print('analyzeCUF.locateRef matchedKeys',matchedKeys)
             key = matchedKeys[0]
+        if key is not None:
+            if matchby[0]=='irt' : self.matchBy[archive] = 11
+            if matchby[0]=='ref' : self.matchBy[archive] = 12            
         return key
     def writeMsgs(self,archiveList,output='msgs_to_study.log'):
         '''
@@ -1226,7 +1259,7 @@ class analyzeCUF():
 
         return
 if __name__ == '__main__' :
-    testBuildThreads = False
+    testBuildThreads = True
     if testBuildThreads :
         aCUF = analyzeCUF()
         files, aCUF.msgOrder = aCUF.getArchive()
