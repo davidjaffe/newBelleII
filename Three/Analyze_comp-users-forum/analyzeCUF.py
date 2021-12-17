@@ -56,6 +56,9 @@ class analyzeCUF():
 
         self.DATA_DIR = 'DATA/'
 
+        ###self.DATA_DIR = 'TESTDATA/' #### TESTING ONLY. create link to a subset of files in DATA/ for testing
+        ###self.debug    = 2 ############## TESTING ONLY
+
         self.MLname = 'comp-users-forum'
         
         self.msgOrder= None    # messages in proper numerical order
@@ -86,7 +89,9 @@ class analyzeCUF():
             ['kato@hepl.phys.nagoya-u.ac.jp', 'Yuji kato'],
             ['katouyuuji@gmail.com', '=?UTF-8?B?5Yqg6Jek5oKg5Y+4?=']]
 
+        # matching methods used to build threads in findParent and locateRef
         self.matchBy = {} # used by buildThreads. filled in findParent, locateRef
+        self.matchByDescrip = {0:'no match',1:'IRT match',2:'REF match',3:'IRT & REF match',11:'IRT match by locateRef',12:'REF match by locateRef'}
 
         return
     def getArchive(self):
@@ -131,7 +136,7 @@ class analyzeCUF():
         https://stackoverflow.com/questions/8270092/remove-all-whitespace-in-a-string
         '''
         ml = '['+self.MLname+']'
-        dirt = [ml, '[SPAM]', 'Re:', 'Fwd:']
+        dirt = [ml, '[SPAM]', 'Re:','RE:', 'Fwd:']
 
         
         s = subject
@@ -261,12 +266,14 @@ class analyzeCUF():
             if key in msg:
                 words = msg[key]
                 if key=='Subject': words = self.cleanSubject(msg[key])
-                threadIds[key] = words
+                threadIds[key] = words.strip() # remove leading, trailing spaces
         threadHead = (threadIds[IRT] is blank) and (threadIds[REF] is blank)
         return threadIds,threadHead
     def buildThreads(self,files):
         '''
-        do a better job of building threads from ordered list of files
+        return dict Threads
+
+        Do a better job of building threads from ordered list of files
 
         Define start of thread as a message that has no In-Reply-To or References field.
 
@@ -275,11 +282,20 @@ class analyzeCUF():
         spanT[archive0] = [span, archiveN]
         span of Thread = spanT[archive0] = span between messages archive0 and archiveN. 
         Of all the messages in a thread, the largest span is between archive0 and archiveN. 
+
+        archiveDates[archive] = datetime object of message specified by archive
+
+        durationT[archive0] = maximum time difference in days between messages in thread specified by archive0
+        
         '''
 
+        self.useLocateRef = False
+        
         Threads = {}
-        spanT   = {}
 
+        archiveDates = self.extractMsg.getArchiveDates(files)  # NOTE: THIS IS ALSO CREATED IN analyzeCUF.mainMAIN
+
+        # build initial threads while filling address database
         for fn in files:
             fileIds,threadStart = self.threadIdentifiers(fn)
             archive = self.getMessageN(fn) # = yyyy-mm/msg#
@@ -289,46 +305,77 @@ class analyzeCUF():
             whoFrom = fileIds['From']
             whoFrom = self.fillADB(whoFrom) 
             ref     = fileIds['References']
+
             if  threadStart :
                 Threads[archive] = [fileIds['Subject'], [(archive,msgid,irt,whoFrom)]]
             else:
                 key = self.findParent(archive,fileIds, Threads)
-                if key is None:
-                    self.debug = 1
+                if key is None and self.useLocateRef:
+                    self.debug = 2 #1
                     key = self.locateRef(Threads, irt,ref,archive,Subject)
                     self.debug = 0
 
                 if key is None :
                     Threads[archive] = [Subject, [ (archive,msgid,irt,whoFrom) ] ]
                 elif key not in Threads:
-                    sys.exit('analyzeCUF:buildThreads ERROR arch0 '+arch0+' not in Threads')
+                    sys.exit('analyzeCUF:buildThreads ERROR key '+key+' not in Threads')
                 else:
                     Threads[key][1].append( (archive,msgid,irt,whoFrom) )
-                    span = self.getSpan(key,archive)
-                    if key not in spanT:
-                        spanT[key] = [span,archive]
-                    else:
-                        oldSpan = spanT[key][0]
-                        if span>oldSpan: spanT[key] = [span,archive]
+
+        # merge neighboring threads based on identical subjects
+        # (the mailing list seems to do this for threads that can't be id'ed with Message-ID and References/In-Reply-To)
                         
-        # sort threads in descending order of span
+        Threads = self.mergeNeighbors(Threads)
+
+        durationT = self.getThreadDuration(Threads,archiveDates)
+        spanT = self.getThreadSpan(Threads)
+                        
+        #####
+        ##### all threads have been created, the following is for diagnostics
+        #####
+
+        print('\nanalyzeCUF.buildThreads DIAGNOSTICS useLocateRef',self.useLocateRef)
+
+
+        # see if threads need to be merged based on (nearly) identical subjects
+        nMergeCands = 0
+        lastA,lastS = None,None
+        for archive in self.msgOrder:
+            if archive in Threads:
+                Subject = Threads[archive][0]
+                if lastA is not None:
+                    if self.matchSubjects(Subject,lastS):
+                        print('analyzeCUF.buildThreads previous archive,Subject',lastA,lastS)
+                        print('analyzeCUF.buildThreads current  archive,Subject',archive,Subject)
+                        print('analyzeCUF.buildThreads MATCH of current and previous subject')
+                        nMergeCands += 1
+                lastA,lastS = archive,Subject
+        print('analyzeCUF.buildThreads',nMergeCands,'candidates for merger')
+                
+        # sort threads in descending order of duration
         spanT_desc = sorted(spanT, key=spanT.get, reverse=True)
+        durationT_desc = sorted(durationT, key=durationT.get, reverse=True)
         nLarge = 25
-        # for nLarge largest spans,
+        # for nLarge largest durations,
         # how is largest span identified, by msgid and/or irt?
-        for key in spanT_desc[:nLarge]:
+        print('\n analyzeCUF.buildThreads',nLarge,'threads in descending order of duration')
+        for key in durationT_desc[:nLarge]:
             span,archiveN = spanT[key]
+            duration = durationT[key]
             for daughter in Threads[key][1]:
                 if daughter[0]==archiveN:
                     matchby = -1
                     if archiveN in self.matchBy : matchby = self.matchBy[archiveN]
                     msgid,irt = daughter[1],daughter[2]
                     break
-            print('analyzeCUF.buildThreads archive',key,'span',span,'archiveN',archiveN,'matchby',matchby)#,'msgid',msgid,'irt',irt)
+            print('analyzeCUF.buildThreads archive',key,'span',span,'duration(days) {0:.1f}'.format(duration),'archiveN',archiveN,'matchby',matchby)#,'msgid',msgid,'irt',irt)
+        print('\nanalyzeCUF.buildThreads Matching frequencies')
         freq = {x:[y for y in self.matchBy.values()].count(x) for x in self.matchBy.values()}
         for j in sorted(freq):
-            print('analyzeCUF.buildThreads matchBy',j,'frequency',freq[j])
-        return
+            descrip = 'DESCRIPTION MISSING!'
+            if j in self.matchByDescrip : descrip = self.matchByDescrip[j]
+            print('analyzeCUF.buildThreads matchBy',j,descrip,'frequency',freq[j])
+        return Threads
     def findParent(self,archive,fileIds, Threads):
         '''
         Return key of Threads that is parent of archive,fileIds;
@@ -346,20 +393,37 @@ class analyzeCUF():
         dautFrom    = fileIds['From']
         dautMsgid   = fileIds['Message-id']
         daughter = (archive, dautMsgid, dautIRT, dautFrom )
-        
+
+        maxI = 9999  # maximum index for search for parentMsgid. maxI=0 reproduces original findParent
+        if self.debug > 1 :
+            print('analyzeCUF.findParent input archive,dautMsgid',archive,dautMsgid)
+            print('analyzeCUF.findParent input archive,dautIRT',archive,dautIRT)
+            print('analyzeCUF.findParent input archive,dautREF',archive,dautREF)
+            print('analyzeCUF.findParent input archive,dautSubject,len(dautSubject)',archive,dautSubject,len(dautSubject))
+            
         for key in Threads:
             parentSubject = Threads[key][0]
-            parentMsgid   = Threads[key][1][0][1] # = [(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...]
-            if parentMsgid in dautIRT or parentMsgid in dautREF:
-                if self.matchSubjects(parentSubject,dautSubject):
-                    Threads[key][1].append( daughter )
-                    cMatch = 0
-                    if parentMsgid in dautIRT : cMatch += 1
-                    if parentMsgid in dautREF : cMatch += 2
-                    self.matchBy[archive] = cMatch
-                    status = 0
-                    return key 
+            if self.debug > 1 : print('analyzeCUF.findParent key,parentSubject',key,parentSubject)
                 
+            for I,tupl in enumerate(Threads[key][1]):
+                parentMsgid = tupl[1]
+                if self.debug > 1 :
+                    print('analyzeCUF.findParent I,parentMsgid',I,parentMsgid)
+
+                if I<=maxI and (parentMsgid in dautIRT or parentMsgid in dautREF):
+                    if self.debug > 1 :
+                        print('analyzeCUF.findParent I',I,'Message-ID is in IRT or REF')
+                        print('analyzeCUF.findParent parentSubject',parentSubject,'len(parentSubject)',len(parentSubject))
+                    if self.matchSubjects(parentSubject,dautSubject):
+                        if self.debug > 1 : print('analyzeCUF.findParent SUCCESS parentSubject matches dautSubject')
+                        Threads[key][1].append( daughter )
+                        cMatch = 0
+                        if parentMsgid in dautIRT : cMatch += 1 # 0th bit = parent found using In-Reply-TO
+                        if parentMsgid in dautREF : cMatch += 2 # 1st bit = parent found using References
+                        self.matchBy[archive] = cMatch
+                        status = 0
+                        return key 
+        if self.debug > 1 : print('analyzeCUF.findParent FAILURE no parent found for archive',archive)       
         return None
         
     def matchSubjects(self,parentSubject,dautSubject):
@@ -369,7 +433,13 @@ class analyzeCUF():
         match = parentSubject in dautSubject
         OR
         match = partial match of pS and dS when bogus string in both pS and dS
+
+        return False if either pS or dS is zero length, but not both. 
         '''
+        lP,lD = len(parentSubject),len(dautSubject)
+        if (lP==0 and lD>0) or (lP>0 and lD==0) : return False
+            
+        
         if parentSubject in dautSubject : return True
             
         bogus = '?='
@@ -379,6 +449,44 @@ class analyzeCUF():
                 if parentSubject[:jp] in dautSubject[:jd]: return True
                     
         return False
+    def getThreadSpan(self,Threads):
+        '''
+        return dict spanT where 
+        spanT[archive0] = [span, archiveN]
+        span of Thread = spanT[archive0] = span between messages archive0 and archiveN. 
+        Of all the messages in a thread, the largest span is between archive0 and archiveN. 
+        archive0 is the key for Threads
+
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+
+        '''
+        spanT = {}
+        for archive0 in Threads:
+            spanT[archive0] = [0, archive0]
+            for tupl in Threads[archive0][1]:
+                archive = tupl[0]
+                span = self.getSpan(archive0,archive)
+                if span>spanT[archive0][0] :
+                    spanT[archive0] = [span,archive]
+        return spanT
+    def getThreadDuration(self,Threads,archiveDates):
+        '''
+        return dict durationT where
+        durationT[archive0] = maximum time difference in days between messages in thread specified by archive0
+
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+
+        '''
+        durationT = {}
+        for archive0 in Threads:
+            t0 = archiveDates[archive0]
+            durationT[archive0] = 0.
+            for tupl in Threads[archive0][1]:
+                archive = tupl[0]
+                t = archiveDates[archive]
+                duration = abs( (t-t0).total_seconds()/60./60./24. )
+                durationT[archive0] = max(durationT[archive0],duration)
+        return durationT
     def processFiles(self,files):
         '''
         process files. Each file is one entry in the archive.
@@ -1091,7 +1199,7 @@ class analyzeCUF():
         '''
         return key of Threads such that msgid of Threads[key] is found in irt (=In-Response-To), 
         if nothing in irt, then try ref (=References)
-        archive is the message identifier that contains ref
+        archive is the message identifier that contains irt and ref
         check if there are multiple keys that satisfy this requirement.
         Note that input subj is only used for print statements and not or locating the reference of the input message. 
 
@@ -1106,11 +1214,13 @@ class analyzeCUF():
         for key in self.msgOrder: # 
             if key in Threads:
                 keysInSearch.append(key)
-                for tupl in Threads[key][1]:
+                for I,tupl in enumerate(Threads[key][1]):
                     archN,msgidN,irtN,fromN = tupl
                     if msgidN in irt:
+                        if self.debug > 1 : print('analyzeCUF.locateRef irt match! tupl index=',I,'msgidN',msgidN)
                         if key not in irtMatchedKeys: irtMatchedKeys.append(key)
                     if msgidN in ref:
+                        if self.debug > 1 : print('analyzeCUF.locateRef ref match! tupl index=',I,'msgidN',msgidN)
                         if key not in refMatchedKeys: refMatchedKeys.append(key)
         if self.debug > 2 : print('analyzeCUF.locateRef: keysInSearch',keysInSearch)
         
@@ -1135,6 +1245,7 @@ class analyzeCUF():
         if key is not None:
             if matchby[0]=='irt' : self.matchBy[archive] = 11
             if matchby[0]=='ref' : self.matchBy[archive] = 12            
+        if self.debug > 1 : print('analyzeCUF.locateRef: input archive',archive,'output key',key)
         return key
     def writeMsgs(self,archiveList,output='msgs_to_study.log'):
         '''
