@@ -36,11 +36,13 @@ class mpl_interface():
         if dx is None, then hist has nbin bins
         if nbin is None, then hist has nbin = (xhi-xlo)/dx bins
         '''
+        #print('mpl_interface.histo Inputs xlo,xhi,nbin,dx,xlabel,ylabel,title',xlo,xhi,nbin,dx,xlabel,ylabel,title)
         if nbin is None:
             if dx is None: dx = 1.
             nbin = int((xhi-xlo)/dx)
         hist,edges = numpy.histogram(Y,bins=nbin,range=(xlo,xhi))
         w = edges[1]-edges[0]
+        #print('mpl_interface.histo edges[0],edges[1],edges[:-1]',edges[0],edges[1],edges[-1],'w,nbin,dx',w,nbin,dx,'hist[0],hist[1],hist[2]',hist[0],hist[1],hist[2])
 
         plt.bar(edges[:-1],hist,width=w)
         ylo,yhi = 0.,max(hist)*1.05

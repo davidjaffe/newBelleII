@@ -193,6 +193,7 @@ class analyzeCUF():
         return ad,name
     def fillADB(self,whoFrom):
         '''
+        return best email address and 
         fill address database and return best email address based on content of 'From' field
         best email address is the first email address encountered for a user with multiple 'From' field content
         self.ADB = {} is the Address DataBase where
@@ -203,10 +204,12 @@ class analyzeCUF():
         when trying to associate different whoFrom content, 
         require a match of the addresses or the names or the part of the address before '@'
         '''
+        LOCALDEBUG = False
+        
         adOut = None # should get assigned below
         ad,name = self.getAddr(whoFrom)
         adB = ad.split('@')[0]
-        if self.debug > 2 : print('analyzeCUF.fillADB input whoFrom,ad,name,adB',whoFrom,ad,name,adB,'len(self.ADB)',len(self.ADB))
+        if (self.debug > 2) or LOCALDEBUG : print('analyzeCUF.fillADB input whoFrom',whoFrom,'ad',ad,'name',name,'adB',adB,'len(self.ADB)',len(self.ADB))
         if ad in self.ADB:
             adOut = ad
             found = False
@@ -235,7 +238,7 @@ class analyzeCUF():
         if adOut is None:
             print('analyzeCUF.fillADB ERROR adOut',adOut,'whoFrom',whoFrom,'ad,name',ad,name,'self.ADB follows\n',self.ADB)
             sys.exit('analyzeCUF.fillADB ERROR adOut in None')
-        if self.debug > 2 : print('analyzeCUF.fillADB output whoFrom,adOut',whoFrom,adOut,'len(self.ADB)',len(self.ADB))
+        if (self.debug > 2) or LOCALDEBUG : print('analyzeCUF.fillADB output whoFrom',whoFrom,'adOut',adOut,'len(self.ADB)',len(self.ADB))
         return adOut
     def reportADB(self):
         '''
@@ -268,33 +271,36 @@ class analyzeCUF():
                 threadIds[key] = words.strip() # remove leading, trailing spaces
         threadHead = (threadIds[IRT] is blank) and (threadIds[REF] is blank)
         return threadIds,threadHead
-    def buildThreads(self,files):
+    def buildThreads(self,files,archiveDates):
         '''
         return dict Threads
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
 
         Do a better job of building threads from ordered list of files
+        and archiveDates
+        archiveDates[archive] = datetime object of message specified by archive
 
         Define start of thread as a message that has no In-Reply-To or References field.
+        
 
-        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+        For diagnostics in this module, define
 
         spanT[archive0] = [span, archiveN]
         span of Thread = spanT[archive0] = span between messages archive0 and archiveN. 
         Of all the messages in a thread, the largest span is between archive0 and archiveN. 
 
-        archiveDates[archive] = datetime object of message specified by archive
-
         durationT[archive0] = maximum time difference in days between messages in thread specified by archive0
         
         '''
+
+        LOCALDEBUG = False
 
         self.useLocateRef = False
         
         Threads = {}
 
-        archiveDates = self.extractMsg.getArchiveDates(files)  # NOTE: THIS IS ALSO CREATED IN analyzeCUF.mainMAIN
-
         # build initial threads while filling address database
+        # change From field to use entry from address database
         for fn in files:
             fileIds,threadStart = self.threadIdentifiers(fn)
             archive = self.getMessageN(fn) # = yyyy-mm/msg#
@@ -302,7 +308,9 @@ class analyzeCUF():
             msgid   = fileIds['Message-id']
             irt     = fileIds['In-Reply-To']
             whoFrom = fileIds['From']
-            whoFrom = self.fillADB(whoFrom) 
+            whoFrom = self.fillADB(whoFrom)
+            fileIds['From'] = whoFrom
+            if LOCALDEBUG : print('analyzeCUF.buildThreads archive',archive,'whoFrom',whoFrom)
             ref     = fileIds['References']
 
             if  threadStart :
@@ -321,10 +329,20 @@ class analyzeCUF():
                 else:
                     Threads[key][1].append( (archive,msgid,irt,whoFrom) )
 
+                    
         # merge neighboring threads based on identical subjects
         # (the mailing list seems to do this for threads that can't be id'ed with Message-ID and References/In-Reply-To)
-                        
+        if LOCALDEBUG :
+            print('analyzeCUF.buildThreads BEFORE MERGE')
+            for archive in self.msgOrder:
+                if archive in Threads:
+                    print('analyzeCUF.buildThreads archive',archive,'Threads[archive]',Threads[archive])
+
+        self.checkThreads('before merge',Threads)
+                    
         Threads = self.mergeNeighbors(Threads)
+
+        self.checkThreads('after merge',Threads)
 
         durationT = self.getThreadDuration(Threads,archiveDates)
         spanT = self.getThreadSpan(Threads)
@@ -341,6 +359,7 @@ class analyzeCUF():
         lastA,lastS = None,None
         for archive in self.msgOrder:
             if archive in Threads:
+                #if LOCALDEBUG : print('analyzeCUF.buildThreads archive',archive,'Threads[archive]',Threads[archive])
                 Subject = Threads[archive][0]
                 if lastA is not None:
                     if self.matchSubjects(Subject,lastS):
@@ -354,10 +373,10 @@ class analyzeCUF():
         # sort threads in descending order of duration
         spanT_desc = sorted(spanT, key=spanT.get, reverse=True)
         durationT_desc = sorted(durationT, key=durationT.get, reverse=True)
-        nLarge = 25
+        nLarge = 10
         # for nLarge largest durations,
         # how is largest span identified, by msgid and/or irt?
-        print('\n analyzeCUF.buildThreads',nLarge,'threads in descending order of duration')
+        if nLarge>0 : print('\n analyzeCUF.buildThreads',nLarge,'threads in descending order of duration')
         for key in durationT_desc[:nLarge]:
             span,archiveN = spanT[key]
             duration = durationT[key]
@@ -368,6 +387,8 @@ class analyzeCUF():
                     msgid,irt = daughter[1],daughter[2]
                     break
             print('analyzeCUF.buildThreads archive',key,'span',span,'duration(days) {0:.1f}'.format(duration),'archiveN',archiveN,'matchby',matchby)#,'msgid',msgid,'irt',irt)
+
+            
         print('\nanalyzeCUF.buildThreads Matching frequencies')
         freq = {x:[y for y in self.matchBy.values()].count(x) for x in self.matchBy.values()}
         for j in sorted(freq):
@@ -375,6 +396,23 @@ class analyzeCUF():
             if j in self.matchByDescrip : descrip = self.matchByDescrip[j]
             print('analyzeCUF.buildThreads matchBy',j,descrip,'frequency',freq[j])
         return Threads
+    def checkThreads(self,words,Threads):
+        '''
+        check integrity of thread creation
+        such as duplicated messages in a thread
+        '''
+        header = 'analyzeCUF.checkThreads ' + words
+        N = 0
+        for archive in self.msgOrder:
+            for archive in Threads:
+                arch = [a[0] for a in Threads[archive][1]]
+                freq = {x:arch.count(x) for x in arch}
+                if not( min(freq.values())==max(freq.values())==1 ) :
+                    N += 1
+                    if N==1 : print('\n',header)
+                    print('analyzeCUF.checkThreads ERROR? archive',archive,'frequencies for each message in thread follow. freq',freq)
+        print(header,'Found',N,'errors.')
+        return
     def findParent(self,archive,fileIds, Threads):
         '''
         Return key of Threads that is parent of archive,fileIds;
@@ -415,7 +453,7 @@ class analyzeCUF():
                         print('analyzeCUF.findParent parentSubject',parentSubject,'len(parentSubject)',len(parentSubject))
                     if self.matchSubjects(parentSubject,dautSubject):
                         if self.debug > 1 : print('analyzeCUF.findParent SUCCESS parentSubject matches dautSubject')
-                        Threads[key][1].append( daughter )
+                        #Threads[key][1].append( daughter )
                         cMatch = 0
                         if parentMsgid in dautIRT : cMatch += 1 # 0th bit = parent found using In-Reply-TO
                         if parentMsgid in dautREF : cMatch += 2 # 1st bit = parent found using References
@@ -694,6 +732,9 @@ class analyzeCUF():
         Span of messages in thread
         Threads per month
         '''
+        LOCALDEBUG = False
+
+        
         nFiles = self.nFiles # total number of messages in archive
         nThreads = len(Threads) # total number of threads among messages
         print('\nanalyzeCUF.analyzeThreads',nFiles,'total messages in archive with',nThreads,'threads identified')
@@ -839,10 +880,10 @@ class analyzeCUF():
                         if year not in Reporters: Reporters[year], Responders[year]= [],[]
                         Reporters[year].append(rep)
                         Responders[year].append(res)
-                        if self.debug > 1 : print('analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom)
-                        if self.debug > 1 : print('analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res)
-                if self.debug > 1 : print('analyzeCUF.analyzeThreads Reporters',Reporters)
-            if self.debug > 1 : print('analyzeCUF.analyzeThreads Responders',Responders)
+                        if self.debug > 1 or LOCALDEBUG : print('analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom)
+                        if self.debug > 1 or LOCALDEBUG  : print('analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res)
+                if self.debug > 1 or LOCALDEBUG  : print('analyzeCUF.analyzeThreads Reporters',Reporters)
+            if self.debug > 1 or LOCALDEBUG  : print('analyzeCUF.analyzeThreads Responders',Responders)
 
             ## create pie charts of reporters and responders per year
             ## reporters, responders identified by name in name@address
@@ -934,7 +975,7 @@ class analyzeCUF():
             median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
             title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
             Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True)
-            print('analyzeCUF.analyzeThreads',label,title)
+            print('analyzeCUF.analyzeThreads',label,title,'nbin,x1,x2',nbin,x1,x2)
             self.showOrPlot(label)
             
         # histograms for each issue
@@ -949,7 +990,7 @@ class analyzeCUF():
                 median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
                 title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
                 Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True)
-                print('analyzeCUF.analyzeThreads',label,title)
+                print('analyzeCUF.analyzeThreads',label,title,'nbin,x1,x2',nbin,x1,x2)
                 self.showOrPlot(label)
 
         # plots
@@ -1381,7 +1422,8 @@ class analyzeCUF():
         archiveDates  = self.extractMsg.getArchiveDates(files)
         if self.debug > 2 : print('analyzeCUF.main self.msgOrder',self.msgOrder)
             
-        Threads = self.processFiles(files)
+        #Threads = self.processFiles(files)
+        Threads = self.buildThreads(files,archiveDates)
         
         
         issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads)
@@ -1409,11 +1451,12 @@ if __name__ == '__main__' :
         sys.exit('done testing partialMatchSubject')
 
     
-    testBuildThreads = True
+    testBuildThreads = False
     if testBuildThreads :
         aCUF = analyzeCUF()
         files, aCUF.msgOrder = aCUF.getArchive()
-        aCUF.buildThreads(files)
+        archiveDates = aCUF.extractMsg.getArchiveDates(files)
+        aCUF.buildThreads(files,archiveDates)
         sys.exit('done testing buildThreads')
 
     
