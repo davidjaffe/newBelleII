@@ -11,15 +11,14 @@ import sys,os
 import glob
 import matplotlib.pyplot as plt
 import numpy
+import difflib # used in partialMatchSubject
+import email
+import datetime
 
 import extractMsg   # extracts the email message from a file
 import issues_keyphrases  # classifies threads based on subject and message content
 import mpl_interface # interface to mathplotlib
 import Logger # direct stdout to file & terminal
-
-import email
-
-import datetime
 
 
 class analyzeCUF():
@@ -433,14 +432,17 @@ class analyzeCUF():
         match = parentSubject in dautSubject
         OR
         match = partial match of pS and dS when bogus string in both pS and dS
+        OR
+        match = partial match using criteria of partialMatchSubject
 
         return False if either pS or dS is zero length, but not both. 
         '''
         lP,lD = len(parentSubject),len(dautSubject)
         if (lP==0 and lD>0) or (lP>0 and lD==0) : return False
-            
         
         if parentSubject in dautSubject : return True
+
+        if self.partialMatchSubject(parentSubject,dautSubject) : return True
             
         bogus = '?='
         if bogus in parentSubject and bogus in dautSubject:
@@ -449,6 +451,30 @@ class analyzeCUF():
                 if parentSubject[:jp] in dautSubject[:jd]: return True
                     
         return False
+    def partialMatchSubject(self,s1,s2,inputLevel=0.95):
+        '''
+        return True 
+        if subjects s1 and s2 to match at inputLevel or higher 
+        where match = identical characters in order (additional/missing characters allowed)
+        OR
+        there is a single character difference between s1 and s2
+
+        see https://stackoverflow.com/questions/17904097/python-difference-between-two-strings#17904977
+        '''
+        
+        l1,l2 = len(s1),len(s2)
+        if self.debug > 1 : print('analyzeCUF.partialSubjectMatch l1,s1',l1,s1,'l2,s2',l2,s2)
+        if (l1<=0 or l2<=0) : return False
+        level = min(inputLevel,1.-1.001/float(max(l1,l2)))
+        lboth = 0
+        for s in difflib.ndiff(s1,s2):
+            if s[0]==' ' : lboth += 1
+
+        fmatch = float(lboth)/float(max(l1,l2))
+        Match = (fmatch >= level)
+        if self.debug > 1 :
+            print('analyzeCUF.partialSubjectMatch l1,l2,lboth',l1,l2,lboth,'fmatch {0:.3f} level required {1:.3f}'.format(fmatch,level),'Match=',Match)
+        return Match
     def getThreadSpan(self,Threads):
         '''
         return dict spanT where 
@@ -1370,6 +1396,19 @@ class analyzeCUF():
 
         return
 if __name__ == '__main__' :
+    testpartialMatchSubject = False
+    if testpartialMatchSubject :
+        aCUF = analyzeCUF()
+        s1,s2 = 'grid job copy fais','grid job copy fails'
+        level = 0.93
+        ok = aCUF.partialMatchSubject(s1,s2,level=level)
+        print('ok',ok)
+        s2 = ''
+        ok = aCUF.partialMatchSubject(s1,s2,level=level)
+        print('ok',ok)
+        sys.exit('done testing partialMatchSubject')
+
+    
     testBuildThreads = True
     if testBuildThreads :
         aCUF = analyzeCUF()
