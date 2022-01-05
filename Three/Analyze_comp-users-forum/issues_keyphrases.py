@@ -257,7 +257,7 @@ class issues_keyphrases():
                 print('issues_keyphrases.define Classification of issue#',iname,name,'is UNIQUE.', \
                 'It supersedes subsequent issues.')
         if report:
-            print('\n issues_keyphrases.define Issue definitions.\n Email subject classification uses `systems` and `actions`.\n Email text classification uses `phrases`.')
+            print('\nissues_keyphrases.define Issue definitions.\n Email subject classification uses `systems` and `actions`.\n Email text classification uses `phrases`.')
             for iname, name in enumerate(idictOrder):
                 u = 'not unique'
                 if idict[name][2] : u = 'UNIQUE'
@@ -373,7 +373,10 @@ Failed (15)
         output issues[issue0] = [achive0, archive1, ...]
 
         '''
+        print('\nissues_keyphrases.classifyThreads Begin classification of',len(Threads),'threads.')
+        
         idict, idictOrder = self.define()  # Note that Unclassified issue is added below
+        
         issues = {}         # {issue: [archive0, archive1, ...] } = list of threads for this issue
         thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
         Classified = []     # list of threads classified in >0 issues
@@ -433,7 +436,7 @@ Failed (15)
 
                         
         print('\nissues_keyphrases.classifyThreads',len(Threads),'total threads with', \
-          len(Classified),'successfully classified by email message text')
+          len(Classified),'successfully classified by email message text, after Subject classification.')
         for issue in idictOrder:
             print('issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times')
             
@@ -449,7 +452,7 @@ Failed (15)
                 for key in thread_issues:
                     if len(thread_issues[key])==LEN:
                         Subject = Threads[key][0]
-                        print(key,Subject+":",", ".join(thread_issues[key]))
+                        print(key,Subject+" : ",", ".join(thread_issues[key]))
                         
         ### write messages from unclassified threads to a log file
         ufn = open(self.UNCLASSIFIED_LOG,'w')

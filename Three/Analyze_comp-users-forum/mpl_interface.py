@@ -30,7 +30,7 @@ class mpl_interface():
 
         print('mpl_interface.__init__ completed')
         return
-    def histo(self,Y,xlo,xhi,nbin=None,dx=None,xlabel=None,ylabel=None,title=None,grid=False):
+    def histo(self,Y,xlo,xhi,nbin=None,dx=None,xlabel=None,ylabel=None,title=None,grid=False,logy='liny'):
         '''
         create and fill a histogram with range xlo,xhi and plotted xlo,xhi
         if dx is None, then hist has nbin bins
@@ -42,13 +42,17 @@ class mpl_interface():
             nbin = int((xhi-xlo)/dx)
         hist,edges = numpy.histogram(Y,bins=nbin,range=(xlo,xhi))
         w = edges[1]-edges[0]
-        #print('mpl_interface.histo edges[0],edges[1],edges[:-1]',edges[0],edges[1],edges[-1],'w,nbin,dx',w,nbin,dx,'hist[0],hist[1],hist[2]',hist[0],hist[1],hist[2])
+        #print('mpl_interface.histo edges[0],edges[1],edges[-1]',edges[0],edges[1],edges[-1],'w,nbin,dx',w,nbin,dx,'hist[0],hist[1],hist[2],hist[-1]',hist[0],hist[1],hist[2],hist[-1])
 
-        plt.bar(edges[:-1],hist,width=w)
-        ylo,yhi = 0.,max(hist)*1.05
-        plt.xlim(xlo,xhi)
-        plt.ylim(ylo,yhi)
+        plt.bar(edges[:-1],hist,width=w, edgecolor='red',align='edge')
         if grid : plt.grid()
+        if logy.lower()=='logy' :
+            plt.yscale('log')
+        else:
+            ylo,yhi = 0.,max(hist)*1.05
+            plt.xlim(xlo,xhi)
+            plt.ylim(ylo,yhi)
+            
         if xlabel is not None: plt.xlabel(xlabel)
         if ylabel is not None: plt.ylabel(ylabel)
         if title is not None: plt.title(title)
@@ -175,21 +179,19 @@ if __name__ == '__main__' :
             title = str(N) + 'wedges. this is the title. it is a very long title. \nand it cannot be used on this experiment because it extends too far'
             TT = mpli.pie(x,labels,title=title)
     
-    testHisto = False
+    testHisto = True
     if testHisto :
-        y = list(range(2,33))
-        y.extend(list(range(1,3)))
-        for x in range(15,24):
-            y.extend(list(range(7,x)))
-        for x in range(8,15):
-            y.extend(list(range(3,x)))
-        Y = numpy.array(y)
-        xlo,xhi = 0.,50.
+        Y = numpy.random.exponential(4.3,100)
+        xlo,xhi = 0.,round(max(Y),False) # round up?
+        xlo,xhi = xlo-0.5,xhi+1.5
         dx = 1.0
         nbin = int((xhi-xlo)/dx)
-        mpli.histo(Y,xlo,xhi,nbin=25,title='25 bins',grid=True)
-        for dx in [1.0, 0.5]:
-            mpli.histo(Y,xlo,xhi,dx=dx,title='bin size is '+str(dx))
+        for ulog in ['liny','logy']:
+            mpli.histo(Y,xlo,xhi,nbin=nbin,title=str(nbin)+' bins',grid=True,logy=ulog)
+            mpli.histo(Y,xlo,xhi,nbin=25,title='25 bins',grid=True,logy=ulog)
+            for dx in [1.0]:
+                mpli.histo(Y,xlo,xhi,dx=dx,title='bin size is '+str(dx),grid=False,logy=ulog)
+        sys.exit('done with testHisto')
 
     testPlot2d = False
     if testPlot2d :
@@ -213,7 +215,7 @@ if __name__ == '__main__' :
         mpli.plot2d(x,y,Z,xlabels=xlabels,ylabels=ylabels,title='Down at the farm')
         sys.exit('end testPlot2d')
     
-    ntest = 1 
+    ntest = 1
     for itest in range(ntest):
         ylabels = ['pony','chicken','dog','duck','goose','penguin','hippo','cat','turkey','kangaroo','wolverine','stegasaurus']
         N = len(ylabels)

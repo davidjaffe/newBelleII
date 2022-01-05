@@ -292,6 +292,7 @@ class analyzeCUF():
         durationT[archive0] = maximum time difference in days between messages in thread specified by archive0
         
         '''
+        print('\nanalyzeCUF.buildThreads Begin building threads from',len(files),'messages.')
 
         LOCALDEBUG = False
 
@@ -351,7 +352,7 @@ class analyzeCUF():
         ##### all threads have been created, the following is for diagnostics
         #####
 
-        print('\nanalyzeCUF.buildThreads DIAGNOSTICS useLocateRef',self.useLocateRef)
+        print('\nanalyzeCUF.buildThreads Begin diagnostics, useLocateRef is',self.useLocateRef)
 
 
         # see if threads need to be merged based on (nearly) identical subjects
@@ -376,7 +377,7 @@ class analyzeCUF():
         nLarge = 10
         # for nLarge largest durations,
         # how is largest span identified, by msgid and/or irt?
-        if nLarge>0 : print('\n analyzeCUF.buildThreads',nLarge,'threads in descending order of duration')
+        if nLarge>0 : print('\nanalyzeCUF.buildThreads List',nLarge,'threads with the longest duration, in descending order of duration')
         for key in durationT_desc[:nLarge]:
             span,archiveN = spanT[key]
             duration = durationT[key]
@@ -384,17 +385,21 @@ class analyzeCUF():
                 if daughter[0]==archiveN:
                     matchby = -1
                     if archiveN in self.matchBy : matchby = self.matchBy[archiveN]
+                    matchDescrip = 'Unknown match'
+                    if matchby in self.matchByDescrip: matchDescrip = self.matchByDescrip[matchby]
                     msgid,irt = daughter[1],daughter[2]
                     break
-            print('analyzeCUF.buildThreads archive',key,'span',span,'duration(days) {0:.1f}'.format(duration),'archiveN',archiveN,'matchby',matchby)#,'msgid',msgid,'irt',irt)
+            print('analyzeCUF.buildThreads archive',key,'span',span,'duration(days) {0:.1f}'.format(duration),'archiveN',archiveN,'matchby',matchby,matchDescrip)
 
             
-        print('\nanalyzeCUF.buildThreads Matching frequencies')
+        print('\nanalyzeCUF.buildThreads Matching frequencies for messages in threads')
         freq = {x:[y for y in self.matchBy.values()].count(x) for x in self.matchBy.values()}
         for j in sorted(freq):
             descrip = 'DESCRIPTION MISSING!'
             if j in self.matchByDescrip : descrip = self.matchByDescrip[j]
             print('analyzeCUF.buildThreads matchBy',j,descrip,'frequency',freq[j])
+
+        print('analyzeCUF.buildThreads Thread building completed')
         return Threads
     def checkThreads(self,words,Threads):
         '''
@@ -962,7 +967,8 @@ class analyzeCUF():
 
         # histograms
         dtMax = None
-        for A,label in zip([msgPerT,spanPerT,deltaTPerT], ['Messages per thread', 'Span of messages in threads',dtLabel]):
+        for A,labelulog in zip([msgPerT,spanPerT,deltaTPerT], zip(['Messages per thread', 'Span of messages in threads',dtLabel],['liny','logy','logy'])):
+            label,ulog = labelulog
             x1 = 0.5
             nbin = max(A)+1
             x2 = float(nbin) + x1
@@ -974,7 +980,7 @@ class analyzeCUF():
             Y = numpy.array(A)
             median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
             title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
-            Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True)
+            Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True,logy=ulog)
             print('analyzeCUF.analyzeThreads',label,title,'nbin,x1,x2',nbin,x1,x2)
             self.showOrPlot(label)
             
@@ -983,13 +989,14 @@ class analyzeCUF():
             A = dTPerT[issue]
             if len(A)>0:
                 label = 'Days btwn earliest,latest msg in thread for '+issue
+                ulog = 'logy'
                 x1 = 0.
                 nbin = 100.
                 x2 = dtMax
                 Y = numpy.array(A)
                 median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
                 title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
-                Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True)
+                Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True,logy=ulog)
                 print('analyzeCUF.analyzeThreads',label,title,'nbin,x1,x2',nbin,x1,x2)
                 self.showOrPlot(label)
 
@@ -1005,7 +1012,7 @@ class analyzeCUF():
             dt = datetime.datetime.strptime(ym,'%Y-%m') # YYYY-MM
             x.append( dt )
         ax = plt.subplot(111)
-        ax.bar(x,y)
+        ax.bar(x,y,width=10.3) # increase width above default(0.8) for visibility
         ax.set_xlim(dtlims)
 
         ax.xaxis_date()
@@ -1032,6 +1039,8 @@ class analyzeCUF():
         thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
         archiveDates[archive] = date as datetime object 
         '''
+        print('\nanalyzeCUF.identifyOpenThreads Identify open threads as threads with a single entry that are not announcements')
+        
         annName = self.issues_keyphrases.announcementsName
 
         openThread = {} # {archive: [Subject, fromWho, datetime, [issues] ] }
@@ -1052,7 +1061,7 @@ class analyzeCUF():
                     openWho.append( whoSent )
                     for issue in issues: openIssue.append( issue )
                     cWhen = datetime.datetime.strftime(when,"%Y-%m-%d %H:%M")
-                    print('analyzeCUF.indentifyOpenThreads archive,whoFrom,Subject,when,issues',archive,whoFrom,Subject,cWhen,', '.join(issues))
+                    print('analyzeCUF.indentifyOpenThreads archive,whoFrom,issues,Subject,when',archive,whoFrom,', '.join(issues),Subject,cWhen)
 
         sWho = set(openWho)
         fWho = [openWho.count(i) for i in sWho]
@@ -1147,7 +1156,7 @@ class analyzeCUF():
 
         dtlims = [datetime.datetime(2017,1,1),datetime.datetime(2022,1,1)]
         ax = plt.subplot(111)
-        ax.bar(x,y)
+        ax.bar(x,y,width=10.)
         ax.set_xlim(dtlims)
 
         ax.xaxis_date()
