@@ -1180,6 +1180,12 @@ class analyzeCUF():
         issueUnique = list same order as issueOrder with True if thread can only be assigned to this issue
 
         SI[archive] = [site, [issue0, issue1, ...] ]
+
+        Also make a 2d plot of grid site vs issue. For 2d plot
+        z = z(ny,nx) with shape (Nrows,Ncolumns) = bin contents
+        x = shape (Ncolums+1) = bin edges
+        y = shape (Nrows+1) = bin edges
+
         '''
 
         SI = {}
@@ -1189,7 +1195,9 @@ class analyzeCUF():
                     if gar in issues[issue] :
                         if gar not in site: SI[gar] = [site, []]
                         SI[gar][1].append( issue )
+
         print('\nanalyzeCUF.correlateGrid')
+        site_has_issue = [] # = [ (site,issue), (site,issue), ...] , this is used to create 2d plot
         output_grid_issues = {}
         for issue,unique in zip(issueOrder,issueUnique):
             if self.debug > 2 : print('analyzeCUF.correlateGrid issue,unique',issue,unique)
@@ -1199,7 +1207,34 @@ class analyzeCUF():
                     if issue in LIST:
                         if site not in output_grid_issues: output_grid_issues[site] = []
                         output_grid_issues[site].append( archive )
+                        site_has_issue.append( (site, issue) )
                         print(archive, site, ', '.join(LIST))
+
+        # make the 2d plot
+        U = list(set([pair[0] for pair in site_has_issue]))
+        issuesForGrid = list(set([pair[1] for pair in site_has_issue]))
+
+        Nifg = len(issuesForGrid) # Ncolumns
+        x = numpy.arange(Nifg+1)
+        xlabels = issuesForGrid
+        Ngs  = len(U) # Nrows
+        y = numpy.arange(Ngs+1)
+        ylabels = U
+        GvI = numpy.zeros(Nifg*Ngs)
+        if self.debug > 1 :
+            print('analyzeCUF.correlateGrid Nifg',Nifg,'Ngs',Ngs,'len(GvI)',len(GvI))
+            print('analyzeCUF.correlateGrid issuesForGrid',issuesForGrid,'\nU',U)
+        
+        for pair in site_has_issue:
+            site,issue = pair
+            ix = issuesForGrid.index(issue)
+            iy = U.index(site)
+            GvI[iy*Nifg+ix] += 1
+        GvI = numpy.reshape(numpy.array(GvI), (Ngs, Nifg) )
+
+        title = 'Grid site vs issue'
+        TITLE = self.mpl_interface.plot2d(x,y,GvI,xlabels=xlabels,ylabels=ylabels,title=title,colorbar=True)
+        self.showOrPlot(TITLE)
                         
         return output_grid_issues
  

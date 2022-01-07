@@ -179,7 +179,7 @@ if __name__ == '__main__' :
     internal = True
     mpli = mpl_interface(internal=internal)
 
-    testPie = True
+    testPie = False
     if testPie :
         # https://stackoverflow.com/questions/25921503/generate-alphanumeric-random-numbers-in-numpy
         A,Z = numpy.array(["a","z"]).view("int32")
@@ -207,8 +207,9 @@ if __name__ == '__main__' :
                 mpli.histo(Y,xlo,xhi,dx=dx,title='bin size is '+str(dx),grid=False,logy=ulog)
         sys.exit('done with testHisto')
 
-    testPlot2d = False
+    testPlot2d = True
     if testPlot2d :
+        ### square 2d plot
         nr = 5+3
         nc = nr
         x = numpy.arange(nc+1)
@@ -220,13 +221,25 @@ if __name__ == '__main__' :
                     z.append( numpy.random.random()*100. )
                 else:
                     z.append( numpy.random.random()*10. )
-        Z = numpy.reshape(numpy.array(z),(nc,nr))
+        Z = numpy.reshape(numpy.array(z),(nr,nc))
         xlabels = ['this is a '+q for q in  ['cow','horse','goat','pig','cat','dog','rat','awk']]
-        ylabels = xlabels
-
-        #print 'x,y,Z',x,y,z
-        
+        ylabels = xlabels[:nr+1]
+        xlabels = xlabels[:nc+1]
         mpli.plot2d(x,y,Z,xlabels=xlabels,ylabels=ylabels,title='Down at the farm')
+
+        ### non-square
+        nr = 3
+        nc = 5
+        x = numpy.arange(nc+1)
+        y = numpy.arange(nr+1)
+        z = []
+        for ir in range(nr):
+            for ic in range(nc):
+                z.append( float(ir)*10 + float(ic) ) #numpy.random.random()*100. )
+        Z = numpy.reshape(numpy.array(z), (nr, nc) )
+        xlabels = ['cat','pig','dog','cow','fly','ant'][:nc]
+        ylabels = ['pot','pan','dish','plate','bucket'][:nr]
+        mpli.plot2d(x,y,Z,xlabels=xlabels,ylabels=ylabels,title='just try this')
         sys.exit('end testPlot2d')
 
     testStackedBar = False
