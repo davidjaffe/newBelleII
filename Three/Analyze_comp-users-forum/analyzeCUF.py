@@ -1070,7 +1070,7 @@ class analyzeCUF():
 
         sIssue = set(openIssue)
         fIssue = [openIssue.count(i) for i in sIssue]
-        title = self.mpl_interface.pie(fIssue,sIssue,title='Open issues by issue')
+        title = self.mpl_interface.pie(fIssue,sIssue,title='Open issues by issue',addValues=True)
         self.showOrPlot(title)
         
                     

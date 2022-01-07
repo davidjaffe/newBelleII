@@ -94,7 +94,7 @@ class mpl_interface():
             print('mpl_interface.stackedBarChart ERROR len(xlabels)',N,'inconsistent with y.shape[1]',y.shape[1],'title',title)
             sys.exit('mpl_interface.stackedBarChart ERROR Input array length mismatch')
         ind = numpy.arange(N)
-        width = 0.35
+        width = 0.35 + 0.15
 
         Nc = y.shape[0]
 
@@ -123,12 +123,14 @@ class mpl_interface():
         yma = f*max(bottom)
         #print 'max(bottom)',max(bottom),'yma',yma
         plt.ylim(0.,yma)
-        plt.xlim(ind[0]-width/2,ind[-1]+3./2.*width)
-        plt.xticks(ind+width/2., xlabels)
+        left,right = plt.xlim(ind[0]-width,ind[-1]+width)
+        #print('mpl_interface.stackedBarChart','left',left,'right',right)                  
+        plt.xticks(ind, xlabels)
+        loc,labs = plt.xticks()
+        #print('mpl_interface.stackedBarChart','loc',loc,'labs',labs)
         if norm : plt.yticks(numpy.arange(0,f,0.10))
         P = [a[0] for a in p]
         plt.legend( P, ylabels,loc='best',ncol=3, borderaxespad=0., borderpad=.2, handletextpad=0.2, columnspacing=0.4)
-#        plt.legend( P, ylabels, bbox_to_anchor=(0., 1.02, 1., .102/5), loc=3, ncol=2+2, mode="expand", borderaxespad=0.)
         Title = title
         if norm: Title += ' (Norm to unity)'
         plt.title(Title)
@@ -150,15 +152,23 @@ class mpl_interface():
             c1,c2 = colors[:n//2],colors[n//2:]
             colors = [val for pair in zip(c1,c2) for val in pair]
         return colors
-    def pie(self,x,labels,title=None):
+    def pie(self,x,labels,title=None,addValues=False):
         '''
         plot pie chart
         with title positioned to avoid wedge labels
         and distinctive wedge colors
+        if addValues is True, then write the value of x in the appropriate wedge
+
+        autopct usage cribbed from 
+        https://stackoverflow.com/questions/6170246/how-do-i-use-matplotlib-autopct
         '''
         Nc = len(x)
         colors = self.nicePallet(Nc)
-        plt.pie(x,labels=labels,colors=colors,labeldistance=1.05)
+        Labels = labels
+        if addValues:
+            plt.pie(x,labels=Labels,colors=colors,labeldistance=1.05,autopct=lambda p : '{:.0f}'.format(p*sum(x)/100.))
+        else:
+            plt.pie(x,labels=Labels,colors=colors,labeldistance=1.05)
         if title is not None : plt.title( title, loc='left', bbox={'pad':5, 'facecolor':'none'} )
         if self.internal : plt.show()
         return title
@@ -169,17 +179,21 @@ if __name__ == '__main__' :
     internal = True
     mpli = mpl_interface(internal=internal)
 
-    testPie = False
+    testPie = True
     if testPie :
-        for N in [25, 35, 45, 55, 101]:
+        # https://stackoverflow.com/questions/25921503/generate-alphanumeric-random-numbers-in-numpy
+        A,Z = numpy.array(["a","z"]).view("int32")
+        LEN = 4
+        for N in [10, 25, 35, 45, 55, 101]:
 
             k = [random.randint(1,30) for x in range(N)]
-            l =  [str(x) for x in k]
+            l = numpy.random.randint(low=A,high=Z,size=N*LEN,dtype="int32").view(f"U{LEN}") # [str(x) for x in k]
             x,labels = k,l
             title = str(N) + 'wedges. this is the title. it is a very long title. \nand it cannot be used on this experiment because it extends too far'
-            TT = mpli.pie(x,labels,title=title)
+            addValues = N<=25
+            TT = mpli.pie(x,labels,title=title,addValues=addValues)
     
-    testHisto = True
+    testHisto = False
     if testHisto :
         Y = numpy.random.exponential(4.3,100)
         xlo,xhi = 0.,round(max(Y),False) # round up?
@@ -214,29 +228,35 @@ if __name__ == '__main__' :
         
         mpli.plot2d(x,y,Z,xlabels=xlabels,ylabels=ylabels,title='Down at the farm')
         sys.exit('end testPlot2d')
-    
-    ntest = 1
-    for itest in range(ntest):
-        ylabels = ['pony','chicken','dog','duck','goose','penguin','hippo','cat','turkey','kangaroo','wolverine','stegasaurus']
-        N = len(ylabels)
-        ylabels = ['this is a '+q for q in ylabels]
-        x = [10., 20., 30., 40., 50.]
-        xlabels = [str(a) for a in x]
-        Nx= len(x)
-        Y = None
-        for i in range(N):
-            a = numpy.random.randint(1,11,size=Nx)
-            if Y is None:
-                Y = numpy.array(a)
-            else:
-                Y = numpy.append(Y,a,axis=0)
 
-        #print 'Y',Y
-        Y = numpy.reshape(Y, (N, Nx) )
-        #print 'Y',Y
-        title = 'this is an example'
-        mpli.stackedBarChart(Y,xlabels,ylabels,title,norm=False)
-        mpli.stackedBarChart(Y,xlabels,ylabels,title,norm=True)
+    testStackedBar = False
+    ntest = -1
+    if testStackedBar :
+        ntest = 2
+        for itest in range(ntest):
+            ylabels = ['pony','chicken','dog','duck','goose','penguin','hippo','cat','turkey','kangaroo','wolverine','stegasaurus']
+            N = len(ylabels)
+            ylabels = ['this is a '+q for q in ylabels]
+            x = [10., 20., 30., 40., 50.]
+            if itest>0: x.extend( [60., 70., 80.] )
+            xlabels = [str(a) for a in x]
+            Nx= len(x)
+            Y = None
+            for i in range(N):
+                a = numpy.random.randint(1,11,size=Nx)
+                if Y is None:
+                    Y = numpy.array(a)
+                else:
+                    Y = numpy.append(Y,a,axis=0)
+
+            #print 'Y',Y
+            Y = numpy.reshape(Y, (N, Nx) )
+            #print 'Y',Y
+            title = 'this is an example'
+            mpli.stackedBarChart(Y,xlabels,ylabels,title,norm=False)
+            mpli.stackedBarChart(Y,xlabels,ylabels,title,norm=True)
+        sys.exit('end testStackedBar')
+
 
     listParts = False
     if listParts:
