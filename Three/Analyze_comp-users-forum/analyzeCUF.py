@@ -1103,12 +1103,12 @@ class analyzeCUF():
                 plt.plot(x,y,color=colors[iy%3],marker=markers[iy%3])
 
         plt.ylim(-1.,len(descending)+1)
-        yt = [float(q)+0.5 for q in range(len(descending))]
+        yt = [float(q)+0.5*0 for q in range(len(descending))]
         plt.yticks(yt, descending)
         plt.xlim(datetime.datetime(2017,1,1),datetime.datetime(2022,1,1))
         plt.title(title)
 ##        plt.gca().set_aspect(5) ### tall narrow plot
-
+        fig.tight_layout() ### solves the problem of the ylabels falling off the left side
         plt.grid()
         self.showOrPlot(title)
 
@@ -1129,8 +1129,8 @@ class analyzeCUF():
                     x.append( archiveDates[archive] )
                     y.append( float(iy) )
                 plt.plot(x,y,color=colors[iy%3],marker=markers[iy%3])
-        plt.ylim(0.,len(countries)+1)
-        yt = [float(q)+0.5 for q in range(len(countries))]
+        plt.ylim(-1.,len(countries)+1)
+        yt = [float(q)+0.5*0 for q in range(len(countries))]
         plt.yticks(yt, countries)
         plt.xlim(datetime.datetime(2017,1,1),datetime.datetime(2022,1,1))
         plt.title(title)

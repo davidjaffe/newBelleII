@@ -238,7 +238,7 @@ if __name__ == '__main__' :
                 z.append( float(ir)*10 + float(ic) ) #numpy.random.random()*100. )
         Z = numpy.reshape(numpy.array(z), (nr, nc) )
         xlabels = ['cat','pig','dog','cow','fly','ant'][:nc]
-        ylabels = ['pot','pan','dish','plate','bucket'][:nr]
+        ylabels = ['various types of potted plants','pan-fried','soap dish','plate of shrimp, or just plate','bucket of slop'][:nr]
         mpli.plot2d(x,y,Z,xlabels=xlabels,ylabels=ylabels,title='just try this')
         sys.exit('end testPlot2d')
 
