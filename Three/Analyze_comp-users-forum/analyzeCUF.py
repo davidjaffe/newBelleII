@@ -49,14 +49,18 @@ class analyzeCUF():
 
         print('analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile,'now',self.now)
 
-        self.extractMsg = extractMsg.extractMsg(debug=debug)
-        self.issues_keyphrases = issues_keyphrases.issues_keyphrases(debug=debug,now=self.now)
-        self.mpl_interface = mpl_interface.mpl_interface()
 
         self.DATA_DIR = 'DATA/'
+        self.DATA_DIR = 'DATA202201/'  # add 1feb2022
 
         ###self.DATA_DIR = 'TESTDATA/' #### TESTING ONLY. create link to a subset of files in DATA/ for testing
         ###self.debug    = 2 ############## TESTING ONLY
+
+        prefix = self.DATA_DIR + 'comp-users-forum'
+        self.extractMsg = extractMsg.extractMsg(debug=debug,prefix=prefix)
+        self.issues_keyphrases = issues_keyphrases.issues_keyphrases(debug=debug,now=self.now,prefix=prefix)
+        self.mpl_interface = mpl_interface.mpl_interface()
+
 
         self.MLname = 'comp-users-forum'
         
@@ -1289,21 +1293,28 @@ class analyzeCUF():
 
         Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
         '''
+        specialDebug = 2
         newThreads = {}
         lastA,lastSubject = None,None
         for archive in self.msgOrder:
             if archive in Threads:
-                if self.debug > 2 : print('ananlyzeCUF.mergeNeighbors archive,lastA',archive,lastA)
                 Subject = Threads[archive][0]
+                if self.debug > specialDebug : print('ananlyzeCUF.mergeNeighbors archive,lastA',archive,lastA,'Subject,lastSubject',Subject,lastSubject)
+                new = False
                 if lastA is None:
                     newThreads[archive] = Threads[archive]
+                    new = True
                 else:
                     if lastSubject==Subject:
                         newThreads[lastA][1].extend( Threads[archive][1] )
+                        if self.debug > specialDebug : print('analyzeCUF.mergeNeighbors merge archive',archive,'into lastA',lastA)
                     else:
                         newThreads[archive] = Threads[archive]
-                lastA = archive
-                lastSubject = Subject
+                        if self.debug > specialDebug : print('analyzeCUF.mergeNeighbors: start newThread archive',archive)
+                        new = True
+                if new : 
+                    lastA = archive
+                    lastSubject = Subject
         print('analyzeCUF.mergeNeighbors',len(Threads),'initial threads and',len(newThreads),'after merge. So',len(Threads)-len(newThreads),'were merged.')
         return newThreads                        
     def locateRef(self,Threads,irt,ref,archive,subj):

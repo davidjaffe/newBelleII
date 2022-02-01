@@ -15,7 +15,7 @@ import itertools
 
 
 class issues_keyphrases():
-    def __init__(self,debug=0,now='groundhogday'):
+    def __init__(self,debug=0,now='groundhogday',prefix=None):
         self.debug = debug
         self.now = now
 
@@ -24,7 +24,7 @@ class issues_keyphrases():
         self.ignoreThese = [x.lower() for x in ignoreThese]
 
 
-        self.extractMsg = extractMsg.extractMsg()
+        self.extractMsg = extractMsg.extractMsg(prefix=prefix)
 
         Udir = 'UNCLASSIFIED/'
         if not os.path.exists(Udir) : os.makedirs(Udir) 
@@ -268,6 +268,12 @@ class issues_keyphrases():
                 phrases = idict[name][1][0]
                 print('phrases: `'+'` `'.join(phrases)+'`')
             print('')
+
+            print('\nissues_keyphrase.define Latex-compatible table for issue definitions')
+            for iname,name in enumerate(idictOrder):
+                print('{0} & {1} & {2} \\'.format(iname,idict[name][2],name))
+            print('')
+      
 
             
 

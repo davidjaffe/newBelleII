@@ -22,7 +22,7 @@ class extractMsg():
         self.badKeys = {}
         self.dirPrefix = prefix
 
-        print('extractMsg.__init__ completed')
+        print('extractMsg.__init__ completed. self.dirPrefix',self.dirPrefix)
         return
     def getMessageFromFile(self,fn):
         '''
