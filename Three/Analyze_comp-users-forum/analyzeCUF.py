@@ -50,8 +50,15 @@ class analyzeCUF():
         print('analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile,'now',self.now)
 
 
-        self.DATA_DIR = 'DATA/'
+        # Specify input data directory
+        self.DATA_DIR = 'DATA/'        # cleverly named original data
         self.DATA_DIR = 'DATA202201/'  # add 1feb2022
+
+        # set default date limits for plots.
+        # The limits should be reset in getArchive
+        self.plotDateLimits = [datetime.datetime(2017,1,1), datetime.datetime(2030,12,31)]
+        dL = [x.strftime('%Y%m%d') for x in self.plotDateLimits]
+        print('analyzeCUF.__init__ default date limits in plots',dL[0],dL[1])
 
         ###self.DATA_DIR = 'TESTDATA/' #### TESTING ONLY. create link to a subset of files in DATA/ for testing
         ###self.debug    = 2 ############## TESTING ONLY
@@ -96,11 +103,15 @@ class analyzeCUF():
         self.matchBy = {} # used by buildThreads. filled in findParent, locateRef
         self.matchByDescrip = {0:'no match',1:'IRT match',2:'REF match',3:'IRT & REF match',11:'IRT match by locateRef',12:'REF match by locateRef'}
 
+        print('analyzeCUF.__init__ Completed')
         return
     def getArchive(self):
         '''
         return ordered list of files in archive and ordered list of message numbers
         use sorted to make sure DATA/comp-users-forum_2021-07/10 is after DATA/comp-users-forum_2021-07/2
+
+        Also set date limits to be used in plots. 
+        Limits are set to be 3 months before and after the earliest and lastest message, resp.
         '''
         files = glob.glob(self.DATA_DIR + '*/*')
         files.sort()
@@ -109,6 +120,15 @@ class analyzeCUF():
         for fn in f:
             msgN = self.getMessageN(fn)
             msgOrder.append(msgN)
+            
+        limits = [ msgOrder[0][:7],msgOrder[-1][:7] ]
+        dtlimits = [datetime.datetime.strptime(x,'%Y-%m') for x in limits]
+        threeMonths = datetime.timedelta(days=91) # can't use months or years
+       
+        self.plotDateLimits = [dtlimits[0]-threeMonths, dtlimits[1]+threeMonths]
+        dL = [x.strftime('%Y%m%d') for x in self.plotDateLimits]
+        print('analyzeCUF.getArchive Set date limits in plots',dL[0],dL[1])
+            
         return f,msgOrder
     def getMessageN(self,fn):
         '''
@@ -825,6 +845,21 @@ class analyzeCUF():
                 iByY[year][I] += 1
                 iByY['AllYears'][I] += 1
 
+        # pie charts for all issues regardless of year
+        if self.debug > 2 : print('analyzeCUF.analyzeThreads iByY["AllYears"]',iByY["AllYears"])
+        for post,addValues in zip(['',' enumerated'],[False,True]):
+            Title = self.mpl_interface.pie(iByY['AllYears'],issueOrder,title='All issues'+post,addValues=addValues)
+            self.showOrPlot(Title)
+        countsNonU,countsNoA = [],[]
+        for n,issue in zip(iByY['AllYears'],issueOrder):
+            if issue in nonUniqueOrder: countsNonU.append( n )
+            if issue in issueOrderNoAnnouncement : countsNoA.append( n )
+        for post,addValues in zip(['',' enumerated'],[False,True]):
+            Title = self.mpl_interface.pie(countsNonU,nonUniqueOrder,title='All non-unique issues'+post,addValues=addValues)
+            self.showOrPlot(Title)
+            Title = self.mpl_interface.pie(countsNoA,issueOrderNoAnnouncement,title='All issues except Announcements'+post,addValues=addValues)
+            self.showOrPlot(Title)
+                
         rows = []
         for I,issue in enumerate(issueOrder):
             onerow = []
@@ -871,7 +906,9 @@ class analyzeCUF():
 
 
             print('\nanalyzeCUF.analyzeThreads by reporter and responder.',exclWords)
+            allY = 'allYears'
             Reporters, Responders = {}, {}
+            Reporters[allY],Responders[allY] = [],[]
             for archive in self.msgOrder:
                 if archive in Threads:
                     OK = True
@@ -889,10 +926,13 @@ class analyzeCUF():
                         if year not in Reporters: Reporters[year], Responders[year]= [],[]
                         Reporters[year].append(rep)
                         Responders[year].append(res)
+                        Reporters[allY].append(rep)
+                        Responders[allY].append(res)
                         if self.debug > 1 or LOCALDEBUG : print('analyzeCUF.analyzeThreads archive',archive,'whoFrom',whoFrom)
                         if self.debug > 1 or LOCALDEBUG  : print('analyzeCUF.analyzeThreads archive',archive,'Reporter,Responder',rep,res)
-                if self.debug > 1 or LOCALDEBUG  : print('analyzeCUF.analyzeThreads Reporters',Reporters)
-            if self.debug > 1 or LOCALDEBUG  : print('analyzeCUF.analyzeThreads Responders',Responders)
+            if self.debug > 1 or LOCALDEBUG  :
+                print('analyzeCUF.analyzeThreads Reporters',Reporters)
+                print('analyzeCUF.analyzeThreads Responders',Responders)
 
             ## create pie charts of reporters and responders per year
             ## reporters, responders identified by name in name@address
@@ -901,6 +941,9 @@ class analyzeCUF():
             for year in Reporters:
                 dictReporters[year] = {i:Reporters[year].count(i) for i in Reporters[year]}
                 dictResponders[year]= {i:Responders[year].count(i) for i in Responders[year]}
+            if self.debug > 2:
+                print('analyzeCUF.analyzeThreads',allY,'dictReporters[allY]',dictReporters[allY])
+                print('analyzeCUF.analyzeThreads',allY,'dictResponders[allY]',dictResponders[allY])
             for year in sorted(dictReporters):
                 for name,DICT in zip(['Reporters','Responders'], [dictReporters,dictResponders] ):
                     title = '{} {} {}'.format(name,year,exclWords)
@@ -914,7 +957,8 @@ class analyzeCUF():
                         else:
                             labels.append( 'None' )
                             counts.append(v)
-                    self.mpl_interface.pie(counts,labels=labels,title=title)
+                    if self.debug > 2: print('analyzeCUF.analyzeThreads year',year,'name',name,'counts',counts,'labels',labels,'title',title)
+                    self.mpl_interface.pie(counts,labels=labels,title=title,startangle=45)
                     self.showOrPlot(title)
 
                 if self.debug > 1 :
@@ -1007,23 +1051,29 @@ class analyzeCUF():
         # plots
         title = 'Threads per month'
         x,y = [],[]
-        xlims = [ sorted(tPerM)[0], sorted(tPerM)[-1] ]
-        xlims[0] = xlims[0][:5]+'01'
-        xlims[1] = xlims[1][:5]+'12'
-        dtlims = [datetime.datetime.strptime(q,'%Y-%m') for q in xlims]
         for ym in sorted(tPerM):
             y.append( tPerM[ym] )
             dt = datetime.datetime.strptime(ym,'%Y-%m') # YYYY-MM
             x.append( dt )
         ax = plt.subplot(111)
         ax.bar(x,y,width=10.3) # increase width above default(0.8) for visibility
-        ax.set_xlim(dtlims)
+        ax.set_xlim(self.plotDateLimits)
 
         ax.xaxis_date()
         ax.set_title(title)
         ax.figure.autofmt_xdate(rotation=80)
         plt.grid()
         
+        self.showOrPlot(title)
+
+        title = 'Threads per week'
+        week = datetime.timedelta(days=7)
+        bins = numpy.arange(self.plotDateLimits[0],self.plotDateLimits[1],week)
+        frq,edges = numpy.histogram(list(archiveDates.values()),bins=bins)
+        plt.bar(edges[:-1],frq,width=7, edgecolor='blue',align='edge')
+        plt.grid()
+        plt.title(title)
+        plt.tick_params(axis='x',labelrotation=80.)
         self.showOrPlot(title)
                 
         return
@@ -1109,7 +1159,7 @@ class analyzeCUF():
         plt.ylim(-1.,len(descending)+1)
         yt = [float(q)+0.5*0 for q in range(len(descending))]
         plt.yticks(yt, descending)
-        plt.xlim(datetime.datetime(2017,1,1),datetime.datetime(2022,1,1))
+        plt.xlim(self.plotDateLimits)
         plt.title(title)
 ##        plt.gca().set_aspect(5) ### tall narrow plot
         fig.tight_layout() ### solves the problem of the ylabels falling off the left side
@@ -1136,7 +1186,7 @@ class analyzeCUF():
         plt.ylim(-1.,len(countries)+1)
         yt = [float(q)+0.5*0 for q in range(len(countries))]
         plt.yticks(yt, countries)
-        plt.xlim(datetime.datetime(2017,1,1),datetime.datetime(2022,1,1))
+        plt.xlim(self.plotDateLimits)
         plt.title(title)
 
         plt.grid()
@@ -1158,7 +1208,7 @@ class analyzeCUF():
             dt = datetime.datetime.strptime(ym,'%Y-%m') # YYYY-MM
             x.append( dt )
 
-        dtlims = [datetime.datetime(2017,1,1),datetime.datetime(2022,1,1)]
+        dtlims = self.plotDateLimits
         ax = plt.subplot(111)
         ax.bar(x,y,width=10.)
         ax.set_xlim(dtlims)
