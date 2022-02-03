@@ -321,6 +321,8 @@ class analyzeCUF():
         Of all the messages in a thread, the largest span is between archive0 and archiveN. 
 
         durationT[archive0] = maximum time difference in days between messages in thread specified by archive0
+        firstLastT[archive0] = [t0,tmax] = [time of archive0, maximum time among all messages in thread]
+
         
         '''
         print('\nanalyzeCUF.buildThreads Begin building threads from',len(files),'messages.')
@@ -376,7 +378,7 @@ class analyzeCUF():
 
         self.checkThreads('after merge',Threads)
 
-        durationT = self.getThreadDuration(Threads,archiveDates)
+        durationT,firstLastT = self.getThreadDuration(Threads,archiveDates)
         spanT = self.getThreadSpan(Threads)
                         
         #####
@@ -385,7 +387,19 @@ class analyzeCUF():
 
         print('\nanalyzeCUF.buildThreads Begin diagnostics, useLocateRef is',self.useLocateRef)
 
-
+        # list all threads created
+        # archive #msgs t0 #days Subject
+        print('\nanalyzeCUF.buildThreads List of all threads\n Threads identified with message-id, # of messages in thread, t0 of thread, duration in days & subject.')
+        print('{0:>11} {1:>3} {2:>13} {3:>5} {4}'.format('message-id','#msg','Thread t0','dt(days)','Subject'))
+        for archive in self.msgOrder:
+            if archive in Threads:
+                Subject = Threads[archive][0]
+                t0,tmax = firstLastT[archive]
+                dt = durationT[archive]
+                nmsgs = len(Threads[archive][1])
+                print('{0:<11} {1:>3} {2:>13} {3:>5.1f} {4}'.format(archive,nmsgs,t0.strftime('%Y%m%dT%H%M'),dt,Subject))
+        print('analyzeCUF.buildThreads End of list of all threads\n')
+        
         # see if threads need to be merged based on (nearly) identical subjects
         nMergeCands = 0
         lastA,lastS = None,None
@@ -571,22 +585,27 @@ class analyzeCUF():
         return spanT
     def getThreadDuration(self,Threads,archiveDates):
         '''
-        return dict durationT where
+        return dict durationT and firstLastT where
         durationT[archive0] = maximum time difference in days between messages in thread specified by archive0
+        firstLastT[archive0] = [t0,tmax] = [time of archive0, maximum time among all messages in thread]
 
         Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
 
         '''
         durationT = {}
+        firstLastT= {}
         for archive0 in Threads:
             t0 = archiveDates[archive0]
             durationT[archive0] = 0.
+            tmax = t0
             for tupl in Threads[archive0][1]:
                 archive = tupl[0]
                 t = archiveDates[archive]
                 duration = abs( (t-t0).total_seconds()/60./60./24. )
                 durationT[archive0] = max(durationT[archive0],duration)
-        return durationT
+                tmax = max(t,tmax)
+            firstLastT[archive0] = [t0,tmax]
+        return durationT,firstLastT
     def getArchiveList(self,archive,Threads):
         '''
         return archiveList = list of archives in Threads[archive]
@@ -1150,52 +1169,6 @@ class analyzeCUF():
         self.showOrPlot(TITLE)
                         
         return output_grid_issues
- 
-    def mergeInterleaved(self,Threads):
-        '''
-        return dict newThreads with interleaved threads with identical subjects merged
-
-        Let Li = list of message numbers from Thread Ti with Lij as the jth message in list Li, 
-        then T1 is interleaved with T2, if L10< L2j < L1n for 0<=j<len(L2)
-
-        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
-
-        Use 2 step procedure. 
-        First loop through threads in order to create all the merged threads, 
-        then add all the original threads that did not need to be merged
-        '''
-        newThreads = {}
-        badThreads = []
-        for i,a1 in enumerate(self.msgOrder):
-            if a1 in Threads:
-                S1 = Threads[a1][0]
-                limits = []
-                for j in [0,-1]:  # get index of first,last message number
-                    A = Threads[a1][1][j][0]
-                    if A in self.msgOrder:
-                        jx = self.msgOrder.index(A)
-                    else:
-                        print('analyzeCUF.mergeInterleaved ERROR j,A',j,A,'not in self.msgOrder for a1,Threads[a1]',a1,Threads[a1])
-                        jx = 0
-                    limits.append(jx)
-                for a2 in self.msgOrder[i+1:]:
-                    if a2 in Threads:
-                        S2 = Threads[a2][0]
-                        if S2==S1:
-                            jx = self.msgOrder.index(a2)
-                            A0 = Threads[a1][1][0][0]   # archive for first entry in thread
-                            An = Threads[a1][1][-1][0]  # archive for last entry in thread
-                            if self.debug > 2 : print('analyzeCUF.mergeInterleaved a1,S1,limits,A0,An,a2,jx',a1,S1,limits,A0,An,a2,jx,'Interleaved=',limits[0]<jx<limits[1])
-                            if limits[0]<jx<limits[1]:
-                                if a1 in newThreads: print('analyzeCUF.mergeInterleaved ERROR Overwriting newThreads for key',a1)
-                                newThreads[a1] = Threads[a1]
-                                newThreads[a1][1].extend( Threads[a2][1] )
-                                badThreads.append( a2 )
-        if self.debug > 2 : print('analyzeCUF.mergeInterleaved badThreads',badThreads,'keys in newThreads',[key for key in sorted(newThreads)])
-        for a1 in Threads:
-            if a1 not in badThreads and a1 not in newThreads: newThreads[a1] = Threads[a1]
-        print('analyzeCUF.mergeInterleaved',len(Threads),'input Threads,',len(newThreads),'output Threads, so',len(badThreads),'were merged.')
-        return newThreads
     def mergeNeighbors(self,Threads):
         '''
         return dict newThreads with neighboring threads with identical subjects merged
@@ -1364,12 +1337,47 @@ class analyzeCUF():
         A = list(set(A))
         self.writeMsgs(A,output='grid_issues.log')
         return
+    def setDateRange(self,files,msgOrder,archiveDates,t1=None,t2=None):
+        '''
+        return a new list of files and msgOrder by removing files and messages 
+        that are not within the date range specified by t1 to t2
+        
+        t1 and t2 are strings with format %Y%m%dT%H%M   i.e., 20201123T1232 = 23 Nov 2020 at 12:32
+
+        inputs
+        files = ordered list of input files
+        msgOrder = ordered list of message-ids
+        archiveDates = {message-id:datetime object of message, ...}
+        '''
+        if t1 is None and t2 is None : return files,msgOrder
+            
+        tformat = '%Y%m%dT%H%M'
+        T1,T2 = datetime.datetime(2000,1,1),datetime.datetime(2099,12,31)
+        if t1 is not None : T1 = datetime.datetime.strptime(t1,tformat)
+        if t2 is not None : T2 = datetime.datetime.strptime(t2,tformat)
+            
+        newfiles,newmsgOrder = [],[]
+        for f,archive in zip(files,msgOrder):
+            if archive not in f :
+                print('analyzeCUF.setDateRange ERROR archive',archive,'not found in string for file',f)
+                sys.exit('analyzeCUF.setDateRange ERROR files and msgOrder are not consistent!')
+            T = archiveDates[archive]
+            if T1<=T<=T2 :
+                newfiles.append( f )
+                newmsgOrder.append( archive )
+        print('analyzeCUF.setDateRange Original lengths of files, msgOrder',len(files),len(msgOrder),'returned lengths',len(newfiles),len(newmsgOrder),'given input time range',t1,'to',t2)        
+        return newfiles,newmsgOrder
     def main(self):
         '''
         main module for analysis
+
+        The terms 'message-id' and 'archive' are used interchangably to identify each email message. 
+
+        get message-id-ordered list of files and messages: files, msgOrder
+        get the data & time associated with each message: archiveDates  = dict[archive] = date of message
+        if needed, reduce the list of files and message to fall within the required dates
         
         get gridSiteNames = list of all grid sites found in all messages
-        get archiveDates  = dict[archive] = date of message
 
         get Threads = recreate threads from list of files with messages
 
@@ -1380,13 +1388,13 @@ class analyzeCUF():
         analyze the grid sites issues
         '''
         files,msgOrder = self.getArchive()
+        archiveDates  = self.extractMsg.getArchiveDates(files)
+        files,msgOrder = self.setDateRange(files,msgOrder,archiveDates,t1='20211017T0000',t2='20220115T2359')  ### This is a test
         self.msgOrder = msgOrder
         self.nFiles   = len(files)
         gridSiteNames = self.extractMsg.gridSites(files=files)
-        archiveDates  = self.extractMsg.getArchiveDates(files)
         if self.debug > 2 : print('analyzeCUF.main self.msgOrder',self.msgOrder)
             
-        #Threads = self.processFiles(files)
         Threads = self.buildThreads(files,archiveDates)
         
         
