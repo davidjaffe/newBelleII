@@ -110,8 +110,9 @@ class analyzeCUF():
         return ordered list of files in archive and ordered list of message numbers
         use sorted to make sure DATA/comp-users-forum_2021-07/10 is after DATA/comp-users-forum_2021-07/2
 
-        Also set date limits to be used in plots. 
-        Limits are set to be 3 months before and after the earliest and lastest message, resp.
+        Also set date limits as datetime objects to be used in plots. 
+        Limits are set to be ~1.5 months before and after the earliest and lastest message, resp.
+        Also generate the date limits of the data as text to be used in titles of plots
         '''
         files = glob.glob(self.DATA_DIR + '*/*')
         files.sort()
@@ -123,11 +124,13 @@ class analyzeCUF():
             
         limits = [ msgOrder[0][:7],msgOrder[-1][:7] ]
         dtlimits = [datetime.datetime.strptime(x,'%Y-%m') for x in limits]
-        threeMonths = datetime.timedelta(days=91) # can't use months or years
+        someMonths = datetime.timedelta(days=45) # can't use months or years
+
+        self.dateLimits = dtlimits[0].strftime('%Y%m') + '-' + dtlimits[1].strftime('%Y%m')
        
-        self.plotDateLimits = [dtlimits[0]-threeMonths, dtlimits[1]+threeMonths]
+        self.plotDateLimits = [dtlimits[0]-someMonths, dtlimits[1]+someMonths]
         dL = [x.strftime('%Y%m%d') for x in self.plotDateLimits]
-        print('analyzeCUF.getArchive Set date limits in plots',dL[0],dL[1])
+        print('analyzeCUF.getArchive Date range',self.dateLimits,'Date limits for plots is',dL[0],dL[1])
             
         return f,msgOrder
     def getMessageN(self,fn):
@@ -808,7 +811,7 @@ class analyzeCUF():
         x = y = numpy.arange(Ni+1)
         z = numpy.array(IvI)
         xlabels = ylabels = issueOrder
-        title = 'Issue vs issue. Diagonal=all, above=doubles, below=triples'
+        title = 'Issue vs issue. Diagonal=all, above=doubles, below=triples ' + self.dateLimits
         Title = self.mpl_interface.plot2d(x,y,z,xlabels=xlabels,ylabels=ylabels,title=title,colorbar=True)
         self.showOrPlot(Title)
         print('\nanalyzeCUF.analyzeThreads',Title,'all,above,below',tot,above, below)
@@ -847,7 +850,7 @@ class analyzeCUF():
 
         # pie charts for all issues regardless of year
         if self.debug > 2 : print('analyzeCUF.analyzeThreads iByY["AllYears"]',iByY["AllYears"])
-        for post,addValues in zip(['',' enumerated'],[False,True]):
+        for post,addValues in zip([' ' + self.dateLimits,' enumerated ' + self.dateLimits],[False,True]):
             Title = self.mpl_interface.pie(iByY['AllYears'],issueOrder,title='All issues'+post,addValues=addValues)
             self.showOrPlot(Title)
         countsNonU,countsNoA = [],[]
@@ -871,7 +874,8 @@ class analyzeCUF():
 
         if self.debug > 2 : print('analyzeCUF.analyzeThreads iByY',iByY)
 
-        for words,order in zip(['All ','Non-unique ','All but Announcements '],[issueOrder, nonUniqueOrder,issueOrderNoAnnouncement]):
+        for WORDS,order in zip(['All ','Non-unique ','All but Announcements '],[issueOrder, nonUniqueOrder,issueOrderNoAnnouncement]):
+            words = self.dateLimits + ' ' + WORDS
             if self.debug > 1 : print('\nNumber of issues by year\n',' '.join(years),'Issue')
             Y = []
             Yy= []
@@ -947,6 +951,7 @@ class analyzeCUF():
             for year in sorted(dictReporters):
                 for name,DICT in zip(['Reporters','Responders'], [dictReporters,dictResponders] ):
                     title = '{} {} {}'.format(name,year,exclWords)
+                    if year==allY : title += ' ' + self.dateLimits
                     counts,labels = [],[]
                     for k,v in sorted(list(DICT[year].items()), key=lambda x:x[1]):
                         if k is not None:
@@ -1028,7 +1033,7 @@ class analyzeCUF():
             Y = numpy.array(A)
             median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
             title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
-            Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True,logy=ulog)
+            Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label+ ' ' + self.dateLimits,title=title,grid=True,logy=ulog)
             print('analyzeCUF.analyzeThreads',label,title,'nbin,x1,x2',nbin,x1,x2)
             self.showOrPlot(label)
             
@@ -1044,12 +1049,12 @@ class analyzeCUF():
                 Y = numpy.array(A)
                 median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
                 title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
-                Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label,title=title,grid=True,logy=ulog)
+                Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label+ ' ' + self.dateLimits,title=title,grid=True,logy=ulog)
                 print('analyzeCUF.analyzeThreads',label,title,'nbin,x1,x2',nbin,x1,x2)
                 self.showOrPlot(label)
 
         # plots
-        title = 'Threads per month'
+        title = 'Threads per month ' + self.dateLimits
         x,y = [],[]
         for ym in sorted(tPerM):
             y.append( tPerM[ym] )
@@ -1066,7 +1071,7 @@ class analyzeCUF():
         
         self.showOrPlot(title)
 
-        title = 'Threads per week'
+        title = 'Threads per week ' + self.dateLimits
         week = datetime.timedelta(days=7)
         bins = numpy.arange(self.plotDateLimits[0],self.plotDateLimits[1],week)
         frq,edges = numpy.histogram(list(archiveDates.values()),bins=bins)
@@ -1119,12 +1124,12 @@ class analyzeCUF():
 
         sWho = set(openWho)
         fWho = [openWho.count(i) for i in sWho]
-        title = self.mpl_interface.pie(fWho,sWho,title='Open issues by sender')
+        title = self.mpl_interface.pie(fWho,sWho,title='Open issues by sender ' + self.dateLimits)
         self.showOrPlot(title)
 
         sIssue = set(openIssue)
         fIssue = [openIssue.count(i) for i in sIssue]
-        title = self.mpl_interface.pie(fIssue,sIssue,title='Open issues by issue',addValues=True)
+        title = self.mpl_interface.pie(fIssue,sIssue,title='Open issues by issue ' + self.dateLimits,addValues=True)
         self.showOrPlot(title)
         
                     
@@ -1142,7 +1147,7 @@ class analyzeCUF():
         colors = ['red','green','blue']
         markers= ['o','s','x']
 
-        title = 'Grid issues  Site vs Date'
+        title = 'Grid issues  Site vs Date ' + self.dateLimits
         fig,ax = plt.subplots(1)
         fig.autofmt_xdate(rotation=45,ha='right')
         desort = sorted(list(grid_issues.items()), key=lambda x: len(x[1]), reverse=True)
@@ -1167,7 +1172,7 @@ class analyzeCUF():
         self.showOrPlot(title)
 
 
-        title = 'Grid issues Country vs Date'
+        title = 'Grid issues Country vs Date'+ ' ' + self.dateLimits
         fig,ax = plt.subplots(1)
         fig.autofmt_xdate(rotation=45,ha='right')
         byCountry = {}
@@ -1286,7 +1291,7 @@ class analyzeCUF():
             GvI[iy*Nifg+ix] += 1
         GvI = numpy.reshape(numpy.array(GvI), (Ngs, Nifg) )
 
-        title = 'Grid site vs issue'
+        title = 'Grid site vs issue'+ ' ' + self.dateLimits
         TITLE = self.mpl_interface.plot2d(x,y,GvI,xlabels=xlabels,ylabels=ylabels,title=title,colorbar=True)
         self.showOrPlot(TITLE)
                         
