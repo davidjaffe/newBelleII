@@ -138,41 +138,22 @@ class mpl_interface():
         if self.internal : plt.show()
         
         return Title
-    def nicePallet(self,n):
-        '''
-        return distinctive list of colors of length n
-
-        20211124 python3 integer division modification
-        20220202 if n > available colors, return None. This assumes default behavior in calling module.
-        '''
-        colors = []
-        N = len(self.rcolors)
-        if n>N : return None
-        for i,A in enumerate(self.rcolors):
-            if i%(N//n)==0 and len(colors)<n : colors.append( A )
-        for i in range(1):
-            c1,c2 = colors[:n//2],colors[n//2:]
-            colors = [val for pair in zip(c1,c2) for val in pair]
-        return colors
-    def pie(self,x,labels,title=None,addValues=False,startangle=0):
+    def pie(self,x,labels,title=None,addValues=False,startangle=0.):
         '''
         plot pie chart
         with title positioned to avoid wedge labels
-        and distinctive wedge colors
+        return title so it can be used to generate filename for output
+
         if addValues is True, then write the value of x in the appropriate wedge
 
         autopct usage cribbed from 
         https://stackoverflow.com/questions/6170246/how-do-i-use-matplotlib-autopct
         '''
-        Nc = len(x)
-        colors = self.nicePallet(Nc)
-        Labels = labels
+
         if addValues:
-#            plt.pie(x,labels=Labels,colors=colors,labeldistance=1.05,startangle=startangle,autopct=lambda p : '{:.0f}'.format(p*sum(x)/100.),pctdistance=0.8)
-#            plt.pie(x,labels=Labels,colors=colors,labeldistance=1.05,startangle=startangle,autopct=lambda p : f'{p:.1f}%\n({(p/100)*sum(x):.0f})',pctdistance=0.7)
-            plt.pie(x,labels=Labels,colors=colors,labeldistance=1.3,startangle=startangle,autopct=lambda p : f'{p:.1f}%\n({(p/100)*sum(x):.0f})',pctdistance=1.1)
+            plt.pie(x,labels=labels,labeldistance=1.3,startangle=startangle,autopct=lambda p : f'{p:.1f}%\n({(p/100)*sum(x):.0f})',pctdistance=1.1)
         else:
-            plt.pie(x,labels=Labels,colors=colors,labeldistance=1.05,startangle=startangle)
+            plt.pie(x,labels=labels,labeldistance=1.05,startangle=startangle)
         if title is not None : plt.title( title, y=1.05, loc='left', bbox={'pad':3, 'facecolor':'none'} )
         if self.internal : plt.show()
         return title
@@ -180,17 +161,6 @@ class mpl_interface():
 if __name__ == '__main__' :
     internal = True
     mpli = mpl_interface(internal=internal)
-
-    testNicePallet = True
-    if testNicePallet :
-        nmax = len(mpli.rcolors)
-        for n in [10,100,nmax,2*nmax]:
-            print('n',n)
-            colors = mpli.nicePallet(n)
-            if colors is not None:
-                print('len(colors)',len(colors))
-            else:
-                print('colors',colors)
 
     testPie = False
     if testPie :
