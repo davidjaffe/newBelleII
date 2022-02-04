@@ -22,7 +22,7 @@ import Logger # direct stdout to file & terminal
 
 
 class analyzeCUF():
-    def __init__(self,debug=0,plotToFile=False,data_dir='DATA2022201/'):
+    def __init__(self,debug=0,plotToFile=False,data_dir='DATA2022201/',startDate=None,endDate=None):
         
         self.debug = debug
         self.plotToFile = plotToFile
@@ -47,25 +47,37 @@ class analyzeCUF():
         print('analyzeCUF.__init__ Output directed to stdout and',lf)
 
 
-        print('analyzeCUF.__init__ debug',self.debug,'plotToFile',self.plotToFile,'now',self.now)
+        print('analyzeCUF.__init__ Inputs debug',self.debug,'plotToFile',self.plotToFile,'data_dir',data_dir,'startDate',startDate,'endDate',endDate)
+        print('analyzeCUF.__init__ now',self.now)
 
 
         # Specify input data directory
         # NO UNDERSCORE IN INPUT DATA DIRECTORY NAME!!!
-        self.DATA_DIR = 'DATA/'        # cleverly named original data
-        self.DATA_DIR = 'DATA202201/'  # added 20220201
         self.DATA_DIR = data_dir       # 20220203 input data directory can be specified at run time
         print('analyzeCUF.__init__ Input data directory',self.DATA_DIR)
         if '_' in self.DATA_DIR : sys.exit('analyzeCUF.__init__ ERROR No underscore allowed in input data directory name!')
 
-        # set default date limits for plots.
-        # The limits should be reset in getArchive
-        self.plotDateLimits = [datetime.datetime(2017,1,1), datetime.datetime(2030,12,31)]
-        dL = [x.strftime('%Y%m%d') for x in self.plotDateLimits]
-        print('analyzeCUF.__init__ default date limits in plots',dL[0],dL[1])
+        # Use date limits for analysis and plots from input strings startDate and endDate, if specified, to define
+        # self.datetimeLimits = [start,end] as datetime objects for use in analysis,
+        # self.plotDateLimits = [start-dt,end+dt] = abscissa limits for plots as datetime objects and
+        # self.dateLimits = startYearMonth-endYearMonth as text to include in plot titles.
+        # dt = self.plotDateOffset = datetime object for 1 month
+        # The limits may be changed in getArchive, based on the time range of the messages to be analyzed.
+        self.timeFormat = '%Y%m%dT%H%M'
+        T1,T2 = datetime.datetime(2000,1,1),datetime.datetime(2099,12,31)
+        if startDate is not None : T1 = datetime.datetime.strptime(startDate,self.timeFormat)
+        if endDate is not None   : T2 = datetime.datetime.strptime(endDate,self.timeFormat)
 
-        ###self.DATA_DIR = 'TESTDATA/' #### TESTING ONLY. create link to a subset of files in DATA/ for testing
-        ###self.debug    = 2 ############## TESTING ONLY
+        dt = self.plotDateOffset = datetime.timedelta(days=31)
+
+        self.datetimeLimits = [T1,T2]
+        self.plotDateLimits = [T1-dt,T2+dt]
+        self.dateLimits = T1.strftime('%Y%m') + '-' + T2.strftime('%Y%m')
+        aL = [x.strftime(self.timeFormat) for x in self.datetimeLimits]
+        dL = [x.strftime('%Y%m%d') for x in self.plotDateLimits]
+        print('analyzeCUF.__init__ date limits for analysis',aL[0],aL[1])
+        print('analyzeCUF.__init__ default abscissa date limits for plots',dL[0],dL[1])
+        print('analyzeCUF.__init__ date limits for text in titles',self.dateLimits)
 
         prefix = self.DATA_DIR + 'comp-users-forum'
         self.extractMsg = extractMsg.extractMsg(debug=debug,prefix=prefix)
@@ -114,9 +126,10 @@ class analyzeCUF():
         return ordered list of files in archive and ordered list of message numbers
         use sorted to make sure DATA/comp-users-forum_2021-07/10 is after DATA/comp-users-forum_2021-07/2
 
-        Also set date limits as datetime objects to be used in plots. 
-        Limits are set to be ~1.5 months before and after the earliest and lastest message, resp.
-        Also generate the date limits of the data as text to be used in titles of plots
+        Reset the following if the earliest(latest) message is later(earlier) than the analysis limits in self.datetimeLimits:
+        self.datetimeLimits = [start,end] as datetime objects for use in analysis,
+        self.plotDateLimits = [start-dt,end+dt] = abscissa limits for plots as datetime objects and
+        self.dateLimits = startYearMonth-endYearMonth as text to include in plot titles.
         '''
         files = glob.glob(self.DATA_DIR + '*/*')
         files.sort()
@@ -126,15 +139,33 @@ class analyzeCUF():
             msgN = self.getMessageN(fn)
             msgOrder.append(msgN)
             
-        limits = [ msgOrder[0][:7],msgOrder[-1][:7] ]
-        dtlimits = [datetime.datetime.strptime(x,'%Y-%m') for x in limits]
-        someMonths = datetime.timedelta(days=45) # can't use months or years
+        # extract year and month of earliest and latest message.
+        # add a month for latest message since conversion to datetime object yields first day of month
+        earliest = msgOrder[0][:7]
+        latest   = msgOrder[-1][:7]
+        year,month = latest[:4],latest[-2:]
+        if month=='12':
+            month = '01'
+            year = str(int(year)+1)
+        else:
+            month = f"{int(month)+1:02}"
+        latest = year+'-'+month
+        dtlimits = [datetime.datetime.strptime(x,'%Y-%m') for x in [earliest,latest] ]
 
-        self.dateLimits = dtlimits[0].strftime('%Y%m') + '-' + dtlimits[1].strftime('%Y%m')
-       
-        self.plotDateLimits = [dtlimits[0]-someMonths, dtlimits[1]+someMonths]
-        dL = [x.strftime('%Y%m%d') for x in self.plotDateLimits]
-        print('analyzeCUF.getArchive Date range',self.dateLimits,'Date limits for plots is',dL[0],dL[1])
+        # compare with currently specified analysis limits and reset limits if required.
+        original = [x for x in self.datetimeLimits]
+        if dtlimits[0] > self.datetimeLimits[0] : self.datetimeLimits[0] = dtlimits[0]
+        if dtlimits[1] < self.datetimeLimits[1] : self.datetimeLimits[1] = dtlimits[1]
+        if self.datetimeLimits != original:
+
+            self.dateLimits = self.datetimeLimits[0].strftime('%Y%m') + '-' + self.datetimeLimits[1].strftime('%Y%m')
+            self.plotDateLimits = [self.datetimeLimits[0]-self.plotDateOffset, self.datetimeLimits[1]+self.plotDateOffset]
+
+            aL = [x.strftime(self.timeFormat) for x in self.datetimeLimits]
+            dL = [x.strftime('%Y%m%d') for x in self.plotDateLimits]
+            print('analyzeCUF.getArchive RESET date limits for analysis',aL[0],aL[1])
+            print('analyzeCUF.getArchive RESET default abscissa date limits for plots',dL[0],dL[1])
+            print('analyzeCUF.getArchive RESET date limits for text in titles',self.dateLimits)
             
         return f,msgOrder
     def getMessageN(self,fn):
@@ -997,11 +1028,13 @@ class analyzeCUF():
 
         sWho = set(openWho)
         fWho = [openWho.count(i) for i in sWho]
+        if len(sWho)==0 : sWho,fWho = [1],['NO OPEN ISSUES']
         title = self.mpl_interface.pie(fWho,sWho,title='Open issues by sender ' + self.dateLimits)
         self.showOrPlot(title)
 
         sIssue = set(openIssue)
         fIssue = [openIssue.count(i) for i in sIssue]
+        if len(sIssue)==0 : sIssue,fIssue = [1],['NO OPEN ISSUES']
         title = self.mpl_interface.pie(fIssue,sIssue,title='Open issues by issue ' + self.dateLimits,addValues=True)
         self.showOrPlot(title)
         
@@ -1337,24 +1370,18 @@ class analyzeCUF():
         A = list(set(A))
         self.writeMsgs(A,output='grid_issues.log')
         return
-    def setDateRange(self,files,msgOrder,archiveDates,t1=None,t2=None):
+    def setDateRange(self,files,msgOrder,archiveDates):
         '''
         return a new list of files and msgOrder by removing files and messages 
-        that are not within the date range specified by t1 to t2
-        
-        t1 and t2 are strings with format %Y%m%dT%H%M   i.e., 20201123T1232 = 23 Nov 2020 at 12:32
+        that are not within the date range specified by self.datetimeLimits
 
         inputs
         files = ordered list of input files
         msgOrder = ordered list of message-ids
         archiveDates = {message-id:datetime object of message, ...}
         '''
-        if t1 is None and t2 is None : return files,msgOrder
             
-        tformat = '%Y%m%dT%H%M'
-        T1,T2 = datetime.datetime(2000,1,1),datetime.datetime(2099,12,31)
-        if t1 is not None : T1 = datetime.datetime.strptime(t1,tformat)
-        if t2 is not None : T2 = datetime.datetime.strptime(t2,tformat)
+        T1,T2 = self.datetimeLimits
             
         newfiles,newmsgOrder = [],[]
         for f,archive in zip(files,msgOrder):
@@ -1365,7 +1392,7 @@ class analyzeCUF():
             if T1<=T<=T2 :
                 newfiles.append( f )
                 newmsgOrder.append( archive )
-        print('analyzeCUF.setDateRange Original lengths of files, msgOrder',len(files),len(msgOrder),'returned lengths',len(newfiles),len(newmsgOrder),'given input time range',t1,'to',t2)        
+        print('analyzeCUF.setDateRange Original lengths of files, msgOrder',len(files),len(msgOrder),'returned lengths',len(newfiles),len(newmsgOrder),'given input time range',[x.strftime(self.timeFormat) for x in self.datetimeLimits])        
         return newfiles,newmsgOrder
     def main(self):
         '''
@@ -1389,7 +1416,7 @@ class analyzeCUF():
         '''
         files,msgOrder = self.getArchive()
         archiveDates  = self.extractMsg.getArchiveDates(files)
-        files,msgOrder = self.setDateRange(files,msgOrder,archiveDates,t1='20211017T0000',t2='20220115T2359')  ### This is a test
+        files,msgOrder = self.setDateRange(files,msgOrder,archiveDates)
         self.msgOrder = msgOrder
         self.nFiles   = len(files)
         gridSiteNames = self.extractMsg.gridSites(files=files)
@@ -1454,17 +1481,22 @@ if __name__ == '__main__' :
     debug = -1
     plotToFile = False
     data_dir = 'DATA2022201/'
+    startDate = '20000101T0000'
+    endDate   = '20991231T2359'
 
     if len(sys.argv)>1 :
         w = sys.argv[1]
         if 'help' in w.lower():
-            print('USAGE:    python analyzeCUF.py [debug] [plotToFile] [DATA_DIR]')
-            print('DEFAULTS: python analyzeCUF.py',debug,plotToFile,data_dir)
+            print('USAGE:    python analyzeCUF.py [debug] [plotToFile] [DATA_DIR] [startDate] [endDate]')
+            print('DEFAULTS: python analyzeCUF.py',debug,plotToFile,data_dir,startDate,endDate)
+            print('WARNING: DO NOT USE UNDERSCORE in DATA_DIR')
             sys.exit('help was provided. use it')
     if len(sys.argv)>1 : debug = int(sys.argv[1])
     if len(sys.argv)>2 : plotToFile = bool(sys.argv[2])
     if len(sys.argv)>3 : data_dir = sys.argv[3]
+    if len(sys.argv)>4 : startDate = sys.argv[4]
+    if len(sys.argv)>5 : endDate = sys.argv[5]
     
-    aCUF = analyzeCUF(debug=debug,plotToFile=plotToFile,data_dir=data_dir)
+    aCUF = analyzeCUF(debug=debug,plotToFile=plotToFile,data_dir=data_dir,startDate=startDate,endDate=endDate)
     aCUF.main()
     
