@@ -418,18 +418,7 @@ class analyzeCUF():
 
         print('\nanalyzeCUF.buildThreads Begin diagnostics, useLocateRef is',self.useLocateRef)
 
-        # list all threads created
-        # archive #msgs t0 #days Subject
-        print('\nanalyzeCUF.buildThreads List of all threads\n Threads identified with message-id, # of messages in thread, t0 of thread, duration in days & subject.')
-        print('{0:>11} {1:>3} {2:>13} {3:>5} {4}'.format('message-id','#msg','Thread t0','dt(days)','Subject'))
-        for archive in self.msgOrder:
-            if archive in Threads:
-                Subject = Threads[archive][0]
-                t0,tmax = firstLastT[archive]
-                dt = durationT[archive]
-                nmsgs = len(Threads[archive][1])
-                print('{0:<11} {1:>3} {2:>13} {3:>5.1f} {4}'.format(archive,nmsgs,t0.strftime('%Y%m%dT%H%M'),dt,Subject))
-        print('analyzeCUF.buildThreads End of list of all threads\n')
+        self.printThreads(Threads, archiveDates,message='All threads, after building threads')
         
         # see if threads need to be merged based on (nearly) identical subjects
         nMergeCands = 0
@@ -477,6 +466,41 @@ class analyzeCUF():
 
         print('analyzeCUF.buildThreads Thread building completed')
         return Threads
+    def printThreads(self,Threads, archiveDates, thread_issues=None, message=None): 
+        '''
+        print one line per thread for all Threads
+
+        inputs
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+        archiveDates[archive] = datetime object of message specified by archive
+        OPTIONAL: thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
+
+        durationT[archive0] = maximum time difference in days between messages in thread specified by archive0
+        firstLastT[archive0] = [t0,tmax] = [time of archive0, maximum time among all messages in thread]
+
+        '''
+        durationT, firstLastT = self.getThreadDuration(Threads, archiveDates)
+
+        addTI = thread_issues is not None
+        
+        # archive #msgs t0 #days Subject
+        header = 'List of threads'
+        if message is not None : header = message
+        print('\nanalyzeCUF.printThreads',header,'\n Threads identified with message-id, # of messages in thread, t0 of thread, duration in days & subject.')
+        words = 'Subject'
+        if addTI: words += ' | Issue(s)'
+        print('{0:>11} {1:>3} {2:>13} {3:>5} {4}'.format('message-id','#msg','Thread t0','dt(days)',words))
+        for archive in self.msgOrder:
+            if archive in Threads:
+                Subject = Threads[archive][0]
+                t0,tmax = firstLastT[archive]
+                dt = durationT[archive]
+                nmsgs = len(Threads[archive][1])
+                words = Subject
+                if addTI : words += ' | '+', '.join(thread_issues[archive])
+                print('{0:<11} {1:>3} {2:>13} {3:>5.1f} {4}'.format(archive,nmsgs,t0.strftime('%Y%m%dT%H%M'),dt,words))
+        print('analyzeCUF.printThreads End of',header,'\n')
+        return
     def checkThreads(self,words,Threads):
         '''
         check integrity of thread creation
@@ -761,15 +785,33 @@ class analyzeCUF():
             self.showOrPlot(Title)
             Title = self.mpl_interface.pie(countsNoA,issueOrderNoAnnouncement,title='All issues except Announcements'+post,addValues=addValues)
             self.showOrPlot(Title)
-                
+
+        # table of issues by year, also percent of total issues with and w/o Announcements
+        totByY,totByYnoA = {},{}
+        iA = issueOrder.index( self.issues_keyphrases.announcementsName )
+        for year in years:
+            totByY[year] = sum(iByY[year])
+            totByYnoA[year] = totByY[year] - iByY[year][iA]
         rows = []
+        rowsP, rowsPnoA = [],[]
         for I,issue in enumerate(issueOrder):
             onerow = []
+            onerowP, onerowPnoA = [],[]
             for year in years:
                 onerow.append( iByY[year][I] )
+                onerowP.append( float(iByY[year][I])/float(totByY[year]) * 100.)
+                if I!=iA : onerowPnoA.append( float(iByY[year][I])/float(totByYnoA[year]) * 100.)
             rows.append( onerow )
-        table = self.tableMaker(years,rows,issueOrder,integers=True,caption='Number of issues by year')
-        print(table)
+            rowsP.append( onerowP )
+            if I!=iA : rowsPnoA.append( onerowPnoA )
+        
+        for latex in [False, True]:
+            table = self.tableMaker(years,rows,issueOrder,integers=True,caption='Number of issues by year',latex=latex)
+            print(table)
+            table = self.tableMaker(years,rowsP,issueOrder,integers=False,caption='Issues by year(percent)',latex=latex)
+            print(table)
+            table = self.tableMaker(years,rowsPnoA,issueOrderNoAnnouncement, integers=False,caption='Issues by year, Announcements excluded(percent)',latex=latex)
+            print(table)
 
         if self.debug > 2 : print('analyzeCUF.analyzeThreads iByY',iByY)
 
@@ -885,10 +927,14 @@ class analyzeCUF():
         dTPerT[niName] = []
         aPerT      = [] # archive associated with previous lists
         tPerM   = {} # threads per month
+        tThread = [] # list of datetime of Threads
+        tThreadnoA = [] # list of datetime of Threads excluding thos classified as Announcements
 
         
         for archive in self.msgOrder:
             if archive in Threads:
+                tThread.append( archiveDates[archive] )
+                if self.issues_keyphrases.announcementsName not in thread_issues[archive] : tThreadnoA.append( archiveDates[archive] )
                 ym = self.getMonth(archive)
                 if ym not in tPerM : tPerM[ym] = 0
                 tPerM[ym] += 1 
@@ -967,23 +1013,28 @@ class analyzeCUF():
         ax = plt.subplot(111)
         ax.bar(x,y,width=10.3) # increase width above default(0.8) for visibility
         ax.set_xlim(self.plotDateLimits)
-
         ax.xaxis_date()
         ax.set_title(title)
         ax.figure.autofmt_xdate(rotation=80)
         plt.grid()
-        
         self.showOrPlot(title)
 
-        title = 'Threads per week ' + self.dateLimits
-        week = datetime.timedelta(days=7)
+        # threads per week with and without announcements
+        days = 7.
+        week = datetime.timedelta(days=days)
         bins = numpy.arange(self.plotDateLimits[0],self.plotDateLimits[1],week)
-        frq,edges = numpy.histogram(list(archiveDates.values()),bins=bins)
-        plt.bar(edges[:-1],frq,width=7, edgecolor='blue',align='edge')
-        plt.grid()
-        plt.title(title)
-        plt.tick_params(axis='x',labelrotation=80.)
-        self.showOrPlot(title)
+        for TT,words in zip([tThread,tThreadnoA], ['','excluding Announcements ']):
+            title = 'Threads per week ' + words + self.dateLimits
+            frq,edges = numpy.histogram(TT,bins=bins)
+            plt.bar(edges[:-1],frq,width=days/2., edgecolor='blue',align='edge')
+            if len(edges)<25:  # label every tick, if there aren't too many
+                labels = [str(x)[:10] for x in edges[:-1]]
+                plt.xticks(ticks=edges[:-1],labels=labels)
+            plt.subplots_adjust(bottom=0.20) # make enough space so labels are on plot
+            plt.grid()
+            plt.title(title)
+            plt.tick_params(axis='x',which='both',labelrotation=80.)
+            self.showOrPlot(title)
                 
         return
     def identifyOpenThreads(self, Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates):
@@ -1002,11 +1053,11 @@ class analyzeCUF():
         thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
         archiveDates[archive] = date as datetime object 
         '''
-        print('\nanalyzeCUF.identifyOpenThreads Identify open threads as threads with a single entry that are not announcements')
+
         
         annName = self.issues_keyphrases.announcementsName
 
-        openThread = {} # {archive: [Subject, fromWho, datetime, [issues] ] }
+        openThread = {} # same format as Threads
         openWho = []
         openIssue = []
         
@@ -1015,17 +1066,21 @@ class analyzeCUF():
                 L = Threads[archive][1]
                 issues = thread_issues[archive]
                 if len(L)==1 and annName not in issues:
+                    openThread[archive] = Threads[archive]
+
                     Subject = Threads[archive][0]
                     whoFrom = L[0][3]
-                    when = archiveDates[archive]
-                    openThread[archive] = [ Subject, whoFrom, when, issues ]
+#                    when = archiveDates[archive]
+
                     whoSent = whoFrom
                     if '@' in whoFrom : whoSent = whoFrom.split('@')[0]
                     openWho.append( whoSent )
                     for issue in issues: openIssue.append( issue )
-                    cWhen = datetime.datetime.strftime(when,"%Y-%m-%d %H:%M")
-                    print('analyzeCUF.indentifyOpenThreads archive,whoFrom,issues,Subject,when',archive,whoFrom,', '.join(issues),Subject,cWhen)
+#                    cWhen = datetime.datetime.strftime(when,"%Y-%m-%d %H:%M")
 
+
+        self.printThreads(openThread, archiveDates, thread_issues=thread_issues, message='List of open threads')
+                    
         sWho = set(openWho)
         fWho = [openWho.count(i) for i in sWho]
         if len(sWho)==0 : sWho,fWho = [1],['NO OPEN ISSUES']
@@ -1329,36 +1384,57 @@ class analyzeCUF():
             for old in r[new]:
                 if old in filename : filename = filename.replace(old,new)
         return filename
-    def tableMaker(self,headers,rows,rowlabels,integers=False,caption=None):
+    def tableMaker(self,headers,rows,rowlabels,integers=False,caption=None,latex=False):
         '''
         return table, suitable to print, given headers, rows and row labels
         headers = list of header titles with length NH = [h1, h2, ..., hNH]
         rows = list of lists with each row of length NH = [ [a1, a2, ..., aNH], ... [z1, z2, ..., zNH] ] 
         rowlabels = list of row labels with length = # of rows
         
+        if latex = True, then print latex-compatible table
+
         '''
+        ## define latex variables(if needed), formats for header, row
+        latexAlign, latexReturn = '', ''
+        if latex : latexAlign, latexReturn  = ' & ', '\\\ ' # gives \\, trailing space is required
+        
         fprec = '.1f'
         if integers : fprec = 'd'
-        hfmt = ''
-        ffmt = ''
+        hfmt = ''  # header format
+        ffmt = ''  # row format
         fm = '{:'+fprec+'}'
         for i,h in enumerate(headers):
             L = len(h)
             for r in rows:
                 L = max(L,len(fm.format(r[i])))
             hfmt += '{'+str(i)+':>'+str(L)+'} '
+            if i<len(headers) : hfmt += latexAlign
             ffmt += '{'+str(i)+':>'+str(L)+fprec+'} '
+            ffmt += latexAlign
         i += 1
         ffmt += ' {'+str(i)+'} '
+
+        # begin creating table
         table = ''
-        if caption is not None : table += caption + '\n'
+        if latex :
+            ncol = 1 + len(headers)
+            table += '\\begin{tabular}{'
+            for i in range(len(headers)): table += 'c '
+            table += '| l } \n'
+        if caption is not None :
+            if latex :
+                table += '\\multicolumn{'+str(ncol)+'}{c}{'+caption+'}' + latexReturn + '\n'
+            else:
+                table += caption + '\n'
         table += hfmt.format(*headers)
+        table += latexReturn 
         table += '\n'
         for ir,r in enumerate(rows):
             Q = [x for x in r]
             Q.append(rowlabels[ir])
             table += ffmt.format(*Q) + '\n'
-
+        if latex : table += '\\end{tabular} \n'
+            
         return table
     def writeGridIssues(self,grid_issues):
         '''
@@ -1429,6 +1505,8 @@ class analyzeCUF():
         self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates)
 
         self.identifyOpenThreads(Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates)
+        
+        self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All threads with issues') 
 
         grid_issues = self.issues_keyphrases.gridIssues(Threads,gridSiteNames)
         grid_issues = self.correlateGrid(grid_issues, issues, issueOrder, issueUnique)
@@ -1470,7 +1548,11 @@ if __name__ == '__main__' :
         rows = [ [50427,88,219], [73, 102, 12], [129, 11, 512] ]
         rowlabels = ['Fred`s farm','Mary`s house','At college']
         aCUF = analyzeCUF()
-        table = aCUF.tableMaker(headers,rows,rowlabels,integers=True,caption='Here is a test table!!')
+        latex = False
+        table = aCUF.tableMaker(headers,rows,rowlabels,integers=True,caption='Here is a test table!!',latex=latex)
+        print(table)
+        latex = True
+        table = aCUF.tableMaker(headers,rows,rowlabels,integers=True,caption='Here is a LaTeX table!!',latex=latex)
         print(table)
         sys.exit('done testing tableMaker')
 

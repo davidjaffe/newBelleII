@@ -271,7 +271,7 @@ class issues_keyphrases():
 
             print('\nissues_keyphrase.define Latex-compatible table for issue definitions')
             for iname,name in enumerate(idictOrder):
-                print('{0} & {1} & {2} \\'.format(iname,idict[name][2],name))
+                print('{0} & {1} & {2} \\\ '.format(iname,idict[name][2],name))
             print('')
       
 
@@ -376,7 +376,12 @@ Failed (15)
 
         input  Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
 
-        output issues[issue0] = [achive0, archive1, ...]
+        return issues,issueOrder,issueUnique, thread_issues
+         issues[issue0] = [achive0, archive1, ...]
+         issueOrder = [issue0, issue1, ...]
+         issueUnique = list with entry = True if issue is unique. Same indexing as issueOrder
+         thread_issues = {archive0: [issue1, issue2], ...} = how many issues assigned to each thread?
+
 
         '''
         print('\nissues_keyphrases.classifyThreads Begin classification of',len(Threads),'threads.')
@@ -418,10 +423,6 @@ Failed (15)
             Unique = idict[issue][2]
             if self.debug > 2 : print('issues_keyphrases.classifyThreads by email text, issue',issue,'Reqmts',Reqmts)
             for key in [x for x in unClassified if x not in IgnoreThese]:
-                ##### SPECIAL FOR DEBUG
-                ##self.debug = originalDebug 
-                ##if key=='2019-12/31' : self.debug = 3
-                ##### SPECIAL FOR DEBUG
                 text = self.extractMsg.getText(key,input='archive')
                 if self.debug > 2 : print('issues_keyphrases.classifyThreads by email text, key',key)
                 if self.findN(text,Reqmts) :
