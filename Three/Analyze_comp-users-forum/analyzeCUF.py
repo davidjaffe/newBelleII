@@ -18,6 +18,7 @@ import datetime
 import extractMsg   # extracts the email message from a file
 import issues_keyphrases  # classifies threads based on subject and message content
 import mpl_interface # interface to mathplotlib
+import tableMaker  # makes nice tables
 import Logger # direct stdout to file & terminal
 
 
@@ -83,6 +84,7 @@ class analyzeCUF():
         self.extractMsg = extractMsg.extractMsg(debug=debug,prefix=prefix)
         self.issues_keyphrases = issues_keyphrases.issues_keyphrases(debug=debug,now=self.now,prefix=prefix)
         self.mpl_interface = mpl_interface.mpl_interface()
+        self.tableMaker = tableMaker.tableMaker()
 
 
         self.MLname = 'comp-users-forum'
@@ -114,6 +116,10 @@ class analyzeCUF():
             ['kato@hepl.phys.nagoya-u.ac.jp', ''],
             ['kato@hepl.phys.nagoya-u.ac.jp', 'Yuji kato'],
             ['katouyuuji@gmail.com', '=?UTF-8?B?5Yqg6Jek5oKg5Y+4?=']]
+
+        # 20220210 add list of 'Distributed Computing team'. This will be used to help classify single-message threads as 'Announcements'
+        self.DistComputing = ['ueda@post.kek.jp', 'kato@hepl.phys.nagoya-u.ac.jp', 'cedric.serfon@cern.ch', \
+                                  'hideki.miyake@kek.jp','hito@rcf.rhic.bnl.gov', 'jd@bnl.gov', 'takanori.hara@kek.jp']
 
         # matching methods used to build threads in findParent and locateRef
         self.matchBy = {} # used by buildThreads. filled in findParent, locateRef
@@ -265,6 +271,8 @@ class analyzeCUF():
 
         when trying to associate different whoFrom content, 
         require a match of the addresses or the names or the part of the address before '@'
+
+        20220210 remove possibility of trivial match of empty names for nameX==name
         '''
         LOCALDEBUG = False
         
@@ -285,7 +293,7 @@ class analyzeCUF():
                 new = []
                 for pair in self.ADB[key]:
                     adX,nameX = pair
-                    if adX==ad or adX.split('@')[0]==adB or nameX==name:
+                    if adX==ad or adX.split('@')[0]==adB or (nameX==name and name!=''):
                         adOut = key
                         new.append( [ad,name] )
                         done = True
@@ -465,6 +473,10 @@ class analyzeCUF():
             print('analyzeCUF.buildThreads matchBy',j,descrip,'frequency',freq[j])
 
         print('analyzeCUF.buildThreads Thread building completed')
+
+        ### add reporting of address database
+        if self.debug > 1 : self.reportADB()
+        
         return Threads
     def printThreads(self,Threads, archiveDates, thread_issues=None, message=None): 
         '''
@@ -671,6 +683,19 @@ class analyzeCUF():
         else:
             print('analyzeCUF.getArchiveList WARNING archive',archive,'is not a Thread key')
         return archiveList
+    def getSingleMessageThreadsfromDC(self,Threads):
+        '''
+        return listSMTfDC = list of single-message threads from a member of the distributed computing team
+        This list will be used to categorize threads as 'Announcements'
+        20220210
+        '''
+        listSMTfDC = []
+        for archive in Threads:
+            if len(Threads[archive][1])==1 :
+                whoFrom = Threads[archive][1][0][3]
+                if whoFrom in self.DistComputing : listSMTfDC.append( archive )
+        print('\nanalyzeCUF.getSingleMessageThreadsfromDC Found',len(listSMTfDC),' single-message threads from DC team out of',len(Threads),'threads')
+        return listSMTfDC
     def analyzeThreads(self,Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates):
         '''
         analyze dict Threads
@@ -806,11 +831,11 @@ class analyzeCUF():
             if I!=iA : rowsPnoA.append( onerowPnoA )
         
         for latex in [False, True]:
-            table = self.tableMaker(years,rows,issueOrder,integers=True,caption='Number of issues by year',latex=latex)
+            table = self.tableMaker.tableMaker(years,rows,issueOrder,integers=True,caption='Number of issues by year',latex=latex)
             print(table)
-            table = self.tableMaker(years,rowsP,issueOrder,integers=False,caption='Issues by year(percent)',latex=latex)
+            table = self.tableMaker.tableMaker(years,rowsP,issueOrder,integers=False,caption='Issues by year(percent)',latex=latex)
             print(table)
-            table = self.tableMaker(years,rowsPnoA,issueOrderNoAnnouncement, integers=False,caption='Issues by year, Announcements excluded(percent)',latex=latex)
+            table = self.tableMaker.tableMaker(years,rowsPnoA,issueOrderNoAnnouncement, integers=False,caption='Issues by year, Announcements excluded(percent)',latex=latex)
             print(table)
 
         if self.debug > 2 : print('analyzeCUF.analyzeThreads iByY',iByY)
@@ -1384,58 +1409,6 @@ class analyzeCUF():
             for old in r[new]:
                 if old in filename : filename = filename.replace(old,new)
         return filename
-    def tableMaker(self,headers,rows,rowlabels,integers=False,caption=None,latex=False):
-        '''
-        return table, suitable to print, given headers, rows and row labels
-        headers = list of header titles with length NH = [h1, h2, ..., hNH]
-        rows = list of lists with each row of length NH = [ [a1, a2, ..., aNH], ... [z1, z2, ..., zNH] ] 
-        rowlabels = list of row labels with length = # of rows
-        
-        if latex = True, then print latex-compatible table
-
-        '''
-        ## define latex variables(if needed), formats for header, row
-        latexAlign, latexReturn = '', ''
-        if latex : latexAlign, latexReturn  = ' & ', '\\\ ' # gives \\, trailing space is required
-        
-        fprec = '.1f'
-        if integers : fprec = 'd'
-        hfmt = ''  # header format
-        ffmt = ''  # row format
-        fm = '{:'+fprec+'}'
-        for i,h in enumerate(headers):
-            L = len(h)
-            for r in rows:
-                L = max(L,len(fm.format(r[i])))
-            hfmt += '{'+str(i)+':>'+str(L)+'} '
-            if i<len(headers) : hfmt += latexAlign
-            ffmt += '{'+str(i)+':>'+str(L)+fprec+'} '
-            ffmt += latexAlign
-        i += 1
-        ffmt += ' {'+str(i)+'} '
-
-        # begin creating table
-        table = ''
-        if latex :
-            ncol = 1 + len(headers)
-            table += '\\begin{tabular}{'
-            for i in range(len(headers)): table += 'c '
-            table += '| l } \n'
-        if caption is not None :
-            if latex :
-                table += '\\multicolumn{'+str(ncol)+'}{c}{'+caption+'}' + latexReturn + '\n'
-            else:
-                table += caption + '\n'
-        table += hfmt.format(*headers)
-        table += latexReturn 
-        table += '\n'
-        for ir,r in enumerate(rows):
-            Q = [x for x in r]
-            Q.append(rowlabels[ir])
-            table += ffmt.format(*Q) + '\n'
-        if latex : table += '\\end{tabular} \n'
-            
-        return table
     def writeGridIssues(self,grid_issues):
         '''
         write grid issue messages to a file for human analysis
@@ -1499,9 +1472,10 @@ class analyzeCUF():
         if self.debug > 2 : print('analyzeCUF.main self.msgOrder',self.msgOrder)
             
         Threads = self.buildThreads(files,archiveDates)
+        listSMTfDC = self.getSingleMessageThreadsfromDC(Threads)
         
         
-        issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads)
+        issues,issueOrder,issueUnique, thread_issues = self.issues_keyphrases.classifyThreads(Threads,listSMTfDC)
         self.analyzeThreads(Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates)
 
         self.identifyOpenThreads(Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates)
@@ -1541,20 +1515,6 @@ if __name__ == '__main__' :
         aCUF.buildThreads(files,archiveDates)
         sys.exit('done testing buildThreads')
 
-    
-    testTableMaker = False
-    if testTableMaker :
-        headers = ['pigs', 'monkeys', 'sheep']
-        rows = [ [50427,88,219], [73, 102, 12], [129, 11, 512] ]
-        rowlabels = ['Fred`s farm','Mary`s house','At college']
-        aCUF = analyzeCUF()
-        latex = False
-        table = aCUF.tableMaker(headers,rows,rowlabels,integers=True,caption='Here is a test table!!',latex=latex)
-        print(table)
-        latex = True
-        table = aCUF.tableMaker(headers,rows,rowlabels,integers=True,caption='Here is a LaTeX table!!',latex=latex)
-        print(table)
-        sys.exit('done testing tableMaker')
 
     '''
     Stuff for a standard run follows

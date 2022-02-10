@@ -12,6 +12,7 @@ import numpy
 import matplotlib.pyplot as plt
 import extractMsg
 import itertools
+import tableMaker
 
 
 class issues_keyphrases():
@@ -25,6 +26,7 @@ class issues_keyphrases():
 
 
         self.extractMsg = extractMsg.extractMsg(prefix=prefix)
+        self.tableMaker = tableMaker.tableMaker()
 
         Udir = 'UNCLASSIFIED/'
         if not os.path.exists(Udir) : os.makedirs(Udir) 
@@ -368,13 +370,15 @@ Failed (15)
                 
         badSites = [w.lower() for w in badSites]      
         return badSites
-    def classifyThreads(self,Threads):
+    def classifyThreads(self,Threads,listSMTfDC):
         '''
         Classify threads by issue. 
         Issues are named and specified in issues_keyphrases.define()
-        Hierarchy for determination of issue: Subject, email text 
+        Hierarchy for determination of issue: Subject, single-message-Announcements, email text 
 
-        input  Threads[archive0] = [Subject0,[(archive0,msgid0,irt0), (archive1,msgid1,irt1) ,...] ]
+        inputs 
+        Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
+        listSMTfDC = [archiveN,...] = list of single-message threads from the Distributed Computing team
 
         return issues,issueOrder,issueUnique, thread_issues
          issues[issue0] = [achive0, archive1, ...]
@@ -382,7 +386,8 @@ Failed (15)
          issueUnique = list with entry = True if issue is unique. Same indexing as issueOrder
          thread_issues = {archive0: [issue1, issue2], ...} = how many issues assigned to each thread?
 
-
+         20220210 Add to hierarchy for issue classification: 
+         Single-message threads from a member of the distributing computing team will be classified as announcements
         '''
         print('\nissues_keyphrases.classifyThreads Begin classification of',len(Threads),'threads.')
         
@@ -393,6 +398,10 @@ Failed (15)
         Classified = []     # list of threads classified in >0 issues
         IgnoreThese= []     # list of threads classified uniquely which should be ignored
 
+        Stages = [] 
+        NbyStage = {}
+        nameUnclassified = 'Unclassified'
+            
         ### first assign thread to issue by Subject 
         for issue in idictOrder:
             Reqmts = idict[issue][0] ## Subject
@@ -407,11 +416,33 @@ Failed (15)
                     if key not in Classified : Classified.append( key )
                     if Unique : IgnoreThese.append( key )
                 
-
-        print('issues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified),'successfully classified by Subject')
+        Stages = ['bySubject']
+        print('\nissues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified),'successfully classified by Subject')
         for issue in idictOrder:
             print('issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times')
+            NbyStage[issue] = [ len(issues[issue]) ]
+        NbyStage[nameUnclassified] = [ 0 ]
 
+        ### 20220210, single-message threads from distributed computing team will
+        ### be classified as Announcements
+        issue = self.announcementsName
+        Unique = idict[issue][2]
+        for key in [x for x in listSMTfDC if x not in Classified]:
+            if key not in IgnoreThese:
+                issues[issue].append( key )
+                if key not in thread_issues: thread_issues[key] = []
+                thread_issues[key].append( issue )
+                if key not in Classified : Classified.append( key )
+                if Unique : IgnoreThese.append( key )
+
+        Stages.append('bySMT')
+        print('\nissues_keyphrases.classifyThreads',len(Threads),'total threads with',len(Classified), \
+                  'successfully classified by single-message from DC team, after classification by Subject')
+        for issue in idictOrder:
+            print('issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times')
+            NbyStage[issue].append( len(issues[issue]) )
+        NbyStage[nameUnclassified].append( 0 )
+                
 
         ### next, for unassigned threads, assign thread to issue using email text
         originalDebug = self.debug
@@ -433,7 +464,7 @@ Failed (15)
                     if Unique : IgnoreThese.append( key )
 
         #### Bookkeeping: add Unclassified issue
-        name = 'Unclassified'
+        name = nameUnclassified 
         issues[name] = []
         idictOrder.append( name ) 
         for key in Threads:
@@ -441,11 +472,18 @@ Failed (15)
                 issues[name].append(key)
                 thread_issues[key] = [name]
 
-                        
+        Stages.append( 'byEmailTxt' )
         print('\nissues_keyphrases.classifyThreads',len(Threads),'total threads with', \
           len(Classified),'successfully classified by email message text, after Subject classification.')
         for issue in idictOrder:
             print('issues_keyphrases.classifyThreads issue',issue,'found',len(issues[issue]),'times')
+            NbyStage[issue].append( len(issues[issue]) )
+
+        rows = []
+        for issue in idictOrder: rows.append( NbyStage[issue] )
+        for latex in [False,True]:
+            table = self.tableMaker.tableMaker(Stages,rows,idictOrder,integers=True,caption='Classification of threads by stage',latex=latex)
+            print(table)
             
         ### list of threads that are classified under >1 issue
         maxClass = -1
