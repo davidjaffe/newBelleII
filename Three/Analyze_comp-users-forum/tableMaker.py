@@ -67,7 +67,7 @@ class tableMaker():
         for ir,r in enumerate(rows):
             Q = [x for x in r]
             Q.append(rowlabels[ir])
-            table += ffmt.format(*Q) + '\n'
+            table += ffmt.format(*Q) + latexReturn + '\n'
         if latex : table += '\\end{tabular} \n'
             
         return table

@@ -47,21 +47,9 @@ class issues_keyphrases():
 
         if report==True, then report definitions
 
-        Michel's report at the 39th B2GM 17 June 2021 identified 13 issues
-        Downloading files 20.5%
-        Failed jobs   14.8%
-        Jobs in waiting 13.6%
-        Registering output 10.2%
-        Input data not available 8.0%
-        Submitting jobs 6.8%
-        Bug report 6.8%
-        Proxy/VOMS 6.8%
-        Installing gbasf2 5.7%
-        Deleting files 3.4%
-        Site Platform   1.1%
-        Website not available 1.1%
-        Dataset search 1.1%
+        20220210 Revise and add some criteria based on Michel's analyses presented at the 39th,40th and 41st B2GMs
 
+ 
         '''
         idict = {}
         idictOrder = []
@@ -86,8 +74,8 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Queries'
-        systems = ['How to','module','Running on','To run on']
-        actions = ['use','save','delete','on the grid','dataset','full data proc 10']
+        systems = ['How to','module','Running on','To run on','How can I','Question']
+        actions = ['use','save','delet','on the grid','dataset','full data proc 10']
         phrase1 = ['How can','Is there a * way','Is it possible','I need to understand','Does anyone know','Can anyone comment',
                        'what I can do if', 'Is there anyway to get * files', 'wondering why','Is there * a way',
                        'wondering if * a way','I wonder if there * a way','wondering if I',
@@ -104,7 +92,8 @@ class issues_keyphrases():
                        'Is there  a new * version','How is * calculated',
                        'what I am doing wrong. Could you please',
                        'would like to use * interface',
-                       'would like to know * status']
+                       'would like to know * status',
+                       'my own hack','what * recommended procedure','do you have * suggest']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
@@ -112,7 +101,7 @@ class issues_keyphrases():
 
         name = 'Proxy/VOMS'
         systems = ['VOMS', 'proxy', 'Certificate','PEM']
-        actions= ['Error', 'fail', 'unable', '_init','not register', 'expired']
+        actions= ['Error', 'fail', 'unable', '_init','not register', 'expired','could not add']
         phrase1 = ['gb2_proxy_init * Error: Operation not permitted']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
@@ -121,7 +110,8 @@ class issues_keyphrases():
         name = 'Downloading files'
         UNIQUE = False
         systems = ['Download','Cannot get files','files stuck']
-        actions = ['fail',"can't",'cannot','error','unable','problem','slow','grid','files','issues','jobs','from LCG','stuck at']
+        actions = ['fail',"can't",'cannot','error','unable','problem','slow','grid','files','issues','jobs',
+                       'from LCG','stuck at', 'signal MC','timeout']
         phrase1 = ['trying to download * error','unable to retrieve * output','gb2_ds_get * crash',
                        "don't get rescheduled * download",'download * from the grid','error when download',
                        'trying to download * too long','download output * empty','files * size 0',
@@ -132,10 +122,10 @@ class issues_keyphrases():
 
         name = 'Failed jobs'
         UNIQUE = False
-        systems = ['Jobs','Job failing','Grid Job','project failure']
+        systems = ['Jobs','Job failing','Grid Job','project failure','to run']
         actions= ['fail', 'error','crash','Exited']
         phrase1 = ['job * failed','job * failing',
-                       'maximum * reschedul','max no *reschedul','scouting to fail']
+                       'maximum * reschedul','max no *reschedul','scouting to fail','receiv* job failure']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
@@ -153,7 +143,7 @@ class issues_keyphrases():
 
         name = 'Input data unavailable'
         UNIQUE = False
-        systems = ['Input data', 'datasets']
+        systems = ['Input data', 'datasets', 'disappear'] # 20220211
         actions= ['not available', 'error on']
         phrase1 = ['Input data not available' , 'fail * Input data resolution','job * Input data resolution' ]
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
@@ -200,9 +190,10 @@ class issues_keyphrases():
         name = 'Bug report'
         UNIQUE = False
         systems = ['belle2.org','MC generation','TypeError','gb2_',
-                       'Wildcard','BelleDIRAC job monitor','Production','verification failed']
-        actions = ['system error','wrong mass',' --','crash', 'broken',
-                    'fails','wrong number of files','failed']
+                       'Wildcard','BelleDIRAC job monitor','Production','verification failed', 'gbasf2 commands',
+                       'file larger', 'produced skim']
+        actions = ['system error','wrong mass',' --','crash', 'broken', 'larger than 5GB', 'larger than 5 GB', 
+                    'fails','wrong number of files','failed', 'failing', 'not working','unable to access']
         phrase1 = ['problem connecting * at KEK', 'feature of gbasf2 * stop working',
                     'trouble running * FEI',
                     'try to reschedule * following error:','now deprecate','dirac portal * Bad gateway',
