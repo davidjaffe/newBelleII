@@ -13,7 +13,7 @@ class tableMaker():
     def __init__(self):
         print('tableMaker.__init__ Completed')
         return
-    def pieTable(self,freq, persons, caption=None):
+    def pieTable(self,FREQ, PERSONS, caption=None, threshold=-1, smartThres=False):
         '''
         take input frequency (integers) for each person and create input for tableMaker to produce table
         with form of row:  Ni   fi  name_i, 
@@ -22,17 +22,40 @@ class tableMaker():
         fi = Ni/sum(Ni)
 
         sorted with greatest frequency at the top
+
+        all persons with freq <= threshold will be collected into a single category 'Others'
+        if threshold = True, set threshold = max(1,int(0.01*sum(FREQ)))
+
         '''
+        if type(threshold) is bool and threshold : threshold = max(1,int(0.01*sum(FREQ)))
+        
+        freq,persons = [],[]
+        nOther = 0
+        for Ni,pi in zip(FREQ,PERSONS):
+            if Ni<=threshold:
+                nOther += Ni
+            else:
+                freq.append(Ni)
+                persons.append(pi)
+        
         headers = ['Instances','Fraction']
         FMT     = ['d','.3f']
         rows, rowlabels = [],[]
-        Ntot = sum(freq)
+        Ntot = sum(freq) + nOther
         fsum = 0.
         for Ni,pi in sorted(zip(freq,persons),reverse=True):
             fi = float(Ni)/float(Ntot)
             fsum += fi
             rows.append( [Ni, fi] )
             rowlabels.append( pi )
+
+        if nOther>0 :
+            Ni,pi = nOther,'Others'
+            fi = float(Ni)/float(Ntot)
+            fsum += fi
+            rows.append( [Ni, fi] )
+            rowlabels.append( pi )
+            
         rows.append( [Ntot, fsum] )
         rowlabels.append( 'Total')
         self.tablePrintBoth(headers,rows,rowlabels,caption=caption,FMT=FMT)
@@ -125,9 +148,24 @@ if __name__ == '__main__' :
 
     testTableMaker2 = True
     if testTableMaker2 :
-        freq = [5,12,7,9,4,10,8]
-        persons = ['Nate', 'Andy','Sara', 'Betty', 'Sunej', 'Tom', 'Anwar']
+        freq = [5,0,1,0,1,12,7,9,4,10,8]
+        persons = ['Nate', 'Andy','Sara', 'Betty', 'Sunej', 'Tom', 'Anwar','Birdie','Robin','Joe','Jill','George','Briana']
+        persons.extend( ['Jim','Robert','Mary','Jess','Karen','Lisa','Chris','Dan','Richard','Wiliam','Carol','Deborah','Amanda'] )
+        import numpy
+        L = len(persons)
+        freq = list(numpy.random.poisson(2.5+7.,L))
+        for p in ['Ronald','Ed','Dot','Emily','Sandy']:
+            persons.append(p)
+            freq.append( numpy.random.randint(0,2) )
         caption = 'This is a test for the pie table'
         tM = tableMaker()
         tM.pieTable(freq,persons,caption=caption)
+
+        threshold = 1
+        caption = 'test with threshold='+str(threshold)
+        tM.pieTable(freq,persons,caption=caption,threshold=threshold)
+
+        threshold = True
+        caption = 'test with smart threshold'
+        tM.pieTable(freq,persons,caption=caption,threshold = threshold)
         sys.exit('done with tableMaker2 test of pieTable')

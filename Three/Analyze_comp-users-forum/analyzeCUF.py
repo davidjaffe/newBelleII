@@ -799,17 +799,15 @@ class analyzeCUF():
         # pie charts for all issues regardless of year
         if self.debug > 2 : print('analyzeCUF.analyzeThreads iByY["AllYears"]',iByY["AllYears"])
         for post,addValues in zip([' ' + self.dateLimits,' enumerated ' + self.dateLimits],[False,True]):
-            Title = self.mpl_interface.pie(iByY['AllYears'],issueOrder,title='All issues'+post,addValues=addValues)
-            self.showOrPlot(Title)
+            self.giveMePie(iByY['AllYears'],issueOrder,title='All issues'+post,addValues=addValues)
+            
         countsNonU,countsNoA = [],[]
         for n,issue in zip(iByY['AllYears'],issueOrder):
             if issue in nonUniqueOrder: countsNonU.append( n )
             if issue in issueOrderNoAnnouncement : countsNoA.append( n )
         for post,addValues in zip(['',' enumerated'],[False,True]):
-            Title = self.mpl_interface.pie(countsNonU,nonUniqueOrder,title='All non-unique issues'+post,addValues=addValues)
-            self.showOrPlot(Title)
-            Title = self.mpl_interface.pie(countsNoA,issueOrderNoAnnouncement,title='All issues except Announcements'+post,addValues=addValues)
-            self.showOrPlot(Title)
+            self.giveMePie(countsNonU,nonUniqueOrder,title='All non-unique issues'+post,addValues=addValues)
+            self.giveMePie(countsNoA,issueOrderNoAnnouncement,title='All issues except Announcements'+post,addValues=addValues)
 
         # table of issues by year, also percent of total issues with and w/o Announcements
         totByY,totByYnoA = {},{}
@@ -929,13 +927,13 @@ class analyzeCUF():
                             labels.append( 'None' )
                             counts.append(v)
                     if self.debug > 2: print('analyzeCUF.analyzeThreads year',year,'name',name,'counts',counts,'labels',labels,'title',title)
-                    self.mpl_interface.pie(counts,labels=labels,title=title,startangle=45)
-                    self.showOrPlot(title)
+                    self.giveMePie(counts,labels,title=title,startangle=45,threshold=True)
+
                     
                     if year==allY :
                         Title = title + ' enumerated'
-                        self.mpl_interface.pie(counts,labels=labels,title=Title,startangle=45,addValues=True)
-                        self.showOrPlot(Title)
+                        self.giveMePie(counts,labels,title=Title,startangle=45,addValues=True,threshold=True)
+
 
                 if self.debug > 1 :
                     print('analyzeCUF.analyzeThreads year',year,'dictReporters[year]',sorted(list(dictReporters[year].items()), key=lambda x:x[1], reverse=True))
@@ -995,6 +993,7 @@ class analyzeCUF():
 
         # histograms
         dtMax = None
+        rows, rowlabels = [], []
         for A,labelulog in zip([msgPerT,spanPerT,deltaTPerT], zip(['Messages per thread', 'Span of messages in threads',dtLabel],['liny','logy','logy'])):
             label,ulog = labelulog
             x1 = 0.5
@@ -1006,8 +1005,11 @@ class analyzeCUF():
                 x2 = max(A)+10.
                 if label==dtLabel : dtMax = x2
             Y = numpy.array(A)
-            median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
-            title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
+            median, mean, std, p90, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.percentile(Y,90.), numpy.max(Y)
+            if 'Days' in label :
+                rows.append( [median, mean, std, p90, mx] )
+                rowlabels.append( 'All' )
+            title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, p90={:.2f} max={:.2f}'.format(median,mean,std,p90,mx)
             Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label+ ' ' + self.dateLimits,title=title,grid=True,logy=ulog)
             print('analyzeCUF.analyzeThreads',label,title,'nbin,x1,x2',nbin,x1,x2)
             self.showOrPlot(label)
@@ -1022,11 +1024,17 @@ class analyzeCUF():
                 nbin = 100.
                 x2 = dtMax
                 Y = numpy.array(A)
-                median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
-                title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
+                #median, mean, std, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.max(Y)
+                median, mean, std, p90, mx = numpy.median(Y), numpy.mean(Y), numpy.std(Y), numpy.percentile(Y,90.), numpy.max(Y)
+                rows.append( [mean, mean, std, p90, mx] )
+                rowlabels.append( issue )
+                #title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, max={:.2f}'.format(median,mean,std,mx)
+                title = 'Median={:.2f}, Mean={:.2f}, stddev={:.2f}, p90={:.2f} max={:.2f}'.format(median,mean,std,p90,mx)
                 Title = self.mpl_interface.histo(Y,x1,x2,dx=1.,xlabel=label+ ' ' + self.dateLimits,title=title,grid=True,logy=ulog)
                 print('analyzeCUF.analyzeThreads',label,title,'nbin,x1,x2',nbin,x1,x2)
                 self.showOrPlot(label)
+        headers = ['Median', 'Mean', 'Std.Dev.', '90th percentile','Maximum']
+        self.tableMaker.tablePrintBoth(headers, rows, rowlabels, integers=False,caption='Days between earliest, latest message in thread')
 
         # plots
         title = 'Threads per month ' + self.dateLimits
@@ -1061,6 +1069,16 @@ class analyzeCUF():
             plt.tick_params(axis='x',which='both',labelrotation=80.)
             self.showOrPlot(title)
                 
+        return
+    def giveMePie(self,freq,freqwords,title=None,addValues=None,startangle=0.,threshold=-1):
+        '''
+        interface to 
+        mpl_interface.pie that makes a file containing a pie chart and 
+        tableMaker.pieTable that creates a text and latex table for printing
+        '''
+        Title = self.mpl_interface.pie(freq,freqwords,title=title,addValues=addValues,startangle=startangle)
+        self.showOrPlot(Title)
+        self.tableMaker.pieTable(freq,freqwords,caption=Title,threshold=threshold)
         return
     def identifyOpenThreads(self, Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates):
         '''
@@ -1109,14 +1127,12 @@ class analyzeCUF():
         sWho = set(openWho)
         fWho = [openWho.count(i) for i in sWho]
         if len(sWho)==0 : sWho,fWho = [1],['NO OPEN ISSUES']
-        title = self.mpl_interface.pie(fWho,sWho,title='Open issues by sender ' + self.dateLimits)
-        self.showOrPlot(title)
+        self.giveMePie(fWho,sWho,title='Open issues by sender ' + self.dateLimits,threshold=True)
 
         sIssue = set(openIssue)
         fIssue = [openIssue.count(i) for i in sIssue]
         if len(sIssue)==0 : sIssue,fIssue = [1],['NO OPEN ISSUES']
-        title = self.mpl_interface.pie(fIssue,sIssue,title='Open issues by issue ' + self.dateLimits,addValues=True)
-        self.showOrPlot(title)
+        self.giveMePie(fIssue,sIssue,title='Open issues by issue ' + self.dateLimits,addValues=True)
         
                     
         return
