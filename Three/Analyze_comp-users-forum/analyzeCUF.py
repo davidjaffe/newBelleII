@@ -125,6 +125,9 @@ class analyzeCUF():
         self.matchBy = {} # used by buildThreads. filled in findParent, locateRef
         self.matchByDescrip = {0:'no match',1:'IRT match',2:'REF match',3:'IRT & REF match',11:'IRT match by locateRef',12:'REF match by locateRef'}
 
+        ## set minimum duration in days for diagnostic printing of long threads
+        self.minimumDuration = 30. 
+
         print('analyzeCUF.__init__ Completed')
         return
     def getArchive(self):
@@ -144,6 +147,9 @@ class analyzeCUF():
         for fn in f:
             msgN = self.getMessageN(fn)
             msgOrder.append(msgN)
+
+        if len(msgOrder)==0 :
+            sys.exit('analyzeCUF.getArchive ERROR ' + str(len(msgOrder)) + ' files found in ' + self.DATA_DIR + '*/* . Check directory name!')
             
         # extract year and month of earliest and latest message.
         # add a month for latest message since conversion to datetime object yields first day of month
@@ -427,6 +433,7 @@ class analyzeCUF():
         print('\nanalyzeCUF.buildThreads Begin diagnostics, useLocateRef is',self.useLocateRef)
 
         self.printThreads(Threads, archiveDates,message='All threads, after building threads')
+        self.printThreads(Threads, archiveDates,message='All threads, after building threads',latex=True,minimumDuration=self.minimumDuration) ######
         
         # see if threads need to be merged based on (nearly) identical subjects
         nMergeCands = 0
@@ -478,7 +485,7 @@ class analyzeCUF():
         if self.debug > 1 : self.reportADB()
         
         return Threads
-    def printThreads(self,Threads, archiveDates, thread_issues=None, message=None): 
+    def printThreads(self,Threads, archiveDates, thread_issues=None, message=None, latex=False, minimumDuration=-1.): 
         '''
         print one line per thread for all Threads
 
@@ -486,6 +493,9 @@ class analyzeCUF():
         Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
         archiveDates[archive] = datetime object of message specified by archive
         OPTIONAL: thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
+        if latex = True, then output table suitable for latex
+
+        only print a line if thread duration exceeds minimumDuration (days)
 
         durationT[archive0] = maximum time difference in days between messages in thread specified by archive0
         firstLastT[archive0] = [t0,tmax] = [time of archive0, maximum time among all messages in thread]
@@ -494,14 +504,33 @@ class analyzeCUF():
         durationT, firstLastT = self.getThreadDuration(Threads, archiveDates)
 
         addTI = thread_issues is not None
+
+        latexAlign, latexReturn = '',''
+        if latex : latexAlign, latexReturn = ' & ', '\\\ ' 
         
         # archive #msgs t0 #days Subject
         header = 'List of threads'
         if message is not None : header = message
+        if minimumDuration > 0. : header += ' with minimum thread duration of {:.1f} days'.format(minimumDuration)
         print('\nanalyzeCUF.printThreads',header,'\n Threads identified with message-id, # of messages in thread, t0 of thread, duration in days & subject.')
         words = 'Subject'
         if addTI: words += ' | Issue(s)'
-        print('{0:>11} {1:>3} {2:>13} {3:>5} {4}'.format('message-id','#msg','Thread t0','dt(days)',words))
+        bs = latexAlign
+        if latex :
+            table = '\\caption{'+header+'} \n'
+            ncol = 4
+            table += '\\begin{tabular}{'
+            for i in range(ncol) : table += 'c'
+            table += '|l} \n'
+            line = ''
+            for text in ['message-id','N','Thread t0','Days',words]:
+                if len(line)>0 : line += bs
+                line += text 
+            line += latexReturn + '\n'
+            table += line
+        else:
+            line = '{0:>11} {1:>3} {2:>13} {3:>5} {4}'.format('message-id','#msg','Thread t0','dt(days)',words)
+            print(line)
         for archive in self.msgOrder:
             if archive in Threads:
                 Subject = Threads[archive][0]
@@ -510,7 +539,22 @@ class analyzeCUF():
                 nmsgs = len(Threads[archive][1])
                 words = Subject
                 if addTI : words += ' | '+', '.join(thread_issues[archive])
-                print('{0:<11} {1:>3} {2:>13} {3:>5.1f} {4}'.format(archive,nmsgs,t0.strftime('%Y%m%dT%H%M'),dt,words))
+                if dt > minimumDuration : 
+                    if latex: 
+                        line = ''
+                        for text,fmt in zip([archive,nmsgs,t0.strftime('%Y%m%dT%H%M'),dt,words.replace('_','$\_$')],['{:}','{:}','{:}','{:5.1f}','{}' ]):
+                            if len(line)>0 : line += bs
+                            line += fmt.format(text) 
+                        line += latexReturn + '\n'
+                        table += line
+                    else:
+                        line = '{0:<11} {1:>3} {2:>13} {3:>5.1f} {4}'.format(archive,nmsgs,t0.strftime('%Y%m%dT%H%M'),dt,words)
+                        print(line)
+        if latex :
+            table += '\\end{tabular} \n'
+            print('\n')
+            print(table)
+            print('\n')
         print('analyzeCUF.printThreads End of',header,'\n')
         return
     def checkThreads(self,words,Threads):
