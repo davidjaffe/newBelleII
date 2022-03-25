@@ -14,7 +14,7 @@ import numpy
 import matplotlib
 import matplotlib.pyplot as plt
 import random
-
+import datetime, calendar
 
 class mpl_interface():
     def __init__(self,internal=False):
@@ -157,10 +157,86 @@ class mpl_interface():
         if title is not None : plt.title( title, y=1.05, loc='left', bbox={'pad':3, 'facecolor':'none'} )
         if self.internal : plt.show()
         return title
+    def plot(self,X,Names,binwidth,byMonth=True,Title=None,debug=-1):
+        '''
+        make plots of the frequency of Names given abscissa values X in bins of width = binwidth, if byMonth = False. If byMonth = True, then bins are month long
+
+        returns the object to plot
+        '''
+
+        tfmt = '%Y%m%d'
+        tfmt2= '%Y%m%d%H%M%S'
+        x1,x2 = min(X),max(X)
+        if byMonth:
+            y1,m1 = x1.year,x1.month
+            y2,m2 = x2.year,x2.month
+            bins = []
+            for year in range(y1,y2+1):
+                firstm, lastm = 1,12
+                if year==y1 : firstm = m1
+                if year==y2 : lastm = m2
+                for month in range(firstm,lastm+1):
+                    d = datetime.datetime.strptime('{:04}{:02}{:02}'.format(year,month,1),tfmt)
+                    bins.append( d )
+            lastday = calendar.monthrange(y2,m2)[1]
+            d = datetime.datetime.strptime('{:04}{:02}{:02}{:02}{:02}{:02}'.format(y2,m2,lastday,23,59,59),tfmt2)
+            bins.append(d)
+            bins = numpy.array(bins)
+        else:
+            bins = numpy.arange(x1,x2+binwidth,binwidth)
+        if debug > 0 : print('mpl_interface.plot byMonth',byMonth,'bins',bins)
+        
+        for name in set(Names):
+            x = []
+            for u,v in zip(X,Names):
+                if v==name : x.append( u )
+            hist,edges = numpy.histogram(x,bins=bins)
+            e = []
+            for a,b in zip(edges[:-1],edges[1:]):
+                e.append(a + (b-a)/2.)
+
+            title = plt.plot(e,hist,'o-',label=name)
+        ncol = 1
+        ncol = len(set(Names))//5+1
+        plt.legend(loc='best',ncol=ncol)
+        if Title is not None : plt.title(Title)
+        if self.internal : plt.show()
+        return title
+            
+        
            
 if __name__ == '__main__' :
     internal = True
     mpli = mpl_interface(internal=internal)
+
+    testTimeHisto = False
+    if testTimeHisto :
+        t1 = datetime.datetime.strptime('20170201','%Y%m%d')
+        t2 = datetime.datetime.strptime('20220325','%Y%m%d')
+        dt = int((t2-t1).total_seconds())
+        print('dt',dt,'seconds')
+        issues = ['pigs','cats','flowers','dogs','gnus','kids','birds','foxes']
+        weights= [10,      20,     30,      1,     3,      4,     7,     2]
+        ISSUES = []
+        for i,w in zip(issues,weights):
+            ISSUES.extend( [i for x in range(w)] )
+
+        T,Y = [],[]
+        N = 1000
+        for i in range(N):
+            idt = random.randint(0,dt)
+            T.append(t1+datetime.timedelta(seconds=idt))
+            Y.append(random.choice(ISSUES))
+
+
+        binwidth = 365./12. * 3. # average days/month x 3 months
+        binwidth = datetime.timedelta(days=binwidth)
+
+        mpli.plot(T,Y,binwidth,byMonth=True,Title = 'every month')
+        mpli.plot(T,Y,binwidth,byMonth=False, Title = 'in 3 month chunks')
+        sys.exit('done')
+        
+        
 
     testPie = False
     if testPie :
