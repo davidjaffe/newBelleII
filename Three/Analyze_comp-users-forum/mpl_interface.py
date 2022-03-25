@@ -162,6 +162,11 @@ class mpl_interface():
         make plots of the frequency of Names given abscissa values X in bins of width = binwidth, if byMonth = False. If byMonth = True, then bins are month long
 
         returns the object to plot
+
+        first determine abscissa binning
+        then create histograms for each unique entry in Names
+        then enable readable legend that doesn't obscure points
+        then set title and plot (or return info for plotting)
         '''
 
         tfmt = '%Y%m%d'
@@ -185,38 +190,52 @@ class mpl_interface():
         else:
             bins = numpy.arange(x1,x2+binwidth,binwidth)
         if debug > 0 : print('mpl_interface.plot byMonth',byMonth,'bins',bins)
-        
+
+        ymi,yma = -1.,0.
         for name in set(Names):
             x = []
             for u,v in zip(X,Names):
                 if v==name : x.append( u )
             hist,edges = numpy.histogram(x,bins=bins)
+            yma = max(yma,max(hist))
             e = []
             for a,b in zip(edges[:-1],edges[1:]):
                 e.append(a + (b-a)/2.)
 
-            title = plt.plot(e,hist,'o-',label=name)
+            plt.plot(e,hist,'o-',label=name)
+
+        ## adjust ordinate limits to show zeros and to allow room for legend
+        ## set # of columns for legend and size of text in legend
+        ## create title 
+        ymi = -abs(yma)/50.
+        yma = 1.2*yma
+        plt.ylim( (ymi, yma) )
+
         ncol = 1
-        ncol = len(set(Names))//5+1
-        plt.legend(loc='best',ncol=ncol)
-        if Title is not None : plt.title(Title)
+        ncol = len(set(Names))//6+1
+        fontsize = 'small'
+        if len(set(Names))>12 : fontsize = 'x-small'
+        plt.legend(loc='best',ncol=ncol,fontsize=fontsize)
+
+        title = ' '.join(set(Names))
+        if Title is not None : title = Title
+        plt.title(title)
+        plt.grid()
         if self.internal : plt.show()
+        print('mpl_interface.plot title',title)
         return title
-            
-        
-           
 if __name__ == '__main__' :
     internal = True
     mpli = mpl_interface(internal=internal)
 
-    testTimeHisto = False
+    testTimeHisto = True
     if testTimeHisto :
         t1 = datetime.datetime.strptime('20170201','%Y%m%d')
         t2 = datetime.datetime.strptime('20220325','%Y%m%d')
         dt = int((t2-t1).total_seconds())
         print('dt',dt,'seconds')
-        issues = ['pigs','cats','flowers','dogs','gnus','kids','birds','foxes']
-        weights= [10,      20,     30,      1,     3,      4,     7,     2]
+        issues = ['pigs','cats','flowers','dogs','gnus','kids','birds','foxes','armadillos','great white whales','porcupines','wolverines','penguins','chipmunks','arrogant humans']
+        weights= [10,      20,     30,      1,     3,      4,     7,     2,         18,         9,                    22,        41,          77,        25,        104]
         ISSUES = []
         for i,w in zip(issues,weights):
             ISSUES.extend( [i for x in range(w)] )
