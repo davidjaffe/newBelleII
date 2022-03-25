@@ -997,10 +997,17 @@ class analyzeCUF():
         tThread = [] # list of datetime of Threads
         tThreadnoA = [] # list of datetime of Threads excluding thos classified as Announcements
 
-        
+        tIssues = [] # list of datetime of issues in Threads (note threads can be classified for multi-issues)
+        iIssues = [] # list of issues in threads (corresponds to tIssues
+
+            
         for archive in self.msgOrder:
             if archive in Threads:
                 tThread.append( archiveDates[archive] )
+                for issue in thread_issues[archive]:
+                    iIssues.append( issue )
+                    tIssues.append( archiveDates[archive] )
+                
                 if self.issues_keyphrases.announcementsName not in thread_issues[archive] : tThreadnoA.append( archiveDates[archive] )
                 ym = self.getMonth(archive)
                 if ym not in tPerM : tPerM[ym] = 0
@@ -1034,6 +1041,12 @@ class analyzeCUF():
             archiveList = self.getArchiveList(archive,Threads)
             self.writeMsgs(archiveList,output='Thread_'+archive.replace('/','_')+'deltaT_'+fdt)
         print('')
+
+        # monthly and quarterly issue tracking
+        threemonths =  datetime.timedelta(days=(365.242/12.) * 3)
+        for byMonth,Title in zip([True,False],['Issues per Month','Issues per Quarter']):
+            plot = self.mpl_interface.plot(tIssues,iIssues,threemonths,byMonth=byMonth,Title=Title)
+            self.showOrPlot(plot)
 
         # histograms
         dtMax = None
@@ -1503,6 +1516,21 @@ class analyzeCUF():
                 newmsgOrder.append( archive )
         print('analyzeCUF.setDateRange Original lengths of files, msgOrder',len(files),len(msgOrder),'returned lengths',len(newfiles),len(newmsgOrder),'given input time range',[x.strftime(self.timeFormat) for x in self.datetimeLimits])        
         return newfiles,newmsgOrder
+    def printGenInfo(self):
+        '''
+        print job generation info:  date and time, current working directory
+        and commands used for running jobs
+        '''
+        hdr = '%%% Generation information for this file'
+        now = '20140529 09:01:16'
+        now = self.now
+        cwd = os.getcwd()
+        args= ''
+        for a in sys.argv:
+            args += a + ' '
+        sentence = hdr + ' ' + now + ' ' + cwd + ' ' + args
+        print(sentence)
+        return 
     def main(self):
         '''
         main module for analysis
@@ -1523,6 +1551,7 @@ class analyzeCUF():
         get all grid sites with issues from threads
         analyze the grid sites issues
         '''
+        self.printGenInfo()
         files,msgOrder = self.getArchive()
         archiveDates  = self.extractMsg.getArchiveDates(files)
         files,msgOrder = self.setDateRange(files,msgOrder,archiveDates)
@@ -1582,7 +1611,7 @@ if __name__ == '__main__' :
 
     debug = -1
     plotToFile = False
-    data_dir = 'DATA2022201/'
+    data_dir = 'DATA202201/'
     startDate = '20000101T0000'
     endDate   = '20991231T2359'
 
