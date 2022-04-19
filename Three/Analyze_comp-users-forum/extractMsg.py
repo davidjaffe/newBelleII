@@ -504,11 +504,13 @@ if __name__ == '__main__' :
 #            fn = 'DATA/comp-users-forum_2021-03/'+str(n)
             fn = 'DATA/comp-users-forum_2021-02/'+str(n)
             fn = 'DATA/comp-users-forum_2017-06/1'
-            print('\n\nextractMsg -------------------------------- test get_text for fn',fn)
-            msg = eM.getMessageFromFile(fn)
-            msg = eM.msgFix(msg)
-            lines = eM.get_text(msg)
-            print(lines)
+            fn = 'DATA/comp-users-forum_2017-06/28'
+            print('\n\nextractMsg -------------------------------- test getText for fn',fn)
+
+            lines = eM.getText(fn,input='file')
+            for line in lines.split('\\n'):
+                print(line)
+
 
 
     lookForGridSites = False
