@@ -48,6 +48,7 @@ class issues_keyphrases():
         if report==True, then report definitions
 
         20220210 Revise and add some criteria based on Michel's analyses presented at the 39th,40th and 41st B2GMs
+        20220419 Further revisions to reduce the number of unclassified threads
 
  
         '''
@@ -58,7 +59,8 @@ class issues_keyphrases():
         systems = ['Distributed Computing', 'BelleDIRAC', 'DIRAC', 'KEKCC', 'network',
                        'VOMS membership','Please use gbasf2','Call for volunteer',
                        'Integration of BelleDIRAC','gbasf2 tutorial','Coming gbasf2','Release',
-                       'Singularity recipe','Draft of','Unscheduled','AMGA']
+                       'Singularity recipe','Draft of','Unscheduled','AMGA',
+                       'Conditions Database'   ]
         actions = ['intervention','to be down','shutdown', 'downtime','timeout', 'update',
                        'restart', 'security patch', 'release', 'is down','Please use gbasf2',
                        'test of','with Rucio','feedback','follow-up',
@@ -66,7 +68,7 @@ class issues_keyphrases():
                        'Singularity recipe','proceedings','power cut','not available',
                        'access GPFS']
         phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone',
-                       'Dear gbasf2 users', 'Dear colleagues','Dear all * gbasf2',
+                       'Dear gbasf2 users', 'Dear * colleagues','Dear all * gbasf2',
                        'Dear all * required','Dear all * workaround',
                        'CNAF outage * over', 'issue * Rucio server']
         UNIQUE = True
@@ -74,8 +76,8 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Queries'
-        systems = ['How to','module','Running on','To run on','How can I','Question']
-        actions = ['use','save','delet','on the grid','dataset','full data proc 10']
+        systems = ['How to','module','Running on','To run on','How can I','Question','On Hold']
+        actions = ['use','save','delet','on the grid','dataset','full data proc 10','reschedul']
         phrase1 = ['How can','Is there a * way','Is it possible','I need to understand','Does anyone know','Can anyone comment',
                        'what I can do if', 'Is there anyway to get * files', 'wondering why','Is there * a way',
                        'wondering if * a way','I wonder if there * a way','wondering if I',
@@ -84,7 +86,9 @@ class issues_keyphrases():
                        'How do I do','there is something missing * script','Please tell me how to', 
                        'Is it fine * to run',
                        'What does * indicate', 'Could you help','like to know * possible',
-                       'I have a question','Could * help me',
+                       'I have * question',
+                       'Could * help me',
+                       'Could * hint', 
                        'I am not sure this * correct place',
                        'when I try * gb2',
                        'like to confirm * ignored','questions.belle2.org','development of gbasf2',
@@ -143,8 +147,8 @@ class issues_keyphrases():
 
         name = 'Input data unavailable'
         UNIQUE = False
-        systems = ['Input data', 'datasets', 'disappear'] # 20220211
-        actions= ['not available', 'error on']
+        systems = ['Input data', 'datasets'] 
+        actions= ['not available', 'error on', 'disappear']
         phrase1 = ['Input data not available' , 'fail * Input data resolution','job * Input data resolution' ]
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
@@ -191,13 +195,17 @@ class issues_keyphrases():
         UNIQUE = False
         systems = ['belle2.org','MC generation','TypeError','gb2_',
                        'Wildcard','BelleDIRAC job monitor','Production','verification failed', 'gbasf2 commands',
-                       'file larger', 'produced skim']
+                       'file larger', 'produced skim','Conditions DataBase']
         actions = ['system error','wrong mass',' --','crash', 'broken', 'larger than 5GB', 'larger than 5 GB', 
-                    'fails','wrong number of files','failed', 'failing', 'not working','unable to access']
+                    'fails','wrong number of files','failed', 'failing', 'not working','unable to access',
+                    'Problem parsing payload']
         phrase1 = ['problem connecting * at KEK', 'feature of gbasf2 * stop working',
                     'trouble running * FEI',
-                    'try to reschedule * following error:','now deprecate','dirac portal * Bad gateway',
-                    "Can't load RucioFileCatalogClient",'error * rucio list',
+                    'try to reschedule * following error:',
+                    'FileCatalog error', 
+                    'now deprecate','dirac portal * Bad gateway',
+                    "Can't load RucioFileCatalogClient",
+                    'error * rucio list',
                     'limit on the allowed number of characters','Project is too long (max', 
                     'gb2_ds_ * error', 'gb2_ds_ * strange',
                     'strange status * job',
@@ -496,9 +504,10 @@ Failed (15)
         ufn.write('\nissues_keyphrases.classifyThreads HERE ARE THE UNCLASSIFIED THREADS')
         for key in Threads:
             if key not in Classified:
-                ufn.write('\nUNCLASSIFIED THREAD: '+ key + ' ' + Threads[key][0])
+                ufn.write('\nUNCLASSIFIED THREAD: '+ key + ' ' + Threads[key][0] + '\n')
                 words = self.extractMsg.getText(key,input='archive')
-                ufn.write(words)
+                for sentence in words.split('\\n'):
+                    ufn.write(sentence+ '\n')
         ufn.close()
 
         # self.wordFrequency(Threads,threshold=5)
