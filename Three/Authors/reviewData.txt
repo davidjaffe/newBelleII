@@ -1,0 +1,266 @@
+
+ 
+[Belle II] 		Belle II
+Authorship
+Confirmation
+		Welcome, David Jaffe
+View my record  |  Log out
+© KEK / Rey.Hori
+
+	FOR ANALYSTS/REVIEWERS:
+
+    Please read the Analysis Guidelines and Publication Check List. You can upload new files here by clicking on the title or number of your publication and then submitting each new file using the form at the top of the screen that appears.
+    Use the latest FULL acknowledgements or SHORT acknowledgements text for your paper.
+    Please include this Note to the Editor when you submit your paper.
+     
+    Request a Belle II and/or KEK preprint number for your paper.
+    For conference papers: 2022 PLAIN conference author list (Latest update: June 21, 2022 - no institutions)
+    For ArXiv submission of your paper,
+        you need to provide a plain-text version of your author list. Download and then use this python script to make this plain-text copy of your author-list file.
+        use the CC BY: Creative Commons Attribution license. 
+
+	
+ 
+ 
+		
+ 
+15
+B2Note
+Mail archive
+Authors
+	First search for a τ+τ− resonance in e+e−→μ+μ−τ+τ− events with the Belle II experiment
+Journal: 	To be submitted to PRL     
+Contacts: 	L. Corona, E. Graziani, G. De Pietro
+Referees: 	K. Kinoshita, H. Hayashii, J. Libby
+Inst Reviews: 	Nagoya, Bonn, Karlsruhe, Hawaii, Sydney
+Registered: 	Sat Jun 25 2022
+CWR ended: 	Sat Jul 9 midnight JST 2022
+AC ends: 	Authorship-confirmation end date will be announced later (confirmed)
+✓ During the Collaboration-Wide Review (CWR) for this paper, you are encouraged to read the latest draft (→ click on the paper's title) and the analysis documents (→ B2Note).
+✓ Send comments to the mail list (→ Contacts) and view all comments (→ Mail archive).
+✓ During the Authorship Confirmation (AC) period, you may change your mind about opting in or out of this paper's author list - only your last choice is remembered. Click Authors to verify your choice in the full author list.
+ 
+  Please include me as an author
+  Please do not include me as an author
+                      ... because I DISAGREE with this paper's content / conclusions.
+
+ 
+14
+B2Note
+Mail archive
+Authors
+	Observation of e+e−→ωχbJ and search for Xb→ωΥ(1S) at √s near 10.75 GeV
+Journal: 	Submitted to PRL      arXiv:2208.13189     
+Contacts: 	S. Jia, C. P. Shen
+Referees: 	R. Mizuk, M. Takizawa, S. Lacaprara
+Inst Reviews: 	Bonn, PNNL, IIT Hyderabad, Hawaii, Wayne State
+Registered: 	Fri Jun 24 2022
+CWR ended: 	Fri Jul 8 midnight JST 2022
+AC ended: 	Thu Aug 4 midnight JST 2022 (expired) (confirmed)
+Submitted: 	Tue Aug 30 2022 (+26 days)
+ 
+13
+B2Note
+Mail archive
+Authors
+	Measurement of the branching fraction and CP asymmetry in B0→π0π0 decays
+Journal: 	To be submitted to PRL     
+Contacts: 	F. Pham, M. E. Sevior
+Referees: 	T. Koga, J. Libby, R. Kowalewski
+Inst Reviews: 	Sydney, IPHC, Montreal, PNNL, USTC
+Registered: 	Fri Jun 24 2022
+CWR ended: 	Fri Jul 8 midnight JST 2022
+AC ends: 	Authorship-confirmation end date will be announced later (confirmed)
+✓ During the Collaboration-Wide Review (CWR) for this paper, you are encouraged to read the latest draft (→ click on the paper's title) and the analysis documents (→ B2Note).
+✓ Send comments to the mail list (→ Contacts) and view all comments (→ Mail archive).
+✓ During the Authorship Confirmation (AC) period, you may change your mind about opting in or out of this paper's author list - only your last choice is remembered. Click Authors to verify your choice in the full author list.
+ 
+  Please include me as an author
+  Please do not include me as an author
+                      ... because I DISAGREE with this paper's content / conclusions.
+
+ 
+12
+B2Note
+Mail archive
+Authors
+	Measurement of the Ω0c lifetime at Belle II
+Journal: 	Submitted to PRD(L)      arXiv:2208.08573     
+Contacts: 	A. Di Canto, N. K. Nisar
+Referees: 	M. Starič, J. Yelton, R. Žlebčík
+Inst Reviews: 	Nagoya, DESY, CPPM, IPMU, IPHC
+Registered: 	Fri Jun 24 2022
+CWR ended: 	Fri Jul 8 midnight JST 2022
+AC ended: 	Sat Jul 30 midnight JST 2022 (expired) (confirmed)
+Submitted: 	Fri Aug 19 2022 (+20 days)
+ 
+11
+B2Note
+Mail archive
+Authors
+	Search for an invisible Z′ in final states with two muons and missing energy at Belle II
+Journal: 	To be submitted to PRL     
+Contacts: 	M. Campajola, G. De Pietro, P. Feichtinger, E. Graziani, H. Haigh, G. Inguglia, P. Rados, L. Zani
+Referees: 	E. Prencipe, Y.-J. Kwon, C. Hearty
+Inst Reviews: 	Bonn, HSE, BINP, CMU, Pittsburgh
+Registered: 	Thu Jun 23 2022
+CWR ended: 	Thu Jul 7 midnight JST 2022
+AC ends: 	Authorship-confirmation end date will be announced later (confirmed)
+✓ During the Collaboration-Wide Review (CWR) for this paper, you are encouraged to read the latest draft (→ click on the paper's title) and the analysis documents (→ B2Note).
+✓ Send comments to the mail list (→ Contacts) and view all comments (→ Mail archive).
+✓ During the Authorship Confirmation (AC) period, you may change your mind about opting in or out of this paper's author list - only your last choice is remembered. Click Authors to verify your choice in the full author list.
+ 
+  Please include me as an author
+  Please do not include me as an author
+                      ... because I DISAGREE with this paper's content / conclusions.
+
+ 
+10
+B2Note
+Mail archive
+Authors
+	Search for lepton-flavor-violating τ decay to a lepton and invisible boson at Belle II
+Journal: 	To be submitted to PRL     
+Contacts: 	E. De La Cruz-Burelo, A. De Yta-Hernandez, M. Garcia-Hernandez, I. Heredia de la Cruz, P. Rados, A. Rostomyan, F. Tenchini, T. M. G. Kraetzschmar
+Referees: 	Y. Jin, G. Inguglia, R. J. Sobie
+Inst Reviews: 	Malaya, NPC, Tokyo, Tohoku, UAS
+Registered: 	Wed Jun 22 2022
+CWR ended: 	Wed Jul 6 midnight JST 2022
+AC ends: 	Authorship-confirmation end date will be announced later (confirmed)
+✓ During the Collaboration-Wide Review (CWR) for this paper, you are encouraged to read the latest draft (→ click on the paper's title) and the analysis documents (→ B2Note).
+✓ Send comments to the mail list (→ Contacts) and view all comments (→ Mail archive).
+✓ During the Authorship Confirmation (AC) period, you may change your mind about opting in or out of this paper's author list - only your last choice is remembered. Click Authors to verify your choice in the full author list.
+ 
+  Please include me as an author
+  Please do not include me as an author
+                      ... because I DISAGREE with this paper's content / conclusions.
+
+ 
+9
+B2Note
+Mail archive
+Authors
+	Measurement of the Λ+c lifetime
+Journal: 	PRL (accepted)      arXiv:2206.15227     
+Contacts: 	J. V. Bennett, A. Di Canto, N. K. Nisar
+Referees: 	M. Starič, D. Y. Kim, J. Yelton
+Inst Reviews: 	KISTI, IISER, Korea, Karlsruhe, Bonn
+Registered: 	Mon May 9 2022
+CWR ended: 	Mon May 23 midnight JST 2022
+AC ended: 	Wed Jun 22 midnight JST 2022 (expired) (confirmed)
+Submitted: 	Thu Jun 30 2022 (+8 days)
+ 
+8
+B2Note
+Mail archive
+Authors
+	Search for a dark photon and an invisible dark Higgs boson in μ+μ− and missing energy final states with the Belle II experiment
+Journal: 	Submitted to PRL      arXiv:2207.00509     
+Contacts: 	M. Bertemes, M. Campajola, G. De Pietro, E. Graziani, G. Inguglia
+Referees: 	U. Tamponi, Y.-J. Kwon, D. Greenwald, H. Yamamoto
+Inst Reviews: 	KEK, Korea, Melbourne, Bonn, Kyungpook
+Registered: 	Fri Feb 25 2022
+CWR ended: 	Mon Mar 14 midnight JST 2022
+AC ended: 	Tue Apr 12 midnight JST 2022 (expired) (confirmed)
+Submitted: 	Mon Jul 4 2022 (+83 days)
+ 
+7
+B2Note
+Mail archive
+Authors
+	Combined analysis of Belle and Belle II data to determine the CKM angle ϕ3 using B+→D(K0Sh−h+)h+ decays
+Journal: 	JHEP 02 2022, 063 (2022)      arXiv:2110.12125     
+Contacts: 	N. Rout, J. Libby, K. Trabelsi
+Referees: 	P. Krokovny, F. Meier, M. Uchida
+Inst Reviews: 	Roma Tre, Roma1, MPP, KEK, Yerevan, Yonsei, Torino, Chiba, Mississippi, Hawaii
+Registered: 	Wed Sep 15 2021
+CWR ended: 	Wed Sep 29 midnight JST 2021
+AC ended: 	Wed Oct 6 midnight JST 2021 (expired)
+Submitted: 	Tue Oct 26 2021 (+20 days)
+ 
+6
+B2Note
+Mail archive
+Authors
+	Measurement of lepton mass squared moments in B→Xcℓ+¯νℓ decays with the Belle II experiment
+Journal: 	Submitted to PRD      arXiv:2205.06372     
+Contacts: 	M. Welsch, F. U. Bernlochner
+Referees: 	A. Bozek, A. Warburton, Q. D. Zhou
+Inst Reviews: 	IIT Madras, Napoli, Melbourne, South Alabama, DESY, Florida, Kitasato, KEK, Tel Aviv, IJCLab
+Registered: 	Mon Sep 6 2021
+CWR ended: 	Mon Sep 20 midnight JST 2021
+AC ended: 	Sat Feb 5 midnight JST 2022 (expired) (confirmed)
+Submitted: 	Mon May 16 2022 (+100 days)
+ 
+5
+B2Note
+Mail archive
+Authors
+	Precise measurement of the D0 and D+ lifetimes at Belle II
+Journal: 	Phys Rev Lett 127, 211801 (2021)      arXiv:2108.03216     
+Contacts: 	T. Bilka, G. Casarosa, A. Di Canto, M. Dorigo, N. K. Nisar, R. Žlebčík
+Referees: 	B. Golob, D. Greenwald, S. Prell
+Inst Reviews: 	Bonn, Korea, Tata, DESY, Florida, LMU, KEK, Melbourne, Padova, Toho
+Registered: 	Wed Jul 7 2021
+CWR ended: 	Wed Jul 21 midnight JST 2021
+AC ended: 	Wed Jul 28 midnight JST 2021 (expired) (confirmed)
+Submitted: 	Mon Aug 9 2021 (+12 days)
+ 
+4
+B2Note
+Mail archive
+Authors
+	Search for B+→K+ν¯ν using an inclusive tagging method at Belle II
+Journal: 	Phys Rev Lett 127, 181802 (2021)      arXiv:2104.12624     
+Contacts: 	F. Dattola, A. Glazov, S. Kurz, C. Praz, S. Stefkova
+Referees: 	A. Soffer, G. Dujany, F. U. Bernlochner
+Inst Reviews: 	Sydney, Chiang Mai, Trieste, UBC, Pisa, Hawaii, IPMU, Goettingen, Fudan, Karlsruhe
+Registered: 	Fri Feb 26 2021
+CWR ended: 	Fri Mar 12 midnight JST 2021
+AC ended: 	Fri Mar 19 midnight JST 2021 (expired) (confirmed)
+Submitted: 	Thu May 6 2021 (+48 days)
+ 
+3
+B2Note
+Mail archive
+Authors
+	Search for axion-like particles produced in e+e− collisions at Belle II
+Journal: 	Phys Rev Lett 125, 161806 (2020)      arXiv:2007.13071     
+Contacts: 	M. De Nuccio, T. Ferber
+Referees: 	Y. Sakai, M. V. Purohit, J. V. Bennett
+Inst Reviews: 	Padova, Cincinnati, NPC, NTU-Taiwan, METU, Ljubljana(Uni-LJ), MPP, Kyungpook, Nagoya, Bonn
+Registered: 	Tue Jun 2 2020
+CWR ended: 	Wed Jun 17 midnight JST 2020
+AC ended: 	Wed Jun 24 midnight JST 2020 (expired) (confirmed)
+Submitted: 	Tue Jul 28 2020 (+34 days)
+ 
+2
+B2Note
+Mail archive
+Authors
+	Search for an invisibly decaying Z′ boson at Belle II in e+e−→μ+μ−(e±μ∓) + missing energy final states
+Journal: 	Phys Rev Lett 124, 141801 (2020)      arXiv:1912.11276     
+Contacts: 	M. Bertemes, M. Campajola, L. Corona, G. De Pietro, E. Graziani, G. Inguglia, I. Komarov, A. Martini, L. Zani
+Referees: 	E. Prencipe, C. Hearty, Y.-J. Kwon
+Inst Reviews: 	MPP, Hawaii, Giessen, Krakow, Ljubljana, Duke, Seoul, NPC, LMU, Cincinnati
+Registered: 	Wed Oct 23 2019
+CWR ended: 	Thu Nov 7 midnight JST 2019
+AC ended: 	Thu Nov 14 midnight JST 2019 (expired) (confirmed)
+Submitted: 	Tue Dec 24 2019 (+40 days)
+ 
+1
+B2Note
+Mail archive
+Authors
+	Measurement of the integrated luminosity of the Phase 2 data of the Belle II experiment
+Journal: 	Chinese Physics C 44, 021001 (2020)      arXiv:1910.05365     
+Contacts: 	X. Y. Zhou, S. X. Li, C. P. Shen
+Referees: 	E. Paoloni, V. Zhilich, K. Miyabayashi, V. Aushev
+Inst Reviews: 	Nagoya, Bonn, KEK, Malaya, Korea, Sydney, Armenia, MIPT, NTU, PNNL
+Registered: 	Thu Aug 15 2019
+CWR ended: 	Thu Sep 5 midnight JST 2019
+AC ended: 	Thu Sep 5 midnight JST 2019 (expired) (confirmed)
+Submitted: 	Fri Oct 11 2019 (+36 days)
+ 
+ 
+
