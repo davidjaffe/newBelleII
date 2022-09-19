@@ -118,8 +118,9 @@ class analyzeCUF():
             ['katouyuuji@gmail.com', '=?UTF-8?B?5Yqg6Jek5oKg5Y+4?=']]
 
         # 20220210 add list of 'Distributed Computing team'. This will be used to help classify single-message threads as 'Announcements'
+        # 20220916 add A.Panta email
         self.DistComputing = ['ueda@post.kek.jp', 'kato@hepl.phys.nagoya-u.ac.jp', 'cedric.serfon@cern.ch', \
-                                  'hideki.miyake@kek.jp','hito@rcf.rhic.bnl.gov', 'jd@bnl.gov', 'takanori.hara@kek.jp']
+                                  'hideki.miyake@kek.jp','hito@rcf.rhic.bnl.gov', 'jd@bnl.gov', 'takanori.hara@kek.jp', 'apanta1@go.olemiss.edu']
 
         # matching methods used to build threads in findParent and locateRef
         self.matchBy = {} # used by buildThreads. filled in findParent, locateRef
@@ -1569,7 +1570,12 @@ class analyzeCUF():
 
         self.identifyOpenThreads(Threads,issues,issueOrder,issueUnique,thread_issues,archiveDates)
         
-        self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All threads with issues') 
+        self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All threads with issues')
+        self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All threads with issues',minimumDuration=7)
+        self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All threads with issues',minimumDuration=7,latex=True)
+        self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All threads with issues',minimumDuration=30)
+        self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All threads with issues',minimumDuration=30,latex=True)
+
 
         grid_issues = self.issues_keyphrases.gridIssues(Threads,gridSiteNames)
         grid_issues = self.correlateGrid(grid_issues, issues, issueOrder, issueUnique)

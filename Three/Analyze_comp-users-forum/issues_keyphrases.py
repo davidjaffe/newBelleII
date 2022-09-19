@@ -43,6 +43,7 @@ class issues_keyphrases():
         systems = list of systems in Subject
         actions = list of actions in Subject
         phraseN = list of phrases in email text, phraseN must precede phraseN+1 in text
+                NOTE THAT ONLY EMAIL TEXT OF FIRST MESSAGE IN THREAD IS SCRUTINIZED
         case is ignored
 
         if report==True, then report definitions
@@ -67,7 +68,7 @@ class issues_keyphrases():
                        'migration to Rucio','available on',
                        'Singularity recipe','proceedings','power cut','not available',
                        'access GPFS']
-        phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone',
+        phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone', 'Dear Grid Users',
                        'Dear gbasf2 users', 'Dear * colleagues','Dear all * gbasf2',
                        'Dear all * required','Dear all * workaround',
                        'CNAF outage * over', 'issue * Rucio server']
@@ -76,8 +77,8 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Queries'
-        systems = ['How to','module','Running on','To run on','How can I','Question','On Hold']
-        actions = ['use','save','delet','on the grid','dataset','full data proc 10','reschedul']
+        systems = ['How to','module','Running on','To run on','How can I','Question','On Hold','Justice for']
+        actions = ['use','save','delet','on the grid','dataset','full data proc 10','reschedul','grid-users']
         phrase1 = ['How can','Is there a * way','Is it possible','I need to understand','Does anyone know','Can anyone comment',
                        'what I can do if', 'Is there anyway to get * files', 'wondering why','Is there * a way',
                        'wondering if * a way','I wonder if there * a way','wondering if I',
@@ -88,7 +89,8 @@ class issues_keyphrases():
                        'What does * indicate', 'Could you help','like to know * possible',
                        'I have * question',
                        'Could * help me',
-                       'Could * hint', 
+                       'Could * hint',
+                       'trying to submit  jobs * message that I get',
                        'I am not sure this * correct place',
                        'when I try * gb2',
                        'like to confirm * ignored','questions.belle2.org','development of gbasf2',
@@ -113,9 +115,9 @@ class issues_keyphrases():
 
         name = 'Downloading files'
         UNIQUE = False
-        systems = ['Download','Cannot get files','files stuck']
+        systems = ['Download','Cannot get files','files stuck', 'Replicas']
         actions = ['fail',"can't",'cannot','error','unable','problem','slow','grid','files','issues','jobs',
-                       'from LCG','stuck at', 'signal MC','timeout']
+                       'from LCG','stuck at', 'signal MC','timeout','takes hours', 'stuck']
         phrase1 = ['trying to download * error','unable to retrieve * output','gb2_ds_get * crash',
                        "don't get rescheduled * download",'download * from the grid','error when download',
                        'trying to download * too long','download output * empty','files * size 0',
@@ -126,7 +128,7 @@ class issues_keyphrases():
 
         name = 'Failed jobs'
         UNIQUE = False
-        systems = ['Jobs','Job failing','Grid Job','project failure','to run']
+        systems = ['Jobs','Job failing','Grid Job','project failure','to run','Projects']
         actions= ['fail', 'error','crash','Exited']
         phrase1 = ['job * failed','job * failing',
                        'maximum * reschedul','max no *reschedul','scouting to fail','receiv* job failure']
@@ -136,9 +138,9 @@ class issues_keyphrases():
         name = 'Jobs in waiting/stuck'
         UNIQUE = False
         systems = ['Jobs']
-        actions = ['waiting','stall','too long','stuck in Completed status']
+        actions = ['waiting','stall','too long','stuck in Completed status','stuck on Completed']
         phrase1 = ['stuck * Pilot Agent', 'running on the grid * more than','jobs * stalled',
-                       'jobs * stuck',
+                       'jobs * stuck','job * stuck',
                        'project * still waiting','Waiting for Scout Job Completion',
                        'job * in "Waiting"',
                        'submit * ago','jobs * no sign of activity']
@@ -195,10 +197,10 @@ class issues_keyphrases():
         UNIQUE = False
         systems = ['belle2.org','MC generation','TypeError','gb2_',
                        'Wildcard','BelleDIRAC job monitor','Production','verification failed', 'gbasf2 commands',
-                       'file larger', 'produced skim','Conditions DataBase']
+                       'file larger', 'produced skim','Conditions DataBase', 'Signal MC','wrong Ecm','list_all_collections']
         actions = ['system error','wrong mass',' --','crash', 'broken', 'larger than 5GB', 'larger than 5 GB', 
                     'fails','wrong number of files','failed', 'failing', 'not working','unable to access',
-                    'Problem parsing payload']
+                    'Problem parsing payload', 'dataset missing', 'wrong Ecm in bucket']
         phrase1 = ['problem connecting * at KEK', 'feature of gbasf2 * stop working',
                     'trouble running * FEI',
                     'try to reschedule * following error:',
