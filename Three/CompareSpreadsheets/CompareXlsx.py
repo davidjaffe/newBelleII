@@ -2,13 +2,14 @@
 '''
 compare one sheet in two xlsx files, using pandas
 20221223
+20221228 Specialize to comparing Budget Model sheets
 
 ref: https://stackoverflow.com/questions/37113173/compare-2-excel-files-using-python
 
 '''
-import sys
+import sys,os
 import math
-import xlrd
+# import xlrd
 import numpy
 import pandas as pd
 import copy
@@ -36,7 +37,7 @@ class CompareXlsx():
         if self.debug > 1 : print('CompareXlsx.__init__ self.favColumns',self.favColumns)
         self.rowForColHeaders = 1
         
-            
+        self.now = datetime.datetime.now().strftime('%Y%m%dT%H%M%S')
 
         
         return
@@ -103,22 +104,38 @@ class CompareXlsx():
             print('CompareXlsx.findLimitingRows LimitingRows',LimitingRows)
             sys.exit('CompareXlsx.findLimitingRows ERROR Failed to find some or all KEYWORDS')
 
+        ## fill RowNames from inclusive list of rows between LimitingRows
+        ## require the second column of row to have content (not a Nan or zero length string)
+        ## this requirement should avoid rows that are the sum of preceding rows based on idiosyncracy of Budget Model table
         for label in RowNames:
-            i1,i2 = LimitingRows[label][0][1],LimitingRows[label][1][1]+1
+            i1,i2 = LimitingRows[label][0][1],LimitingRows[label][1][1]+1  # inclusive range
             for irow in range(i1,i2):
                 name = ''
+                names = []
                 for icol,colName in enumerate(DS.columns):
                     cell = DS.iloc[irow,icol]
                     if cell==cell : # avoid nans
                         name += str(cell) + ' '
-                if len(name)>0 : RowNames[label][irow] = name
+                        names.append( str(cell) )
+                    else:
+                        names.append( '' )
+                if len(name)>0 and names[1]!='' : RowNames[label][irow] = name
                 
             if self.debug > 1 : print('CompareXlsx.findLimitingRows label',label,'RowNames',RowNames[label])
             
         return LimitingRows, RowNames
     def compare(self,decks,LABEL=None):
+        '''
+        compare same sheet from two xlsx files specified in decks = [ [list1], [list2] ]
+        list1 = [filename, favColumns, LimitingRows, RowNames]
 
+        input LABEL can be used to comparison to a section of spreadsheet. 
+        LimitingRows.keys contain the section names  
 
+        only compare columns specified in favColumns that appear in both sheets
+
+        only the first instance of a difference between row values for a given column header will be reported
+        '''
         File, favColumns, LimitingRows, RowNames, Frame = [],[],[],[],[]
         for deck in decks:
             File.append(deck[0])
@@ -131,32 +148,66 @@ class CompareXlsx():
         if LABEL is not None:
             if LABEL not in self.LimitingRowLabels : sys.exit('CompareXlsx.compare ERROR INPUT LABEL ' + LABEL)
             Labels = [LABEL]
-        colNames = list(set(favColumns[0].keys())&set(favColumns[1].keys()))  # common column names only
 
-        print('CompareXlsx.compare \nCompare files',File[0],File[1])
+        ## only compare columns that appear in both sheets
+        colNames = sorted(list(set(favColumns[0].keys())&set(favColumns[1].keys())))  # common column names only
+
+        print('\n',*['+' for x in range(120)],sep='')
+        print('+++++ CompareXlsx.compare \n+++++ Compare files',File[0],File[1],' and list differences',self.now)
+        for fn in File:
+            if os.path.islink(fn) : print('+++++',fn,'is',os.path.realpath(fn))
+        print('+++++ Designate column header by NAME and column numbers(counts from 0) in the two files: NAME(icol1,icol2)')
+        print(*['=' for x in range(120)],sep='')
+
+        if self.debug > 1 : print('CompareXlsx.compare DEBUG printout enabled for file comparison')
         
-        for label in Labels:
-            print('\n',label)
+        for label in Labels:   ## section labels
+            if self.debug > 1 : print('\n',label)
+            printBuffer = '\n' + label + '\n'
             NoProblem = True
+            badValues, badNames = 0, 0
             for colName in colNames:
-                header  = 'Column header ' + colName
                 for icol1,icol2 in zip(favColumns[0][colName],favColumns[1][colName]):
+                    header  = 'Column header ' + colName + '('+str(icol1)+','+str(icol2)+')'
                     for irow1,irow2 in zip(RowNames[0][label],RowNames[1][label]):
                         name1 = RowNames[0][label][irow1]
                         name2 = RowNames[1][label][irow2]
                         value1 = Frame[0].iloc[irow1,icol1]
                         value2 = Frame[1].iloc[irow2,icol2]
-                        OK, words = self.reportComparison(name1,value1,name2,value2,comparison='float')
-                        if not OK :
+                        OK, words, okValue, okName = self.reportComparison(name1,value1,name2,value2,comparison='float')
+                        if not okValue : badValues += 1
+                        if not okName  : badNames  += 1
+                        if (not OK) and (words not in printBuffer) :
                             NoProblem = False
-                            if header is not None: print(header)
+                            if header is not None:
+                                if self.debug > 1 : print(header)
+                                printBuffer = self.addToBuffer(printBuffer,header)
                             header = None
-                            print(words)
-            if NoProblem : print('No problems found for',label)
+                            if self.debug > 1 : print(words)
+                            printBuffer = self.addToBuffer(printBuffer,words)
+            if NoProblem :
+                words = 'No problems found for '+label
+                if self.debug > 1 : print(words)
+                printBuffer = self.addToBuffer(printBuffer,words)
+            else:
+                words = '{} had {} instances of unequal values and {} instances of non-matching names'.format(label,badValues,badNames)
+                if self.debug > 1 : print(words)
+                printBuffer = self.addToBuffer(printBuffer,words)
+            print(printBuffer)
 
         
 
         return
+    def addToBuffer(self,printBuffer,newLine):
+        '''
+        add newLine to end of printBuffer unless newLine already exists in printBuffer
+        return printBuffer
+        '''
+        if self.debug > 2 : print('CompareXlsx.addToBuffer Entry len(printBuffer)',len(printBuffer),'newLine',newLine)
+        if newLine in printBuffer : return printBuffer
+        printBuffer += newLine + '\n'
+        if self.debug > 2 : print('CompareXlsx.addToBuffer Exit len(printBuffer)',len(printBuffer))
+        return printBuffer
     def reportComparison(self,name1,value1,name2,value2,comparison='float',tolerance=1.):
         '''
         Inputs:
@@ -166,16 +217,20 @@ class CompareXlsx():
         tolerance is explained below
 
         REPORT issued if value1 != value2 or if name1!=name2 or if types don't match (int is converted to float for comparison)
+        return False, string_with_report, okValue, okName
+        where okValue = False if value1!=value2
+              okName  = False if name1 !=name2
 
         NO REPORT if value1 and value2 are equal within tolerance and not nan, 
                OR if both value1 and value2 are NAN, 
                OR if comparison is float and value1 and value2 are str
+        return True, '', okValue, okName
+        
 
         '''
-
         
-        okValue, okName = True, name1==name2
-
+        okValue = True
+        okName = name1==name2
         okType = (isinstance(value1, (int,float)) and isinstance(value2, (int,float))) or (type(value1)==type(value2))
             
         if not okType:
@@ -185,8 +240,8 @@ class CompareXlsx():
         else : 
             okValue = (value1==value1 and abs(float(value2)-float(value1))<tolerance) or (value1!=value1 and value2!=value2)
 
-
-        if okValue and okName and okType : return True,''
+        if okValue and okName and okType : return True,'',okValue,okName
+            
         rs = ''
         if okName :
             rs = name1
@@ -198,8 +253,7 @@ class CompareXlsx():
             else:
                 rs += ' Unequal values {:.0f} {:.0f}'.format(value1,value2)
         if not okType: rs += ' Different types {} {}'.format( type(value1),type(value2))
-        return False,rs
-
+        return False,rs,okValue,okName
     def main(self):
 
         favColumns1 = self.findFavColumns(self.file1)
@@ -209,7 +263,7 @@ class CompareXlsx():
         LimitingRows2, RowNames2 = self.findLimitingRows(self.file2)
 
         decks = [ [self.file1,favColumns1, LimitingRows1, RowNames1], [self.file2, favColumns2, LimitingRows2, RowNames2] ]
-        self.compare(decks,LABEL='OverheadRates')
+        #self.compare(decks,LABEL='OverheadRates')
         self.compare(decks)
 
 
