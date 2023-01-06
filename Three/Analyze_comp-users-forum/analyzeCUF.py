@@ -119,8 +119,10 @@ class analyzeCUF():
 
         # 20220210 add list of 'Distributed Computing team'. This will be used to help classify single-message threads as 'Announcements'
         # 20220916 add A.Panta email
+        # 20230105 add Hiroaki Ono and Michel email
         self.DistComputing = ['ueda@post.kek.jp', 'kato@hepl.phys.nagoya-u.ac.jp', 'cedric.serfon@cern.ch', \
-                                  'hideki.miyake@kek.jp','hito@rcf.rhic.bnl.gov', 'jd@bnl.gov', 'takanori.hara@kek.jp', 'apanta1@go.olemiss.edu']
+                                  'hideki.miyake@kek.jp','hito@rcf.rhic.bnl.gov', 'jd@bnl.gov', 'takanori.hara@kek.jp', 'apanta1@go.olemiss.edu', \
+                                  'ono@ngt.ndu.ac.jp', 'michel.hernandez.villanueva@desy.de']
 
         # matching methods used to build threads in findParent and locateRef
         self.matchBy = {} # used by buildThreads. filled in findParent, locateRef
@@ -486,7 +488,7 @@ class analyzeCUF():
         if self.debug > 1 : self.reportADB()
         
         return Threads
-    def printThreads(self,Threads, archiveDates, thread_issues=None, message=None, latex=False, minimumDuration=-1.): 
+    def printThreads(self,Threads, archiveDates, thread_issues=None, message=None, latex=False, minimumDuration=-1., onlyUnclassified=False): 
         '''
         print one line per thread for all Threads
 
@@ -494,6 +496,7 @@ class analyzeCUF():
         Threads[archive0] = [Subject0,[(archive0,msgid0,irt0,from0), (archive1,msgid1,irt1,from1) ,...] ]
         archiveDates[archive] = datetime object of message specified by archive
         OPTIONAL: thread_issues = {}  # {archive0: [issue1, issue2]} = how many issues assigned to each thread?
+        if onlyUnclassified = True, then only output Unclassified threads (added 20230105) 
         if latex = True, then output table suitable for latex
 
         only print a line if thread duration exceeds minimumDuration (days)
@@ -540,7 +543,7 @@ class analyzeCUF():
                 nmsgs = len(Threads[archive][1])
                 words = Subject
                 if addTI : words += ' | '+', '.join(thread_issues[archive])
-                if dt > minimumDuration : 
+                if dt > minimumDuration and ((not onlyUnclassified) or (onlyUnclassified and 'Unclassified' in thread_issues[archive])): 
                     if latex: 
                         line = ''
                         for text,fmt in zip([archive,nmsgs,t0.strftime('%Y%m%dT%H%M'),dt,words.replace('_','$\_$')],['{:}','{:}','{:}','{:5.1f}','{}' ]):
@@ -1576,6 +1579,8 @@ class analyzeCUF():
         self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All threads with issues',minimumDuration=30)
         self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All threads with issues',minimumDuration=30,latex=True)
 
+        self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All Unclassified threads',onlyUnclassified=True)
+        self.printThreads(Threads, archiveDates, thread_issues=thread_issues,message='All Unclassified threads',onlyUnclassified=True,latex=True)
 
         grid_issues = self.issues_keyphrases.gridIssues(Threads,gridSiteNames)
         grid_issues = self.correlateGrid(grid_issues, issues, issueOrder, issueUnique)

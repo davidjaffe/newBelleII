@@ -500,16 +500,15 @@ if __name__ == '__main__' :
 
     betterGetText = False
     if betterGetText :
-        for n in range(38,39):
-#            fn = 'DATA/comp-users-forum_2021-03/'+str(n)
-            fn = 'DATA/comp-users-forum_2021-02/'+str(n)
-            fn = 'DATA/comp-users-forum_2017-06/1'
-            fn = 'DATA/comp-users-forum_2017-06/28'
-            print('\n\nextractMsg -------------------------------- test getText for fn',fn)
+        fn = 'DATA202301/comp-users-forum_2022-11/75'
+        print('\n\nextractMsg -------------------------------- test getText for fn',fn)
 
-            lines = eM.getText(fn,input='file')
-            for line in lines.split('\\n'):
-                print(line)
+        lines = eM.getText(fn,input='file')
+        print(lines)
+        print('\n REPLACE LINEFEEDS WITH SPACES \n',lines.replace('\\n',' '))
+
+        for line in lines.split('\\n'):
+            print(line)
 
 
 

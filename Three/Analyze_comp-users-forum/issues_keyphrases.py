@@ -61,13 +61,15 @@ class issues_keyphrases():
                        'VOMS membership','Please use gbasf2','Call for volunteer',
                        'Integration of BelleDIRAC','gbasf2 tutorial','Coming gbasf2','Release',
                        'Singularity recipe','Draft of','Unscheduled','AMGA',
-                       'Conditions Database'   ]
+                       'Conditions Database',
+                       'Downtime', 'Removal of'   ]
         actions = ['intervention','to be down','shutdown', 'downtime','timeout', 'update',
                        'restart', 'security patch', 'release', 'is down','Please use gbasf2',
                        'test of','with Rucio','feedback','follow-up',
                        'migration to Rucio','available on',
                        'Singularity recipe','proceedings','power cut','not available',
-                       'access GPFS']
+                       'access GPFS',
+                       'grid services', 'from grid use']
         phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone', 'Dear Grid Users',
                        'Dear gbasf2 users', 'Dear * colleagues','Dear all * gbasf2',
                        'Dear all * required','Dear all * workaround',
@@ -99,15 +101,18 @@ class issues_keyphrases():
                        'what I am doing wrong. Could you please',
                        'would like to use * interface',
                        'would like to know * status',
-                       'my own hack','what * recommended procedure','do you have * suggest']
+                       'my own hack','what * recommended procedure','do you have * suggest',
+                       'gbasf2 * wanted to check', 'I see the following interesting effect',
+                       'my understanding * analysts were encouraged', 
+                       'run gbasf2 with patched basf2']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
         
 
         name = 'Proxy/VOMS'
-        systems = ['VOMS', 'proxy', 'Certificate','PEM']
-        actions= ['Error', 'fail', 'unable', '_init','not register', 'expired','could not add']
+        systems = ['VOMS', 'proxy', 'Certificate','PEM', 'Problem', 'Registration']
+        actions= ['Error', 'fail', 'unable', '_init','not register', 'expired','could not add','initializing proxy']
         phrase1 = ['gb2_proxy_init * Error: Operation not permitted']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
@@ -143,7 +148,8 @@ class issues_keyphrases():
                        'jobs * stuck','job * stuck',
                        'project * still waiting','Waiting for Scout Job Completion',
                        'job * in "Waiting"',
-                       'submit * ago','jobs * no sign of activity']
+                       'submit * ago','jobs * no sign of activity',
+                       'file transfers * stuck']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
@@ -157,12 +163,13 @@ class issues_keyphrases():
 
         name = 'Submitting jobs'
         UNIQUE = False
-        systems = ['submit', 'submission']
-        actions= ['cannot','troubles','problem','Resubmit','not show','environment','How to','fail']
+        systems = ['submit', 'submission', 'reschedule']
+        actions= ['cannot','troubles','problem','Resubmit','not show','environment','How to','fail','collections','unable']
         phrase1 = ['trouble submitting jobs','issue submitting jobs','difficult * submitting jobs',
                        'on the grid * error','to the GRID * error',
                        'submitted several jobs * wrong', 
-                       'submit a job * not allowed']
+                       'submit a job * not allowed',
+                       'workload-management server * down']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
@@ -197,10 +204,11 @@ class issues_keyphrases():
         UNIQUE = False
         systems = ['belle2.org','MC generation','TypeError','gb2_',
                        'Wildcard','BelleDIRAC job monitor','Production','verification failed', 'gbasf2 commands',
-                       'file larger', 'produced skim','Conditions DataBase', 'Signal MC','wrong Ecm','list_all_collections']
+                       'file larger', 'produced skim','Conditions DataBase', 'Signal MC','wrong Ecm','list_all_collections',
+                       'RucioFileCatalog interface']
         actions = ['system error','wrong mass',' --','crash', 'broken', 'larger than 5GB', 'larger than 5 GB', 
                     'fails','wrong number of files','failed', 'failing', 'not working','unable to access',
-                    'Problem parsing payload', 'dataset missing', 'wrong Ecm in bucket']
+                    'Problem parsing payload', 'dataset missing', 'wrong Ecm in bucket', 'error']
         phrase1 = ['problem connecting * at KEK', 'feature of gbasf2 * stop working',
                     'trouble running * FEI',
                     'try to reschedule * following error:',
@@ -576,13 +584,17 @@ Failed (15)
         if the wildcard '*' is found in a phrase, eg: 'part1 * part2', 
         then both 'part1' and 'part2' must be found in Subject and the location of 'part1' must precede 'part2'
         matching ignores case
+
+        20230105 also replace all \n in Subject with a blank so that phrases that extend over 
+                 multiple lines can be parsed and matched. And replace double spaces in Subject with a single space. 
         '''
-        subject = Subject.lower()
+        
+        subject = Subject.lower().replace('\\n',' ').replace('  ',' ')
         if self.debug > 2 : print('issues_keyphrases.basicFind subject',subject)
         for phrase in phrases:
             p = phrase.lower()
             if self.debug > 2 : print('issues_keyphrases.basicFind phrase.lower()',p)
-            if '*' in p:
+            if '*' in p: 
                 i = p.index('*')
                 p1 = p[:i].strip()
                 p2 = p[i+1:].strip()
@@ -596,7 +608,6 @@ Failed (15)
                     return True
         if self.debug > 2 : print('issues_keyphrases.basicFind phrase NOT found in subject')
         return False
-
     def readFileThreads(self):
         fn = 'threads'
         f = open(fn,'r')
