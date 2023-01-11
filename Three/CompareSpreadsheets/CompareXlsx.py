@@ -255,12 +255,18 @@ class CompareXlsx():
         if not okType: rs += ' Different types {} {}'.format( type(value1),type(value2))
         return False,rs,okValue,okName
     def main(self):
+        '''
+        Compare specific row,columns in self.sheet of files self.file1 and self.file2.
+        
+        '''
 
+        print('CompareXlsx.main First do setup for comparison')
         favColumns1 = self.findFavColumns(self.file1)
         favColumns2 = self.findFavColumns(self.file2)
 
         LimitingRows1, RowNames1 = self.findLimitingRows(self.file1)
         LimitingRows2, RowNames2 = self.findLimitingRows(self.file2)
+        print('CompareXlsx.main Setup complete, begin comparison\n')
 
         decks = [ [self.file1,favColumns1, LimitingRows1, RowNames1], [self.file2, favColumns2, LimitingRows2, RowNames2] ]
         #self.compare(decks,LABEL='OverheadRates')
@@ -274,6 +280,9 @@ if __name__ == '__main__':
     file1='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB dj.xlsx'
     file2='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB.xlsx'
     sheet='Budget Model'
+    if len(sys.argv)==1:
+        print('USAGE: python CompareXlsx.py [debug({})] [file1] [file2] [sheet({})]'.format(debug,sheet),'\n DEFAULT file1 =',file1,'\n DEFAULT file2 =',file2)
+        sys.exit('That should help')
     if len(sys.argv)>1 : debug = int(sys.argv[1])
     if len(sys.argv)>2 :
         file1 = sys.argv[2]
