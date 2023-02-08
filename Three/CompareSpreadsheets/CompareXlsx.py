@@ -15,6 +15,7 @@ import pandas as pd
 import copy
 
 import datetime
+import Logger # direct stdout to file & terminal 
 
 
 class CompareXlsx():
@@ -26,6 +27,11 @@ class CompareXlsx():
         self.file2 = file2
         self.sheet = sheet
 
+        self.now = datetime.datetime.now().strftime('%Y%m%dT%H%M%S')
+        logfile = 'LOGS/' + self.now + '.log'
+        sys.stdout = Logger.Logger(fn=logfile)
+        print('CompareXlsx.__init__ Output directed to stdout and',logfile)
+        
         self.LimitingRowsAllowedColumns = "A,B"
         self.LimitingRowLabels = ['DirectCosts', 'IndirectCosts', 'Labor', 'OverheadRates']
         self.LimitingRows = { 'DirectCosts' :  [ ['DESCRIPTION', None] , ['TOTAL DIRECT COSTS', None] ],
@@ -37,7 +43,6 @@ class CompareXlsx():
         if self.debug > 1 : print('CompareXlsx.__init__ self.favColumns',self.favColumns)
         self.rowForColHeaders = 1
         
-        self.now = datetime.datetime.now().strftime('%Y%m%dT%H%M%S')
 
         
         return
@@ -252,6 +257,8 @@ class CompareXlsx():
                 rs += ' Unequal values ' + value1 + ' ' + value2
             else:
                 rs += ' Unequal values {:.0f} {:.0f}'.format(value1,value2)
+                if not (math.isnan(value1) or math.isnan(value2) or value1==0. or value2==0.) :
+                    rs += ' ratio {:.4f}'.format(value1/value2)
         if not okType: rs += ' Different types {} {}'.format( type(value1),type(value2))
         return False,rs,okValue,okName
     def main(self):
