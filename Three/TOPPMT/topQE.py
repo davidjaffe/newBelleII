@@ -33,7 +33,10 @@ class topQE():
         ### measure length of error bars for one point
         self.uncQE = 0.5*(33.-8.)*(100.-80.)/(446.-0.)
 
+        print('topQE.__init__ QE uncertainty +- {:.2f}'.format(self.uncQE))
+
         self.colors = {'20Ca': 'blue', '40C' :'black', '20Cb' : 'red'}
+        self.tempC = {'20Ca': 'green', '40C' :'red', '20Cb' : 'green'}
         
         ### transform to relative QE vs accumulated charge
         self.data = {}
@@ -70,26 +73,39 @@ class topQE():
     def main(self):
 
 
-        
+        c0,c1 = None,None
         for temp in self.data:
             X,Y,dY = self.getData(temp)
             param, cov = curve_fit(self.linear, X,Y,sigma=dY)
             #print('topQE.main',temp,'results of linear fit, param',param,'cov',cov)
             m,b = param
             dm,db = math.sqrt(cov[0,0]),math.sqrt(cov[1,1])
-            text = ' QE = {:.2f}({:.2f})*Q + {:.1f}({:.1f})'.format(m,dm,b,db)
+            text = ' rQE = {:.2f}({:.2f})*Q + {:.1f}({:.1f})'.format(m,dm,b,db)
             y0,y1 = m*X[0]+b,m*X[-1]+b
             plt.plot( (X[0],X[-1]), (y0,y1), linestyle='dashed',color='green')
             plt.errorbar(X,Y,fmt='o',yerr=dY,color = self.colors[temp],label=temp+text)
 
-            plt.fill_between( (X[0],X[-1]), 80., 100,  color=self.colors[temp],alpha=0.2)
+            if c0 is None:
+                c0 = X[0]
+            else:
+                c0 = c1
+            c1 = X[-1]
+            plt.fill_between( (c0,c1), 80.-10, 100+10,  color=self.tempC[temp],alpha=0.2)
                              
-
-        plt.title('JT0901')
+        ymi,yma = 80.-1.,101.
+        plt.ylim( (ymi,yma) )
+        plt.title('JT0901         Conventional MPC-PMT')
         plt.legend(loc='best')
         plt.grid()
-        plt.xlabel('Accumulated output charge (Q) [mC/cm^2]')
+        plt.xlabel(r'Accumulated output charge (Q) [mC/cm${}^2$]')
         plt.ylabel('Relative QE [%]')
+        plt.text(5.,ymi+.7,r'Room ($20^\circ$C)')
+        plt.text(61.,ymi+.7,r'Room ($20^\circ$C)')
+        plt.text(35.,ymi+.7,r'High ($40^\circ$C)')
+        pdf = 'topQE_v_charge.pdf'
+        plt.savefig(pdf)
+        print('topQE.main Wrote',pdf)
+        
         plt.show()
         sys.exit('--------------> All done')
 
