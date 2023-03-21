@@ -45,7 +45,7 @@ return dict[institution] = [ [firstname,lastname,category,country], [], ...]
         header = rdr.next()
         print 'member.rdr validCountry',validCountry,'Opened',self.csvfn
         if self.debug > 0 : print 'member.rdr First row',header
-        colwords = ['Given Name', 'Family Name','Membership Category',\
+        colwords = ['Given Name', 'Family Name','Memb. Category',\
                         'Belle2 Institution', 'Status', 'Country','IR']
         colabr   = ['firstn','lastn','cat','inst','status','country','IR']
         colidx = {}
@@ -153,14 +153,15 @@ return dict[institution] = [ [firstname,lastname,category,country], [], ...]
 
         presently lists members by category for each institution, but members are not alphabetized by last name
         '''
-
+        indent1 = '[leftmargin=1mm]'
+        indent2 = '[leftmargin=1mm]'
         with open(self.latexfile,'w') as f:
-            f.write('\\begin{itemize}\n')
+            f.write('\\begin{itemize}'+indent1+'\n')
             for inst in sorted(mem):
                 lname = INST[inst.replace('"','')]
                 lname = self.fixLongname(lname)
 #                f.write('\\item '+inst.replace('"','')+'\n\\begin{itemize}\n')
-                f.write('\\item '+lname+'\n\\begin{itemize}\n')
+                f.write('\\item '+lname+'\n\\begin{itemize}'+indent2+'\n')
                 oldcat = None
                 line = ''
                 for e in sorted( mem[inst], key=lambda x:x[2]) :

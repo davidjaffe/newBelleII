@@ -15,7 +15,8 @@ class institute():
 
         self.debug = 0
 
-        self.csvfn = '/Users/djaffe/Documents/Belle II/IB/Membership/Institutions/institutes_20200421.csv' #'B2MMS_US_active_members_20200305.csv'
+        self.csvfn = '/Users/djaffe/Documents/Belle II/IB/Membership/Institutions/institutes_20230321.csv' 
+#        self.csvfn = '/Users/djaffe/Documents/Belle II/IB/Membership/Institutions/institutes_20200421.csv' #'B2MMS_US_active_members_20200305.csv'
         self.textfile = 'Institute_list.txt'
         self.columnfile = 'Institute_column.txt'
         
