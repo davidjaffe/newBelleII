@@ -261,6 +261,81 @@ class CompareXlsx():
                     rs += ' ratio {:.4f}'.format(value1/value2)
         if not okType: rs += ' Different types {} {}'.format( type(value1),type(value2))
         return False,rs,okValue,okName
+    def compareRows(self,XL1,XL2,sheet,nrow,colRange):
+        '''
+        compare nrow rows for sheet in excel files XL1 and XL2 for column range colRange (a string,ie "A:E")
+
+        compare rows with same row labels for sheet in excel files XL1 and XL2 for column range colRange (a string,ie "A:E")
+
+        '''
+        hrow = 1    # header row (count from 0)
+        idxCol = 1  # unique row labels (count from 0)
+        DS1 = pd.read_excel(XL1,sheet_name=sheet,usecols=colRange,header=hrow,index_col=idxCol)
+        DS2 = pd.read_excel(XL2,sheet_name=sheet,usecols=colRange,header=hrow,index_col=idxCol)
+
+        if self.debug > 2 :
+            print(XL1,len(DS1.index),DS1.index)
+            print(XL2,len(DS2.index),DS2.index)
+
+        # get common list of row names 
+        Rn1 = DS1.index
+        Rn2 = DS2.index
+        # remove nans
+        rn1 = Rn1[Rn1.notnull()]
+        rn2 = Rn2[Rn2.notnull()]
+        # get list of common row names
+        common = (list(set(rn1)&set(rn2)))
+        if self.debug > 2 : print(l)
+
+        Rn1,Rn2 = list(Rn1),list(Rn2)
+        commonMap = {}
+        for rowlabel in common:
+            i1 = Rn1.index(rowlabel)
+            i2 = Rn2.index(rowlabel)
+            commonMap[rowlabel] = [i1,i2]
+            if self.debug > 2 : print(rowlabel,'i1,i2',i1,i2)
+
+        cMap = {k:v for k,v in sorted(commonMap.items(), key=lambda item: item[1][1])}
+        if self.debug > 2 : print(cMap)
+
+        for rowlabel in cMap:
+            i1,i2 = cMap[rowlabel]
+            DS1 = pd.read_excel(XL1,sheet_name=sheet,header=hrow,usecols=colRange,nrows=1,skiprows=i1)
+            DS2 = pd.read_excel(XL2,sheet_name=sheet,header=hrow,usecols=colRange,nrows=1,skiprows=i2)
+
+            if self.debug > 2 : 
+                print('len,DS1.columns',len(DS1.columns),DS1.columns)
+                print('len,DS2.columns',len(DS2.columns),DS2.columns)
+            #print('DS1==DS2',DS1==DS2)
+            identical = set(DS1.columns)==set(DS2.columns)
+            words = 'is the same'
+            if not identical : words = 'DIFFERS'
+
+            print('CompareXlxs.compareRows',DS1.columns[0],rowlabel,words)
+                    
+            #print(difference)
+
+        if 0:
+            identical = True
+            for icol in range(icol1,icol2):
+                cell1 = DS1.iloc[irow,icol]
+                cell2 = DS2.iloc[irow,icol]
+                if cell1!=cell2 :
+                    identical = False
+                    print('irow,icol',irow,icol,cell1,cell2)
+            if identical : print('row is identical')
+        return
+    def simple(self,file1='FY23Q2_v1.xlsx',file2='TOP.xlsx',sheet='iTOP'):
+        '''
+        simple row-by-row compare of sheet sheet for file1 and file2
+        '''
+
+        colRange = 'A:N'
+        nrow = 36+3
+        
+        print('CompareXlsx.simple Compare',nrow,'rows in columns',colRange,'for sheet',sheet,'for',file1,'and',file2)
+        self.compareRows(file1,file2,sheet,nrow,colRange)
+        return
     def main(self):
         '''
         Compare specific row,columns in self.sheet of files self.file1 and self.file2.
@@ -283,6 +358,11 @@ class CompareXlsx():
 
         return
 if __name__ == '__main__':
+    t = CompareXlsx()
+    t.simple()
+    sys.exit('--------------------- NO MORE -------------------')
+
+    
     debug = 0
     file1='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB dj.xlsx'
     file2='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB.xlsx'
