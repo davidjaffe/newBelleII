@@ -261,9 +261,9 @@ class CompareXlsx():
                     rs += ' ratio {:.4f}'.format(value1/value2)
         if not okType: rs += ' Different types {} {}'.format( type(value1),type(value2))
         return False,rs,okValue,okName
-    def compareRows(self,XL1,XL2,sheet,nrow,colRange):
+    def compareRows(self,XL1,XL2,sheet,colRange,onlyDifferences=True):
         '''
-        compare nrow rows for sheet in excel files XL1 and XL2 for column range colRange (a string,ie "A:E")
+        compare all rows for sheet in excel files XL1 and XL2 for column range colRange (a string,ie "A:E")
 
         compare rows with same row labels for sheet in excel files XL1 and XL2 for column range colRange (a string,ie "A:E")
 
@@ -298,6 +298,7 @@ class CompareXlsx():
         cMap = {k:v for k,v in sorted(commonMap.items(), key=lambda item: item[1][1])}
         if self.debug > 2 : print(cMap)
 
+        nonIdentical = 0
         for rowlabel in cMap:
             i1,i2 = cMap[rowlabel]
             DS1 = pd.read_excel(XL1,sheet_name=sheet,header=hrow,usecols=colRange,nrows=1,skiprows=i1)
@@ -309,10 +310,13 @@ class CompareXlsx():
             #print('DS1==DS2',DS1==DS2)
             identical = set(DS1.columns)==set(DS2.columns)
             words = 'is the same'
-            if not identical : words = 'DIFFERS'
+            if not identical :
+                nonIdentical += 1
+                words = 'DIFFERS'
 
-            print('CompareXlxs.compareRows',DS1.columns[0],rowlabel,words)
-                    
+            if not onlyDifferences or not identical :
+                print('CompareXlxs.compareRows',DS1.columns[0],rowlabel,words)
+        if onlyDifferences and nonIdentical==0: print('CompareXlsx.compareRows ALL ROWS IDENTICAL')
             #print(difference)
 
         if 0:
@@ -325,16 +329,20 @@ class CompareXlsx():
                     print('irow,icol',irow,icol,cell1,cell2)
             if identical : print('row is identical')
         return
-    def simple(self,file1='FY23Q2_v1.xlsx',file2='TOP.xlsx',sheet='iTOP'):
+    def simple(self):
         '''
         simple row-by-row compare of sheet sheet for file1 and file2
         '''
 
+        file1='FY23Q2_v1.xlsx'
         colRange = 'A:N'
-        nrow = 36+3
+        for file2,sheet in zip( ['TOP.xlsx','KLM.xlsx'], ['iTOP','KLM']):
+
         
-        print('CompareXlsx.simple Compare',nrow,'rows in columns',colRange,'for sheet',sheet,'for',file1,'and',file2)
-        self.compareRows(file1,file2,sheet,nrow,colRange)
+            print('\nCompareXlsx.simple Compare all rows in columns',colRange,'for sheet',sheet,'for',file1,'and',file2)
+            for fn in [file1,file2]:
+                if os.path.islink(fn) : print('+++++',fn,'is',os.path.realpath(fn))
+            self.compareRows(file1,file2,sheet,colRange)
         return
     def main(self):
         '''
