@@ -391,12 +391,7 @@ class CompareXlsx():
 
 
         return
-if __name__ == '__main__':
-    #t = CompareXlsx()
-    #t.simple()
-    #sys.exit('--------------------- NO MORE -------------------')
-
-    
+if __name__ == '__main__':    
     debug = 0
     file1='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB dj.xlsx'
     file2='/Users/djaffe/Documents/Belle II/Software_Computing/ResourceEstimates/20210902_fixPB/ResourceEstimate-2021-09-02-RawDataCenterPB.xlsx'
