@@ -403,7 +403,8 @@ if __name__ == '__main__':
     sheet='Budget Model'
     if len(sys.argv)==1:
         print('USAGE: python CompareXlsx.py [debug({})] [file1] [file2] [sheet({})]'.format(debug,sheet),'\n DEFAULT file1 =',file1,'\n DEFAULT file2 =',file2)
-        sys.exit('That should help')
+        print('NOTE: Simple comparison suitable for risk register is done if sheet != `Budget Model`')
+        sys.exit('End of usage help')
     if len(sys.argv)>1 : debug = int(sys.argv[1])
     if len(sys.argv)>2 :
         file1 = sys.argv[2]
