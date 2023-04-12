@@ -13,7 +13,7 @@ import math
 import numpy
 import pandas as pd
 import copy
-
+import shutil
 import datetime
 import Logger # direct stdout to file & terminal 
 
@@ -261,43 +261,65 @@ class CompareXlsx():
                     rs += ' ratio {:.4f}'.format(value1/value2)
         if not okType: rs += ' Different types {} {}'.format( type(value1),type(value2))
         return False,rs,okValue,okName
-    def compareRows(self,XL1,XL2,sheet,colRange,onlyDifferences=True):
+    def compareRows(self,XL1,XL2,sheet,colRange,onlyDifferences=True,truncate=True):
         '''
-        compare all rows for sheet in excel files XL1 and XL2 for column range colRange (a string,ie "A:E")
-
         compare rows with same row labels for sheet in excel files XL1 and XL2 for column range colRange (a string,ie "A:E")
+        
+        Report differing (all) rows if onlyDifferences is True (false)
+        Report rows appearing in only one of the files
 
+        if truncate is True, long row labels are truncated to fit on the terminal screen
         '''
+        if self.debug > 1 : print('CompareXlsx.compareRows Begin with debug output -------------')
+
+        ## hrow and idxCol settings are specific to Risk Register sheets
         hrow = 1    # header row (count from 0)
         idxCol = 1  # unique row labels (count from 0)
+
+        ### information useful for output (headers and terminal width)
+        DS = pd.read_excel(XL1,sheet_name=sheet,usecols=colRange,header=hrow)
+        headers = list(DS.head(0))
+        big = 0
+        for irow in range(len(DS)):
+            if DS.iloc[irow,1]==DS.iloc[irow,1] : big = max(big,len(DS.iloc[irow,0]))
+        termwidth = shutil.get_terminal_size()[0]
+        if not truncate : termwidth = int(1.e4)
+            
         DS1 = pd.read_excel(XL1,sheet_name=sheet,usecols=colRange,header=hrow,index_col=idxCol)
         DS2 = pd.read_excel(XL2,sheet_name=sheet,usecols=colRange,header=hrow,index_col=idxCol)
+
+        if self.debug > 2 : print('headers',headers)
 
         if self.debug > 2 :
             print(XL1,len(DS1.index),DS1.index)
             print(XL2,len(DS2.index),DS2.index)
 
-        # get common list of row names 
+        # get common list of row names. and row names for list in only one file (uncommon)
         Rn1 = DS1.index
         Rn2 = DS2.index
         # remove nans
         rn1 = Rn1[Rn1.notnull()]
         rn2 = Rn2[Rn2.notnull()]
-        # get list of common row names
+        # get list of common and uncommon row names
         common = (list(set(rn1)&set(rn2)))
-        if self.debug > 2 : print(l)
+        uncommon = list(set(rn1)-set(rn2))
+        if self.debug > 2 : print('uncommon',uncommon)
 
+        # report common rows. use cMap to follow order of file1
         Rn1,Rn2 = list(Rn1),list(Rn2)
         commonMap = {}
         for rowlabel in common:
             i1 = Rn1.index(rowlabel)
             i2 = Rn2.index(rowlabel)
             commonMap[rowlabel] = [i1,i2]
-            if self.debug > 2 : print(rowlabel,'i1,i2',i1,i2)
-
+            if self.debug > 2 : print('making commonMap: rowlabel',rowlabel,'i1,i2',i1,i2)
         cMap = {k:v for k,v in sorted(commonMap.items(), key=lambda item: item[1][1])}
-        if self.debug > 2 : print(cMap)
+        if self.debug > 2 : print('cMap',cMap)
 
+        print('\nCompareXlsx.compareRows Comparison of common rows between input files')
+        fmt = '{:>'+str(big)+'} {:} {:}'
+        sz2 = termwidth-big-max(len(XL1),len(XL2))-5
+        print(fmt.format(headers[0],headers[idxCol],''))
         nonIdentical = 0
         for rowlabel in cMap:
             i1,i2 = cMap[rowlabel]
@@ -307,7 +329,7 @@ class CompareXlsx():
             if self.debug > 2 : 
                 print('len,DS1.columns',len(DS1.columns),DS1.columns)
                 print('len,DS2.columns',len(DS2.columns),DS2.columns)
-            #print('DS1==DS2',DS1==DS2)
+
             identical = set(DS1.columns)==set(DS2.columns)
             words = 'is the same'
             if not identical :
@@ -315,34 +337,38 @@ class CompareXlsx():
                 words = 'DIFFERS'
 
             if not onlyDifferences or not identical :
-                print('CompareXlxs.compareRows',DS1.columns[0],rowlabel,words)
-        if onlyDifferences and nonIdentical==0: print('CompareXlsx.compareRows ALL ROWS IDENTICAL')
-            #print(difference)
+                print(fmt.format(DS1.columns[0],rowlabel[:sz2],words))
+        if onlyDifferences and nonIdentical==0: print('ALL ROWS IDENTICAL')
 
-        if 0:
-            identical = True
-            for icol in range(icol1,icol2):
-                cell1 = DS1.iloc[irow,icol]
-                cell2 = DS2.iloc[irow,icol]
-                if cell1!=cell2 :
-                    identical = False
-                    print('irow,icol',irow,icol,cell1,cell2)
-            if identical : print('row is identical')
+        ### list rows only listed in one of the two files. don't worry about order. 
+        if len(uncommon)>0:
+            print('\nCompareXlsx.compareRows List rows appearing in only one file')
+            print(fmt.format(headers[0],headers[idxCol],''))
+        for rowlabel in uncommon:
+            i1,i2 = -1,-1
+            if rowlabel in Rn1: i1,XL = Rn1.index(rowlabel),XL1
+            if rowlabel in Rn2: i2,XL = Rn2.index(rowlabel),XL2
+            if i1>-1 and i2>-1 : sys.exit('ERROR '+rowlabel+' is present in both files')
+            if i1==-1 and i2==-1 : sys.exit('ERROR '+rowlabel+' does not appear in either file')
+            DS = pd.read_excel(XL,sheet_name=sheet,header=hrow,usecols=colRange,nrows=1,skiprows=max(i1,i2))
+            print(fmt.format(DS.columns[0],rowlabel[:sz2],XL))
+            
+        if self.debug > 1 : print('CompareXlsx.compareRows End ^^^^^^^^^^^^^^^^^^^^^^^')
         return
     def simple(self):
         '''
         simple row-by-row compare of sheet sheet for file1 and file2
+        mainly designed for Risk Register
         '''
-
-        file1='FY23Q2_v1.xlsx'
         colRange = 'A:N'
-        for file2,sheet in zip( ['TOP.xlsx','KLM.xlsx'], ['iTOP','KLM']):
-
+        file1 = self.file1
+        file2 = self.file2
+        sheet = self.sheet
         
-            print('\nCompareXlsx.simple Compare all rows in columns',colRange,'for sheet',sheet,'for',file1,'and',file2)
-            for fn in [file1,file2]:
+        print('\nCompareXlsx.simple Compare all rows in columns',colRange,'for sheet',sheet,'for',file1,'and',file2)
+        for fn in [file1,file2]:
                 if os.path.islink(fn) : print('+++++',fn,'is',os.path.realpath(fn))
-            self.compareRows(file1,file2,sheet,colRange)
+        self.compareRows(file1,file2,sheet,colRange)
         return
     def main(self):
         '''
@@ -366,9 +392,9 @@ class CompareXlsx():
 
         return
 if __name__ == '__main__':
-    t = CompareXlsx()
-    t.simple()
-    sys.exit('--------------------- NO MORE -------------------')
+    #t = CompareXlsx()
+    #t.simple()
+    #sys.exit('--------------------- NO MORE -------------------')
 
     
     debug = 0
@@ -385,4 +411,7 @@ if __name__ == '__main__':
     if len(sys.argv)>4 :
         sheet = sys.argv[4]
     t = CompareXlsx(debug=debug,file1=file1,file2=file2,sheet=sheet)
-    t.main()
+    if sheet=='Budget Model' :
+        t.main()
+    else:
+        t.simple()
