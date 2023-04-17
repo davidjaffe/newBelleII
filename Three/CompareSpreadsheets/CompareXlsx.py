@@ -322,23 +322,30 @@ class CompareXlsx():
         sz2 = termwidth-big-max(len(XL1),len(XL2))-5
         print(fmt.format(headers[0],headers[idxCol],''))
         nonIdentical = 0
+        DS1 = pd.read_excel(XL1,sheet_name=sheet,header=hrow,usecols=colRange)#,nrows=1,skiprows=i1)
+        DS2 = pd.read_excel(XL2,sheet_name=sheet,header=hrow,usecols=colRange)#,nrows=1,skiprows=i2)
+        
         for rowlabel in cMap:
             i1,i2 = cMap[rowlabel]
-            DS1 = pd.read_excel(XL1,sheet_name=sheet,header=hrow,usecols=colRange,nrows=1,skiprows=i1)
-            DS2 = pd.read_excel(XL2,sheet_name=sheet,header=hrow,usecols=colRange,nrows=1,skiprows=i2)
+
+            row1 = list(DS1.iloc[i1,0:])
+            row2 = list(DS2.iloc[i2,0:])
 
             if self.debug > 2 : 
-                print('len,DS1.columns',len(DS1.columns),DS1.columns)
-                print('len,DS2.columns',len(DS2.columns),DS2.columns)
+                print('row1',row1)
+                print('row2',row2)
 
-            identical = set(DS1.columns)==set(DS2.columns)
+            identical = row1==row2
             words = 'is the same'
             if not identical :
                 nonIdentical += 1
                 words = 'DIFFERS'
 
             if not onlyDifferences or not identical :
-                print(fmt.format(DS1.columns[0],rowlabel[:sz2],words))
+                print(fmt.format(row1[0],rowlabel[:sz2],words))
+                if self.debug > 0: 
+                    print('  Differences of',XL1,'wrt',XL2,set(row1)-set(row2))
+                    print('  Differences of',XL2,'wrt',XL1,set(row2)-set(row1))
         if onlyDifferences and nonIdentical==0: print('ALL ROWS IDENTICAL')
 
         ### list rows only listed in one of the two files. don't worry about order. 
