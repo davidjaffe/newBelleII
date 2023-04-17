@@ -303,6 +303,7 @@ class CompareXlsx():
         # get list of common and uncommon row names
         common = (list(set(rn1)&set(rn2)))
         uncommon = list(set(rn1)-set(rn2))
+        uncommon.extend( list(set(rn2)-set(rn1)) )
         if self.debug > 2 : print('uncommon',uncommon)
 
         # report common rows. use cMap to follow order of file1
