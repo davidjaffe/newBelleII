@@ -8,7 +8,7 @@ import sys,os
 import csv
 import institute
 
-#import datetime
+import datetime
 
 
 class member():
@@ -26,6 +26,11 @@ class member():
         if inputFile is not None: self.csvfn = inputFile
         self.latexfile = 'Membership_table.tex'
         self.IRfile    = 'Collaboration_board.tex'
+
+        d = self.csvfn.split('.')[0].split('_')[-1]
+        q = datetime.datetime.strptime(d,'%Y%m%d')
+        self.as_of_date = datetime.datetime.strftime(q,'%d %B %Y')
+        print 'd',d,'q',q,'as_of_date',self.as_of_date
 
         self.INSTITUTE = institute.institute()
         
@@ -117,6 +122,7 @@ return dict[institution] = [ [firstname,lastname,category,country], [], ...]
         if self.validCountry == 'U.S.A.':
             self.writelatex(mem,INST)
             self.writeInstReps(reps,INST)
+        print 'member.main +++++++++++++++++ Open  Generic.tex with TeXShop to generate pdf'
         return
     def writeInstReps(self,reps,INST):
         ''''
@@ -133,6 +139,7 @@ return dict[institution] = [ [firstname,lastname,category,country], [], ...]
                 line = '\\item '+lname+':'+' '+firstn+' '+ lastn + '\n'
                 f.write(line)
             f.write('\\end{enumerate}\n')
+            f.write('As of ' + self.as_of_date + '\n')
         f.close()
         print 'member.writeInstReps Wrote',self.IRfile
 
@@ -175,8 +182,10 @@ return dict[institution] = [ [firstname,lastname,category,country], [], ...]
                 if len(line)>0: f.write(line[:-1]+'\n')
                 f.write('\\end{itemize}\n')
             f.write('\\end{itemize}\n')
+            f.write('As of ' + self.as_of_date + '\n')
         f.close()
         print 'member.writelatex Wrote',self.latexfile
+
 
 if __name__ == '__main__' :
 
