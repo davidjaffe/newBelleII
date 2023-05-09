@@ -62,14 +62,14 @@ class issues_keyphrases():
                        'Integration of BelleDIRAC','gbasf2 tutorial','Coming gbasf2','Release',
                        'Singularity recipe','Draft of','Unscheduled','AMGA',
                        'Conditions Database',
-                       'Downtime', 'Removal of'   ]
+                       'Downtime', 'Removal of','Change of Mailing List'   ]
         actions = ['intervention','to be down','shutdown', 'downtime','timeout', 'update',
                        'restart', 'security patch', 'release', 'is down','Please use gbasf2',
                        'test of','with Rucio','feedback','follow-up',
                        'migration to Rucio','available on',
                        'Singularity recipe','proceedings','power cut','not available',
                        'access GPFS',
-                       'grid services', 'from grid use']
+                       'grid services', 'from grid use','Configuration']
         phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone', 'Dear Grid Users',
                        'Dear gbasf2 users', 'Dear * colleagues','Dear all * gbasf2',
                        'Dear all * required','Dear all * workaround',
@@ -79,8 +79,8 @@ class issues_keyphrases():
         idictOrder.append(name)
 
         name = 'Queries'
-        systems = ['How to','module','Running on','To run on','How can I','Question','On Hold','Justice for']
-        actions = ['use','save','delet','on the grid','dataset','full data proc 10','reschedul','grid-users']
+        systems = ['How to','module','Running on','To run on','How can I','Question','On Hold','Justice for','Not finding']
+        actions = ['use','save','delet','on the grid','dataset','full data proc 10','reschedul','grid-users','MC data']
         phrase1 = ['How can','Is there a * way','Is it possible','I need to understand','Does anyone know','Can anyone comment',
                        'what I can do if', 'Is there anyway to get * files', 'wondering why','Is there * a way',
                        'wondering if * a way','I wonder if there * a way','wondering if I',
@@ -133,8 +133,8 @@ class issues_keyphrases():
 
         name = 'Failed jobs'
         UNIQUE = False
-        systems = ['Jobs','Job failing','Grid Job','project failure','to run','Projects']
-        actions= ['fail', 'error','crash','Exited']
+        systems = ['Jobs','Job failing','Grid Job','project failure','to run','Projects','Unknown error','Premature Dispatching','SSLTimeout','Maximum of','Application Finished With']
+        actions= ['fail', 'error','crash','Exited','reschedul* reached','incomplete']
         phrase1 = ['job * failed','job * failing',
                        'maximum * reschedul','max no *reschedul','scouting to fail','receiv* job failure']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
@@ -143,7 +143,7 @@ class issues_keyphrases():
         name = 'Jobs in waiting/stuck'
         UNIQUE = False
         systems = ['Jobs']
-        actions = ['waiting','stall','too long','stuck in Completed status','stuck on Completed']
+        actions = ['waiting','stall','too long','stuck in Completed status','stuck on Completed','zero running']
         phrase1 = ['stuck * Pilot Agent', 'running on the grid * more than','jobs * stalled',
                        'jobs * stuck','job * stuck',
                        'project * still waiting','Waiting for Scout Job Completion',
@@ -164,7 +164,7 @@ class issues_keyphrases():
         name = 'Submitting jobs'
         UNIQUE = False
         systems = ['submit', 'submission', 'reschedule']
-        actions= ['cannot','troubles','problem','Resubmit','not show','environment','How to','fail','collections','unable']
+        actions= ['cannot','troubles','problem','Resubmit','not show','environment','How to','fail','collections','unable','error']
         phrase1 = ['trouble submitting jobs','issue submitting jobs','difficult * submitting jobs',
                        'on the grid * error','to the GRID * error',
                        'submitted several jobs * wrong', 
