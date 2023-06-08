@@ -1,0 +1,33 @@
+
+\documentclass[12pt]{amsart}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+\usepackage{enumitem}
+% See the ``Article customise'' template for come common customisations
+
+%%%% NEXT BLOCK FOR CRAMMING LOTS OF TEXT ONTO PAGE
+%\topskip -1cm % cram
+\oddsidemargin -15mm
+%\evensidemargin 5mm
+\topmargin -2.0cm %  -1.4cm   %1 in. from top
+\textheight 28cm % 26cm % 23cm % 22cm  (cram a bit more on the page)
+\textwidth 18.5cm
+%\parindent 0.5cm
+
+
+
+%%% BEGIN DOCUMENT
+\begin{document}
+\pagenumbering{gobble}  % no page numbers
+{	%\tiny       %% fit on single page
+\scriptsize
+	\input{Membership_table} }
+
+\clearpage
+
+
+\input{Collaboration_board}
+
+
+\end{document}

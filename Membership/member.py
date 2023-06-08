@@ -27,12 +27,14 @@ class member():
         self.latexfile = 'Membership_table.tex'
         self.IRfile    = 'Collaboration_board.tex'
 
+        self.instituteFile = 'institutes_'+self.csvfn.split('_')[-1].split('.')[0]+'.csv'  # in Documents/Belle II/IB/Membership/Institutions/
+
         d = self.csvfn.split('.')[0].split('_')[-1]
         q = datetime.datetime.strptime(d,'%Y%m%d')
         self.as_of_date = datetime.datetime.strftime(q,'%d %B %Y')
         print 'd',d,'q',q,'as_of_date',self.as_of_date
 
-        self.INSTITUTE = institute.institute()
+        self.INSTITUTE = institute.institute(fn=self.instituteFile)
         
         return
     def rdr(self):
@@ -122,7 +124,8 @@ return dict[institution] = [ [firstname,lastname,category,country], [], ...]
         if self.validCountry == 'U.S.A.':
             self.writelatex(mem,INST)
             self.writeInstReps(reps,INST)
-        print 'member.main +++++++++++++++++ Open  Generic.tex with TeXShop to generate pdf'
+        print 'member.main +++++++++++++++++ Open  Generic.tex with TeXShop to generate 2 page pdf'
+        print 'member.main +++++++++++++++++ page1 = members list, page2 = collaboration board'
         return
     def writeInstReps(self,reps,INST):
         ''''

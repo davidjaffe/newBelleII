@@ -11,11 +11,11 @@ import csv
 
 
 class institute():
-    def __init__(self):
+    def __init__(self,fn='institutes.csv'):
 
         self.debug = 0
 
-        self.csvfn = '/Users/djaffe/Documents/Belle II/IB/Membership/Institutions/institutes_20230321.csv' 
+        self.csvfn = '/Users/djaffe/Documents/Belle II/IB/Membership/Institutions/' + fn
 #        self.csvfn = '/Users/djaffe/Documents/Belle II/IB/Membership/Institutions/institutes_20200421.csv' #'B2MMS_US_active_members_20200305.csv'
         self.textfile = 'Institute_list.txt'
         self.columnfile = 'Institute_column.txt'
@@ -85,6 +85,9 @@ class institute():
 
 if __name__ == '__main__' :
 
-    m = institute()
+    fn = 'institutes.csv'
+    if len(sys.argv)>1 :
+        fn = sys.argv[1]
+    m = institute(fn=fn)
     m.main()
     
