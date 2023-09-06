@@ -62,17 +62,17 @@ class issues_keyphrases():
                        'Integration of BelleDIRAC','gbasf2 tutorial','Coming gbasf2','Release',
                        'Singularity recipe','Draft of','Unscheduled','AMGA',
                        'Conditions Database',
-                       'Downtime', 'Removal of','Change of Mailing List'   ]
+                       'Downtime', 'Removal of','Change of Mailing List','Refrain from'   ]
         actions = ['intervention','to be down','shutdown', 'downtime','timeout', 'update',
                        'restart', 'security patch', 'release', 'is down','Please use gbasf2',
                        'test of','with Rucio','feedback','follow-up',
                        'migration to Rucio','available on',
                        'Singularity recipe','proceedings','power cut','not available',
                        'access GPFS',
-                       'grid services', 'from grid use','Configuration']
+                       'grid services', 'from grid use','Configuration','GNN-based Flavor Tagger on grid']
         phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone', 'Dear Grid Users',
                        'Dear gbasf2 users', 'Dear * colleagues','Dear all * gbasf2',
-                       'Dear all * required','Dear all * workaround',
+                       'Dear all * required','Dear all * workaround','to check the change of "From:" line',
                        'CNAF outage * over', 'issue * Rucio server']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
@@ -93,7 +93,7 @@ class issues_keyphrases():
                        'Could * help me',
                        'Could * hint',
                        'trying to submit  jobs * message that I get',
-                       'I am not sure this * correct place',
+                       'I am not sure this * correct place',' I am not sure if this * correct place',
                        'when I try * gb2',
                        'like to confirm * ignored','questions.belle2.org','development of gbasf2',
                        'not sure if this is the right place to ask','give me some suggestion',
@@ -101,6 +101,7 @@ class issues_keyphrases():
                        'what I am doing wrong. Could you please',
                        'would like to use * interface',
                        'would like to know * status',
+                       'not familiar with why jobs become "Killed"', 
                        'my own hack','what * recommended procedure','do you have * suggest',
                        'gbasf2 * wanted to check', 'I see the following interesting effect',
                        'my understanding * analysts were encouraged', 
@@ -111,8 +112,8 @@ class issues_keyphrases():
         
 
         name = 'Proxy/VOMS'
-        systems = ['VOMS', 'proxy', 'Certificate','PEM', 'Problem', 'Registration']
-        actions= ['Error', 'fail', 'unable', '_init','not register', 'expired','could not add','initializing proxy']
+        systems = ['VOMS', 'proxy', 'Certificate','PEM', 'Problem', 'Registration','Outdated']
+        actions= ['Error', 'fail', 'unable', '_init','not register', 'expired','could not add','initializing proxy','CRLs']
         phrase1 = ['gb2_proxy_init * Error: Operation not permitted']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
@@ -136,19 +137,21 @@ class issues_keyphrases():
         systems = ['Jobs','Job failing','Grid Job','project failure','to run','Projects','Unknown error','Premature Dispatching','SSLTimeout','Maximum of','Application Finished With']
         actions= ['fail', 'error','crash','Exited','reschedul* reached','incomplete']
         phrase1 = ['job * failed','job * failing',
-                       'maximum * reschedul','max no *reschedul','scouting to fail','receiv* job failure']
+                       'maximum * reschedul','max no *reschedul','maximum number of resch',
+                       'scouting to fail','receiv* job failure']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
         name = 'Jobs in waiting/stuck'
         UNIQUE = False
         systems = ['Jobs']
-        actions = ['waiting','stall','too long','stuck in Completed status','stuck on Completed','zero running']
+        actions = ['waiting','stall','too long','stuck in Completed status','stuck on Completed','zero running','hit rescheduling limit']
         phrase1 = ['stuck * Pilot Agent', 'running on the grid * more than','jobs * stalled',
-                       'jobs * stuck','job * stuck',
+                       'jobs * stuck','job * stuck','job suck * status',
                        'project * still waiting','Waiting for Scout Job Completion',
-                       'job * in "Waiting"',
-                       'submit * ago','jobs * no sign of activity',
+                       'job * in "Waiting"','jobs * running very slowly',
+                       'submit * ago','jobs * no sign of activity','have 0 running jobs * jobs waiting', 
+                       'drop in the number of jobs running','No * jobs are running','just 1 job is running currently',
                        'file transfers * stuck']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
@@ -188,7 +191,7 @@ class issues_keyphrases():
         UNIQUE = False
         systems = ['delete','deleting']
         actions= ['file']
-        phrase1 = ['not able * remove director']
+        phrase1 = ['not able * remove director','like to remove * old projects']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
         
@@ -411,7 +414,8 @@ Failed (15)
         NbyStage = {}
         nameUnclassified = 'Unclassified'
             
-        ### first assign thread to issue by Subject 
+        ### first assign thread to issue by Subject
+        if self.debug > 2 : print('issues_keyphrases.classifyThreads First try to assign to issue by Subject')
         for issue in idictOrder:
             Reqmts = idict[issue][0] ## Subject
             Unique = idict[issue][2]
@@ -434,6 +438,7 @@ Failed (15)
 
         ### 20220210, single-message threads from distributed computing team will
         ### be classified as Announcements
+        if self.debug > 2 : print('issues_keyphrases.classifyThreads Second try to assign single-message threads from DC team as Announcements')
         issue = self.announcementsName
         Unique = idict[issue][2]
         for key in [x for x in listSMTfDC if x not in Classified]:
@@ -454,6 +459,7 @@ Failed (15)
                 
 
         ### next, for unassigned threads, assign thread to issue using email text
+        if self.debug > 2 : print('issues_keyphrases.classifyThreads Finally try to assign based on email text')
         originalDebug = self.debug
         unClassified = []
         for key in Threads:
@@ -465,6 +471,7 @@ Failed (15)
             for key in [x for x in unClassified if x not in IgnoreThese]:
                 text = self.extractMsg.getText(key,input='archive')
                 if self.debug > 2 : print('issues_keyphrases.classifyThreads by email text, key',key)
+                if self.debug > 3 : print('issues_keyphrases.classifyThreads by email text. text=',text)
                 if self.findN(text,Reqmts) :
                     issues[issue].append( key )
                     if key not in thread_issues: thread_issues[key] = []
@@ -590,7 +597,7 @@ Failed (15)
         '''
         
         subject = Subject.lower().replace('\\n',' ').replace('  ',' ')
-        if self.debug > 2 : print('issues_keyphrases.basicFind subject',subject)
+        if self.debug > 2 : print('issues_keyphrases.basicFind xxx subject',subject)
         for phrase in phrases:
             p = phrase.lower()
             if self.debug > 2 : print('issues_keyphrases.basicFind phrase.lower()',p)
