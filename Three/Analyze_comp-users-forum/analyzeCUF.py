@@ -54,6 +54,7 @@ class analyzeCUF():
 
         # Specify input data directory
         # NO UNDERSCORE IN INPUT DATA DIRECTORY NAME!!!
+        if data_dir[-1]!='/' : data_dir += '/'  # add trailing slash
         self.DATA_DIR = data_dir       # 20220203 input data directory can be specified at run time
         print('analyzeCUF.__init__ Input data directory',self.DATA_DIR)
         if '_' in self.DATA_DIR : sys.exit('analyzeCUF.__init__ ERROR No underscore allowed in input data directory name!')

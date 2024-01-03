@@ -69,7 +69,8 @@ class issues_keyphrases():
                        'migration to Rucio','available on',
                        'Singularity recipe','proceedings','power cut','not available',
                        'access GPFS',
-                       'grid services', 'from grid use','Configuration','GNN-based Flavor Tagger on grid']
+                       'grid services', 'from grid use','Configuration','GNN-based Flavor Tagger on grid',
+                       'Possible glitch in access']
         phrase1 = ['Dear collaborators','Dear computing users', 'Hello everyone', 'Dear Grid Users',
                        'Dear gbasf2 users', 'Dear * colleagues','Dear all * gbasf2',
                        'Dear all * required','Dear all * workaround','to check the change of "From:" line',
@@ -105,7 +106,10 @@ class issues_keyphrases():
                        'my own hack','what * recommended procedure','do you have * suggest',
                        'gbasf2 * wanted to check', 'I see the following interesting effect',
                        'my understanding * analysts were encouraged', 
-                       'run gbasf2 with patched basf2']
+                       'run gbasf2 with patched basf2',
+                       'VPN through Cisco AnyConnect ',
+                       'files processed for the past month have been deleted',
+                       'jobs on the grid * a lot of them (which were done) were deleted.']
         UNIQUE = True
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
@@ -128,14 +132,15 @@ class issues_keyphrases():
                        "don't get rescheduled * download",'download * from the grid','error when download',
                        'trying to download * too long','download output * empty','files * size 0',
                        'Maximum input file size exceeds limit',
-                       'output file * not download','gbs2_ds_get * re-download']
+                       'output file * not download','gbs2_ds_get * re-download',
+                       'job * seems to be frozen']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)        
 
         name = 'Failed jobs'
         UNIQUE = False
         systems = ['Jobs','Job failing','Grid Job','project failure','to run','Projects','Unknown error','Premature Dispatching','SSLTimeout','Maximum of','Application Finished With']
-        actions= ['fail', 'error','crash','Exited','reschedul* reached','incomplete']
+        actions= ['fail', 'error','crash','Exited','reschedul* reached','incomplete','keep getting killed']
         phrase1 = ['job * failed','job * failing',
                        'maximum * reschedul','max no *reschedul','maximum number of resch',
                        'scouting to fail','receiv* job failure']
@@ -145,14 +150,15 @@ class issues_keyphrases():
         name = 'Jobs in waiting/stuck'
         UNIQUE = False
         systems = ['Jobs']
-        actions = ['waiting','stall','too long','stuck in Completed status','stuck on Completed','zero running','hit rescheduling limit']
+        actions = ['waiting','stall','too long','stuck in Completed status','stuck on Completed','zero running','hit rescheduling limit','run slowly','stuck in Received status']
         phrase1 = ['stuck * Pilot Agent', 'running on the grid * more than','jobs * stalled',
                        'jobs * stuck','job * stuck','job suck * status',
                        'project * still waiting','Waiting for Scout Job Completion',
                        'job * in "Waiting"','jobs * running very slowly',
                        'submit * ago','jobs * no sign of activity','have 0 running jobs * jobs waiting', 
                        'drop in the number of jobs running','No * jobs are running','just 1 job is running currently',
-                       'file transfers * stuck']
+                       'file transfers * stuck',
+                       'only * jobs are currently running','less than * jobs are running ']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
@@ -211,7 +217,7 @@ class issues_keyphrases():
                        'RucioFileCatalog interface']
         actions = ['system error','wrong mass',' --','crash', 'broken', 'larger than 5GB', 'larger than 5 GB', 
                     'fails','wrong number of files','failed', 'failing', 'not working','unable to access',
-                    'Problem parsing payload', 'dataset missing', 'wrong Ecm in bucket', 'error']
+                    'Problem parsing payload', 'dataset missing', 'wrong Ecm in bucket', 'error','mismatch']
         phrase1 = ['problem connecting * at KEK', 'feature of gbasf2 * stop working',
                     'trouble running * FEI',
                     'try to reschedule * following error:',
@@ -225,7 +231,9 @@ class issues_keyphrases():
                     'Rescheduling * many times',
                     'skim job * files are so large',
                     'cannot * output error','am trying * error','troubles log * KEKCC',
-                    'dataset searcher * no results']
+                    'dataset searcher * no results',
+                    'problem while log in the gbasf2',
+                    'error on uploading for * jobs']
         idict[name] = [ [systems, actions], [ phrase1 ], UNIQUE ]
         idictOrder.append(name)
 
